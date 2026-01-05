@@ -1,0 +1,12 @@
+[2025-12-12T10:21:08.251Z] [INFO] Starting import for: /Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/nmims_master_import.xlsx
+[2025-12-12T10:21:08.265Z] [INFO] Parsed rows: Students=6, Subjects=5, Sessions=6, Attendance=10
+[2025-12-12T10:21:08.294Z] [WARN] Subject upsert error (SUB001): duplicate key value violates unique constraint "subjects_code_key"
+[2025-12-12T10:21:08.653Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.663Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.669Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.674Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.679Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.683Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:21:08.722Z] [INFO] Running Verification...
+[2025-12-12T10:21:08.722Z] [INFO] Triggering Badge Evaluation...
+[2025-12-12T10:21:08.801Z] [INFO] Badge Eval Complete.

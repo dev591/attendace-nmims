@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-12-13T06:05:13.755Z",
+  "file": "/Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/import_1765605913707_nmims_master_import (3).xlsx",
+  "created_courses": [],
+  "errors": [],
+  "details": [
+    {
+      "type": "student",
+      "id": "90012023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90022023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90032023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90042023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90052023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90062023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "95872001",
+      "status": "ok"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-12-13T04:24:07.814Z",
+  "file": "/Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/import_1765599847758_nmims_master_import.xlsx",
+  "created_courses": [],
+  "errors": [
+    "Session SES001: column \"type\" of relation \"sessions\" does not exist",
+    "Session SES002: column \"type\" of relation \"sessions\" does not exist",
+    "Session SES003: column \"type\" of relation \"sessions\" does not exist",
+    "Session SES004: column \"type\" of relation \"sessions\" does not exist",
+    "Session SES005: column \"type\" of relation \"sessions\" does not exist",
+    "Session SES006: column \"type\" of relation \"sessions\" does not exist"
+  ],
+  "details": [
+    {
+      "type": "student",
+      "id": "90012023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90022023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90032023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90042023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90052023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90062023",
+      "status": "ok"
+    }
+  ]
+}

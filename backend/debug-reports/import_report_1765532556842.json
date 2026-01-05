@@ -1,0 +1,46 @@
+{
+  "timestamp": 1765532556842,
+  "file": "/Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/nmims_master_import.xlsx",
+  "summary": {
+    "students": 2,
+    "subjects": 4,
+    "sessions": 0,
+    "attendance": 0
+  },
+  "details": [
+    {
+      "type": "student",
+      "id": "90012023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90022023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90032023",
+      "status": "error",
+      "msg": "insert or update on table \"students\" violates foreign key constraint \"students_course_id_fkey\""
+    },
+    {
+      "type": "student",
+      "id": "90042023",
+      "status": "error",
+      "msg": "insert or update on table \"students\" violates foreign key constraint \"students_course_id_fkey\""
+    },
+    {
+      "type": "student",
+      "id": "90052023",
+      "status": "error",
+      "msg": "insert or update on table \"students\" violates foreign key constraint \"students_course_id_fkey\""
+    },
+    {
+      "type": "student",
+      "id": "90062023",
+      "status": "error",
+      "msg": "insert or update on table \"students\" violates foreign key constraint \"students_course_id_fkey\""
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+
+IMPORT COMPLETE
+File: /Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/nmims_master_import.xlsx
+Students: 2
+Subjects: 4
+Sessions: 0
+Attendance: 0
+    

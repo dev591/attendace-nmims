@@ -1,0 +1,122 @@
+{
+    "student": {
+        "student_id": "S001",
+        "sapid": "50012023",
+        "password_hash": "$2b$10$6ZIHDgyQLJYB9rw7czrE4OObNcij7/i9MlBdZQqLRRFPElZGsI0Qa",
+        "name": "Dev Chalana",
+        "email": "dev@nmims.edu",
+        "program": "B.Tech CS-DS",
+        "year": 2,
+        "dept": "Computer Science",
+        "course_id": "C_CS_SEM3"
+    },
+    "enrollments": [
+        {
+            "id": 9,
+            "student_id": "S001",
+            "subject_id": "DSA101",
+            "section": null
+        }
+    ],
+    "badges": [
+        {
+            "name": "First Steps",
+            "badge_key": "first_steps",
+            "awarded_at": "2025-12-12T02:44:59.427Z"
+        },
+        {
+            "name": "DSA Regular",
+            "badge_key": "subject_regular_dsa",
+            "awarded_at": "2025-12-12T02:44:59.431Z"
+        }
+    ],
+    "attendance_log": [
+        {
+            "subject": "Data Structures",
+            "date": "2025-12-09T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Algorithms",
+            "date": "2025-12-08T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Operating System",
+            "date": "2025-12-06T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures",
+            "date": "2025-12-05T18:30:00.000Z",
+            "status": "conducted",
+            "present": false
+        },
+        {
+            "subject": "Database Systems",
+            "date": "2025-12-03T18:30:00.000Z",
+            "status": "conducted",
+            "present": false
+        },
+        {
+            "subject": "Data Structures",
+            "date": "2025-12-02T18:30:00.000Z",
+            "status": "conducted",
+            "present": false
+        },
+        {
+            "subject": "Algorithms",
+            "date": "2025-12-01T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures",
+            "date": "2025-11-30T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-19T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-17T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-15T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-13T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-11T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        },
+        {
+            "subject": "Data Structures & Algorithms",
+            "date": "2025-01-09T18:30:00.000Z",
+            "status": "conducted",
+            "present": true
+        }
+    ],
+    "meta": {
+        "timestamp": "2025-12-12T08:36:39.848Z"
+    }
+}

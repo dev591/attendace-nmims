@@ -1,0 +1,4 @@
+session_id,subject_id,date,start_time,end_time,location,status
+S100,SUB01,2025-12-01,09:00,10:00,Room 301,conducted
+S101,SUB01,2025-12-03,09:00,10:00,Room 301,conducted
+S102,SUB02,2025-12-02,10:00,11:00,Lab 2,conducted

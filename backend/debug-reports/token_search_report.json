@@ -1,0 +1,32 @@
+[
+    {
+        "file": "backend/index.js",
+        "matches": [
+            {
+                "line": 93,
+                "content": "        const token = jwt.sign(",
+                "context": "        // Include course_id in token to check if selection needed\n        const token = jwt.sign(\n            { student_id: student.student_id, sapid: student.sapid, course_id: student.course_id },"
+            },
+            {
+                "line": 99,
+                "content": "        res.json({",
+                "context": "            { expiresIn: '8h' }\n        );\n\n        res.json({"
+            },
+            {
+                "line": 100,
+                "content": "            token,",
+                "context": "        res.json({\n            token,\n            student_id: student.student_id,"
+            }
+        ]
+    },
+    {
+        "file": "backend/frontend-integration/api-client.js",
+        "matches": [
+            {
+                "line": 14,
+                "content": "        return res.json(); // { token, needs_course_selection, ... }",
+                "context": "            throw new Error(err.error || 'Login failed');\n        }\n        return res.json(); // { token, needs_course_selection, ... }"
+            }
+        ]
+    }
+]

@@ -1,0 +1,3 @@
+student_id,sapid,password_hash,name,email,program,year,dept,course_id
+S010,70012023,,Rahul Verma,rahul@nmims.edu,B.Tech CS,2,CS,C_CS_SEM3
+S011,70022023,,Amit Singh,amit@nmims.edu,B.Tech CS,2,CS,

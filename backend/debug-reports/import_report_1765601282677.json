@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-13T04:48:02.061Z",
+  "file": "/Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/import_1765601282058_nmims_master_import (1).xlsx",
+  "created_courses": [
+    "C_SOL_SEM6"
+  ],
+  "errors": [
+    "Session SES001: insert or update on table \"sessions\" violates foreign key constraint \"sessions_subject_id_fkey\"",
+    "Session SES002: insert or update on table \"sessions\" violates foreign key constraint \"sessions_subject_id_fkey\""
+  ],
+  "details": [
+    {
+      "type": "session",
+      "id": "SES003",
+      "status": "ok"
+    },
+    {
+      "type": "session",
+      "id": "SES004",
+      "status": "ok"
+    },
+    {
+      "type": "session",
+      "id": "SES005",
+      "status": "ok"
+    },
+    {
+      "type": "session",
+      "id": "SES006",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90012023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90022023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90032023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90042023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90052023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "90062023",
+      "status": "ok"
+    },
+    {
+      "type": "student",
+      "id": "95872001",
+      "status": "ok"
+    }
+  ]
+}

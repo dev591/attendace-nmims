@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_OTHER",
+  "summary": "SQL-like database schema for the Attendance App, including Students, Subjects, Sessions, Attendance, AdminActions, Settings, and Notifications tables.",
+  "updatedAt": "2025-12-11T13:39:48.728306Z"
+}

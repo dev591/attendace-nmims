@@ -1,0 +1,4 @@
+subject_id,code,name,semester,total_classes_T,credits
+SUB01,DS101,Data Structures,3,45,4
+SUB02,AL102,Algorithms,3,40,4
+SUB03,DB103,Database Systems,3,35,3

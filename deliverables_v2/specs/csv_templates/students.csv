@@ -1,0 +1,6 @@
+student_id,roll_no,name,email,program,year,dept
+S001,CS201,Dev Chalana,dev@nmims.edu,B.Tech CS-DS,2,CS
+S002,CS202,Aarav Patel,aarav@nmims.edu,B.Tech CS-DS,2,CS
+S003,CS203,Riya Sharma,riya@nmims.edu,B.Tech CS-DS,2,CS
+S004,CS204,Ishaan Gupta,ishaan@nmims.edu,B.Tech CS-DS,2,CS
+S005,CS205,Ananya Singh,ananya@nmims.edu,B.Tech CS-DS,2,CS

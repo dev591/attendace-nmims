@@ -1,0 +1,23 @@
+{
+    "mappings": {
+        "engineering": "C_ENG",
+        "eng": "C_ENG",
+        "btech": "C_ENG",
+        "computer science": "C_ENG",
+        "pharma": "C_PHARMA",
+        "pharmacy": "C_PHARMA",
+        "bpharm": "C_PHARMA",
+        "mba": "C_MBA",
+        "management": "C_MBA",
+        "business": "C_MBA"
+    },
+    "default_batches": {
+        "C_ENG": "2023",
+        "C_PHARMA": "2023",
+        "C_MBA": "2024"
+    },
+    "defaults": {
+        "course_id": "C_GEN_2023",
+        "min_attendance": 75
+    }
+}

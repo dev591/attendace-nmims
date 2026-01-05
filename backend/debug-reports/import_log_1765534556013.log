@@ -1,0 +1,16 @@
+[2025-12-12T10:15:56.013Z] [INFO] Starting import for: /Users/devchalana135/.gemini/antigravity/attendance/backend/uploads/nmims_master_import.xlsx
+[2025-12-12T10:15:56.041Z] [INFO] Parsed rows: Students=6, Subjects=5, Sessions=6, Attendance=10
+[2025-12-12T10:15:56.088Z] [WARN] Subject upsert error (SUB001): duplicate key value violates unique constraint "subjects_code_key"
+[2025-12-12T10:15:56.277Z] [WARN] Student upsert error (90032023): insert or update on table "students" violates foreign key constraint "students_course_id_fkey"
+[2025-12-12T10:15:56.342Z] [WARN] Student upsert error (90042023): insert or update on table "students" violates foreign key constraint "students_course_id_fkey"
+[2025-12-12T10:15:56.405Z] [WARN] Student upsert error (90052023): insert or update on table "students" violates foreign key constraint "students_course_id_fkey"
+[2025-12-12T10:15:56.467Z] [WARN] Student upsert error (90062023): insert or update on table "students" violates foreign key constraint "students_course_id_fkey"
+[2025-12-12T10:15:56.474Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.481Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.486Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.491Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.495Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.498Z] [WARN] Session upsert error: null value in column "end_time" of relation "sessions" violates not-null constraint
+[2025-12-12T10:15:56.535Z] [INFO] Running Verification...
+[2025-12-12T10:15:56.535Z] [INFO] Triggering Badge Evaluation...
+[2025-12-12T10:15:56.589Z] [INFO] Badge Eval Complete.

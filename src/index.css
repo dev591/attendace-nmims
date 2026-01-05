@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gray-50 text-gray-900 font-sans antialiased;
+        /* Clean background */
+        background: #F8F9FA;
+    }
+}
+
+@layer utilities {
+    .card-base {
+        @apply bg-white border border-gray-200 rounded-lg shadow-sm p-5 transition-shadow duration-200;
+    }
+
+    .card-hover {
+        @apply hover:shadow-md;
+    }
+
+    .btn-primary {
+        @apply bg-nmims-primary text-white hover:bg-red-700 transition items-center justify-center rounded-md px-4 py-2 font-medium;
+    }
+
+    .btn-secondary {
+        @apply bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition items-center justify-center rounded-md px-4 py-2 font-medium;
+    }
+
+    .input-field {
+        @apply bg-white border border-gray-300 text-gray-900 rounded-md px-4 py-2 focus:ring-1 focus:ring-nmims-primary focus:border-nmims-primary outline-none transition w-full;
+    }
+}
+/* ADDED BY ANTI-GRAVITY: Theme Styles */
+
+/* Engineering Theme */
+.theme-engineering {
+  background: linear-gradient(180deg, #071027 0%, #030814 100%);
+  color: #dfeeff;
+  min-height: 100vh;
+}
+
+.theme-engineering .glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 25px rgba(0, 229, 255, 0.05);
+  backdrop-filter: blur(10px) saturate(130%);
+  color: #dfeeff;
+}
+
+.theme-engineering .btn-accent {
+  background: linear-gradient(90deg, #00e5ff, #58fddb);
+  color: #021017;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s ease;
+}
+.theme-engineering .btn-accent:hover {
+  box-shadow: 0 0 15px rgba(0,229,255,0.4);
+  transform: translateY(-1px);
+}
+
+.theme-engineering .bg-blueprint {
+  background-image: radial-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.1;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Pharma Theme (Basic) */
+.theme-pharma {
+    background: #f1f8e9;
+    color: #1b5e20;
+}
+
+/* ADDED BY ANTI-GRAVITY: Refined Engineering Theme Overlay */
+.theme-engineering {
+  --accent: #00e5ff;
+  --accent2: #58fddb;
+  background: linear-gradient(180deg, #071027 0%, #030814 100%); /* Kept my gradient which is similar but ensure full height handled by min-h-screen */
+  color: #dfeeff;
+}
+.theme-engineering .glass-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px) saturate(130%);
+}
+.theme-engineering .blueprint-bg {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+      to right, rgba(0,229,255,0.06) 0, rgba(0,229,255,0.06) 1px, transparent 1px, transparent 30px
+    ),
+    repeating-linear-gradient(
+      to bottom, rgba(0,229,255,0.06) 0, rgba(0,229,255,0.06) 1px, transparent 1px, transparent 30px
+    );
+  pointer-events: none;
+  opacity: 0.08;
+  z-index: 0;
+}
