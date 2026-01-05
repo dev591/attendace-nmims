@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+
+# OS junk
+.DS_Store
+__MACOSX/
+
+# Logs
+*.log
+
+# Uploads / temp files
+uploads/
+
+# Zip files
+*.zip
