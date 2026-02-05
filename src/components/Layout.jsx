@@ -93,8 +93,11 @@ const Navbar = () => {
                             <NavLink to={`/student/${studentId}/portfolio`} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-medium">
                                 <Award size={20} className="text-slate-400" /> Portfolio
                             </NavLink>
-                            <NavLink to={`/student/${studentId}/network`} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-medium mb-4">
+                            <NavLink to={`/student/${studentId}/network`} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-medium">
                                 <Globe size={20} className="text-slate-400" /> Network
+                            </NavLink>
+                            <NavLink to={`/student/${studentId}/feed`} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-medium mb-4">
+                                <TrendingUp size={20} className="text-slate-400" /> Social Feed
                             </NavLink>
                             <NavLink to={`/student/${studentId}/lost-found`} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-medium mb-4">
                                 <Search size={20} className="text-slate-400" /> Lost & Found

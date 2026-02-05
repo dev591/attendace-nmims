@@ -10,6 +10,7 @@ import {
     Tooltip, ResponsiveContainer
 } from 'recharts';
 import DirectorHeatmaps from './DirectorHeatmaps';
+import config from '../../utils/config';
 
 export default function DirectorDashboard() {
     const { user } = useStore();

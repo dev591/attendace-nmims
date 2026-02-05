@@ -37,6 +37,7 @@ import AppealsDashboard from './pages/director/AppealsDashboard'; // ADDED BY AN
 import Achievements from './pages/Achievements'; // NEW - Student
 import DirectorVerify from './pages/director/DirectorVerify'; // NEW - Director
 import Portfolio from './pages/Portfolio'; // ADDED BY ANTI-GRAVITY
+import SocialFeed from './pages/SocialFeed'; // ADDED BY ANTI-GRAVITY
 import Network from './pages/Network'; // ADDED BY ANTI-GRAVITY
 import UserProfile from './pages/UserProfile'; // ADDED BY ANTI-GRAVITY
 import OnboardingWizard from './pages/OnboardingWizard'; // ADDED BY ANTI-GRAVITY
@@ -112,6 +113,7 @@ function App() {
                                                 <Route path="achievements" element={<Achievements />} />
                                                 <Route path="portfolio" element={<Portfolio />} />
                                                 <Route path="network" element={<Network />} />
+                                                <Route path="feed" element={<SocialFeed />} /> {/* NEW: Social Feed */}
                                                 <Route path="network/profile/:sapid" element={<UserProfile />} />
                                                 <Route path="lost-found" element={<LostFound />} /> {/* NEW */}
                                             </Route>

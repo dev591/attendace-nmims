@@ -4,8 +4,8 @@ import { useStore } from '../context/Store';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-    Clock, Calendar, BookOpen, AlertTriangle, CheckCircle,
-    TrendingUp, Award, Quote, ChevronRight, Zap, Target, Star, MapPin
+    Clock, Calendar, BookOpen, AlertTriangle,
+    TrendingUp, Award, ChevronRight, Zap, Target
 } from 'lucide-react';
 import ClassesTab from '../components/ClassesTab';
 import config from '../utils/config';
