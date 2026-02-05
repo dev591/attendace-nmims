@@ -1,5 +1,6 @@
 /* ADDED BY ANTI-GRAVITY */
 import React, { useEffect, useState } from 'react';
+import config from '../utils/config';
 
 export default function DataIntegrityBanner() {
     const [counts, setCounts] = useState({ students: null, sessions: null, attendance: null });
@@ -8,9 +9,9 @@ export default function DataIntegrityBanner() {
     useEffect(() => {
         if (!isDev) return;
         Promise.all([
-            fetch('http://localhost:4000/debug/counts/students').then(r => r.json()),
-            fetch('http://localhost:4000/debug/counts/sessions').then(r => r.json()),
-            fetch('http://localhost:4000/debug/counts/attendance').then(r => r.json())
+            fetch(`${config.API_URL}/debug/counts/students`).then(r => r.json()),
+            fetch(`${config.API_URL}/debug/counts/sessions`).then(r => r.json()),
+            fetch(`${config.API_URL}/debug/counts/attendance`).then(r => r.json())
         ]).then(([s, ses, att]) => {
             setCounts({ students: s.count, sessions: ses.count, attendance: att.count });
         }).catch(err => console.error("Integrity check failed", err));

@@ -4,7 +4,9 @@ import { Search, Filter, X, Phone, Mail, FileText, Award, ExternalLink, MessageC
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = 'http://localhost:4000';
+import config from '../../utils/config';
+
+const API_BASE = config.API_URL;
 
 export default function StudentsList() {
     const { user } = useStore();

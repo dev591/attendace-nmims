@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Upload, FileText, CheckCircle, AlertTriangle, AlertCircle, Calendar, Download, RefreshCw } from 'lucide-react';
 import Card from "../components/Card";
 import Button from "../components/Button";
+import config from '../utils/config';
 
 const AdminSchedule = () => {
     // Upload State
@@ -49,7 +50,7 @@ const AdminSchedule = () => {
         formData.append('file', file);
 
         try {
-            const res = await fetch('http://localhost:4000/admin/schedule/upload', {
+            const res = await fetch(`${config.API_URL}/admin/schedule/upload`, {
                 method: 'POST',
                 body: formData,
             });
@@ -72,7 +73,7 @@ const AdminSchedule = () => {
     const downloadTemplate = async () => {
         setDownloading(true);
         try {
-            const url = `http://localhost:4000/admin/schedule/template?program=${templateProg}&semester=${templateSem}`;
+            const url = `${config.API_URL}/admin/schedule/template?program=${templateProg}&semester=${templateSem}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error("Failed to generate");
 

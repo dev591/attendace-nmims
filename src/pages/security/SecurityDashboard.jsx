@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/Store';
 import { ShieldCheck, CheckCircle, AlertTriangle, MapPin, Clock, Search, AlertOctagon } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import config from '../../utils/config';
+
+const API_BASE = config.API_URL;
 
 const SecurityDashboard = () => {
     const { user } = useStore();

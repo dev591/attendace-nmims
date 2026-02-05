@@ -30,7 +30,7 @@ export default function DirectorDashboard() {
     const [loading, setLoading] = useState(true);
 
     const departments = ['All', 'Computer', 'IT', 'AI/DS', 'EXTC', 'Mechanical'];
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const API_URL = config.API_URL;
 
     // Fetch Data
     useEffect(() => {

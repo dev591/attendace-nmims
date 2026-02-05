@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, X, FileText, School, ExternalLink } from 'lucide-react';
+import config from '../../utils/config';
 
 const DirectorVerify = () => {
     const [requests, setRequests] = useState([]);
@@ -11,7 +12,7 @@ const DirectorVerify = () => {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/director/achievements/pending', {
+            const res = await fetch(`${config.API_URL}/director/achievements/pending`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setRequests(await res.json());
@@ -29,7 +30,7 @@ const DirectorVerify = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/director/achievement/verify', {
+            const res = await fetch(`${config.API_URL}/director/achievement/verify`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -8,6 +8,7 @@ import {
     TrendingUp, Award, Quote, ChevronRight, Zap, Target, Star, MapPin
 } from 'lucide-react';
 import ClassesTab from '../components/ClassesTab';
+import config from '../utils/config';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,7 +30,7 @@ const StudentDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/student/dashboard/stats', {
+            const res = await fetch(`${config.API_URL}/student/dashboard/stats`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.ok) setStats(await res.json());
@@ -40,7 +41,7 @@ const StudentDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const headers = { Authorization: `Bearer ${token}` };
-            const res = await fetch(`http://localhost:4000/notifications`, { headers });
+            const res = await fetch(`${config.API_URL}/notifications`, { headers });
             if (res.ok) {
                 const json = await res.json();
                 setNotifications(json.notifications);
@@ -55,7 +56,7 @@ const StudentDashboard = () => {
         if (!notif.is_read) {
             try {
                 const token = localStorage.getItem('token');
-                await fetch(`http://localhost:4000/notifications/${notif.id}/read`, {
+                await fetch(`${config.API_URL}/notifications/${notif.id}/read`, {
                     method: 'PUT',
                     headers: { Authorization: `Bearer ${token}` }
                 });

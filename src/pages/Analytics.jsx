@@ -8,8 +8,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import AppealModal from '../components/AppealModal';
+import config from '../utils/config';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = config.API_URL;
 
 const Analytics = () => {
     const { data, user } = useStore();

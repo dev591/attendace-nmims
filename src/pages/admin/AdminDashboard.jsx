@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Upload, FileText, CheckCircle, AlertCircle, Shield, LogOut } from 'lucide-react';
 import { useStore } from '../../context/Store';
 import { useNavigate } from 'react-router-dom';
+import config from '../../utils/config';
 
-const API_BASE = 'http://localhost:4000'; // Or use process.env.VITE_API_URL if configured, sticking to simple for now
+const API_BASE = config.API_URL;
 
 export default function AdminDashboard() {
     const { user, logout } = useStore();

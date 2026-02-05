@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { X, Phone, Mail, MapPin, Clock, Calendar, ShieldCheck, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import config from '../utils/config';
 
-const API_BASE = 'http://localhost:4000'; // Or import from config
+const API_BASE = config.API_URL;
 
 export default function FacultyProfileModal({ facultyId, onClose, token }) {
     const [data, setData] = useState(null);
@@ -69,8 +70,8 @@ export default function FacultyProfileModal({ facultyId, onClose, token }) {
                             {/* Live Badge */}
                             {!loading && data?.liveStatus && (
                                 <div className={`mb-3 px-4 py-2 rounded-xl flex items-center gap-2 text-xs font-bold shadow-lg border border-white/10 backdrop-blur-md ${data.liveStatus.state === 'BUSY'
-                                        ? 'bg-rose-500 text-white animate-pulse'
-                                        : 'bg-emerald-500 text-white'
+                                    ? 'bg-rose-500 text-white animate-pulse'
+                                    : 'bg-emerald-500 text-white'
                                     }`}>
                                     <Activity size={14} />
                                     {data.liveStatus.state === 'BUSY' ? 'BUSY NOW' : 'AVAILABLE'}

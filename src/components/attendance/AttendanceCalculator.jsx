@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStore } from '../../context/Store';
 import { Calculator, ArrowRight, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import config from '../../utils/config';
 
 const AttendanceCalculator = () => {
     const { data, user } = useStore();
@@ -37,7 +38,7 @@ const AttendanceCalculator = () => {
 
         try {
             // STRICT AUTH: Do not send SAPID manualy. Use Token.
-            const res = await fetch('http://localhost:4000/student/attendance-calculator', {
+            const res = await fetch(`${config.API_URL}/student/attendance-calculator`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

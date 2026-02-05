@@ -3,7 +3,9 @@ import { useStore } from '../../context/Store';
 import { Mail, Phone, Search, SlidersHorizontal, UserCheck } from 'lucide-react';
 import FacultyProfileModal from '../../components/FacultyProfileModal';
 
-const API_BASE = 'http://localhost:4000';
+import config from '../../utils/config';
+
+const API_BASE = config.API_URL;
 
 export default function FacultyList() {
     const { user } = useStore();

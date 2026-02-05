@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Shield, FileText, CheckCircle, Search, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useStore } from '../../context/Store';
+import config from '../../utils/config';
 
 const SystemAudit = () => {
     const { user } = useStore();
@@ -16,7 +17,7 @@ const SystemAudit = () => {
     const fetchLogs = async () => {
         setLoading(true);
         try {
-            let url = 'http://localhost:4000/director/audit-logs';
+            let url = `${config.API_URL}/director/audit-logs`;
             if (filter !== 'all') url += `?type=${filter}`;
 
             const res = await fetch(url, {

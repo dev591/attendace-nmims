@@ -3,7 +3,9 @@ import { useStore } from '../context/Store';
 import { Search, MapPin, Camera, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API_BASE = 'http://localhost:4000';
+import config from '../utils/config';
+
+const API_BASE = config.API_URL;
 
 const LostFound = () => {
     const { user } = useStore();
@@ -97,8 +99,8 @@ const LostFound = () => {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${activeTab === tab
-                                        ? 'bg-slate-900 text-white shadow-md'
-                                        : 'text-slate-500 hover:bg-slate-50'
+                                    ? 'bg-slate-900 text-white shadow-md'
+                                    : 'text-slate-500 hover:bg-slate-50'
                                     }`}
                             >
                                 {tab === 'feed' && 'Campus Feed'}
@@ -227,8 +229,8 @@ const LostFound = () => {
                                         <div className="text-xs text-slate-500 mt-1">Reported on {new Date(item.created_at).toLocaleDateString()}</div>
                                     </div>
                                     <div className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase ${item.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                            item.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                                'bg-amber-100 text-amber-700'
+                                        item.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                            'bg-amber-100 text-amber-700'
                                         }`}>
                                         {item.status}
                                     </div>

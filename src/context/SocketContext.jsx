@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useStore } from './Store';
+import config from '../utils/config';
 
 const SocketContext = createContext();
 
@@ -14,7 +15,7 @@ export const SocketProvider = ({ children }) => {
         if (user && user.token) {
             // Initialize Socket
             // Query params: sapid and role for room joining
-            const newSocket = io('http://localhost:4000', {
+            const newSocket = io(config.API_URL, {
                 query: {
                     sapid: user.sapid,
                     role: user.role

@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/Store';
 import { Megaphone, Send } from 'lucide-react';
+import config from '../../utils/config';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = config.API_URL;
 
 export default function Announcements() {
     const { user } = useStore();

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../context/Store';
 import { useSocket } from '../context/SocketContext';
 import { useNavigate } from 'react-router-dom';
+import config from '../utils/config';
 
 const NotificationBell = () => {
     const { user } = useStore();
@@ -43,7 +44,7 @@ const NotificationBell = () => {
             // Fetch from new Notification Engine
             // Use user.sapid if available, fallback to user.student_id
             const idToUse = user.sapid || user.student_id;
-            const res = await fetch(`http://localhost:4000/notifications`, {
+            const res = await fetch(`${config.API_URL}/notifications`, {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
             // Wait, route was mounted in student_safe.js. Where is student_safe mounted?
@@ -55,7 +56,7 @@ const NotificationBell = () => {
             // Let me verify mount point.
             // Assuming root based on existing snapshot code usage in other files.
 
-            const resReal = await fetch(`http://localhost:4000/student/${idToUse}/notifications`, {
+            const resReal = await fetch(`${config.API_URL}/student/${idToUse}/notifications`, {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
 

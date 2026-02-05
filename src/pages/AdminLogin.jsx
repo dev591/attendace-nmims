@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import { Shield, Lock, AlertCircle } from 'lucide-react';
 import { useStore } from '../context/Store';
+import config from '../utils/config';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            const res = await fetch('http://localhost:4000/auth/admin/login', {
+            const res = await fetch(`${config.API_URL}/auth/admin/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password })

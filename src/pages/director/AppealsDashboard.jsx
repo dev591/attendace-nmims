@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useStore } from '../../context/Store';
 import { motion } from 'framer-motion';
 import { FileText, Check, X, Filter, Search, School } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import config from '../../utils/config';
+
 
 
 const AppealsDashboard = () => {
@@ -16,7 +17,7 @@ const AppealsDashboard = () => {
     const fetchAppeals = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/director/appeals', {
+            const res = await fetch(`${config.API_URL}/director/appeals`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -40,7 +41,7 @@ const AppealsDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:4000/director/update-appeal', {
+            const res = await fetch(`${config.API_URL}/director/update-appeal`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

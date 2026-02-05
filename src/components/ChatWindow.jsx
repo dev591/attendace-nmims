@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, X, MoreVertical, CheckCircle, Clock } from 'lucide-react';
 import { useStore } from '../context/Store';
+import config from '../utils/config';
 
 const ChatWindow = ({ friend, onClose }) => {
     const { user } = useStore();
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState("");
     const messagesEndRef = useRef(null);
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const API_URL = config.API_URL;
 
     // Poll for messages every 2 seconds
     useEffect(() => {

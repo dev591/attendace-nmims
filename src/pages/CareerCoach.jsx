@@ -5,7 +5,9 @@ import { Send, CheckCircle, Circle, RefreshCw, Bot, User, Sparkles, Lock } from 
 import { useStore } from '../context/Store';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import config from '../utils/config';
+
+const API_URL = config.API_URL;
 
 const CareerCoach = ({ compact = false }) => {
     const { user } = useStore();

@@ -7,6 +7,8 @@ import {
 import { useParams } from 'react-router-dom';
 import ChatWindow from '../components/ChatWindow';
 
+import config from '../utils/config';
+
 const UserProfile = () => {
     const { user } = useStore();
     const { sapid } = useParams(); // Public param
@@ -14,7 +16,7 @@ const UserProfile = () => {
     const [loading, setLoading] = useState(true);
     const [showChat, setShowChat] = useState(false);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const API_URL = config.API_URL;
 
     const fetchProfile = async () => {
         try {
@@ -147,7 +149,7 @@ const UserProfile = () => {
                                     <span className="px-3 py-1.5">{skill.skill_name}</span>
                                     <button
                                         onClick={async () => {
-                                            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+                                            const API_URL = config.API_URL;
                                             await fetch(`${API_URL}/network/endorse`, {
                                                 method: 'POST',
                                                 headers: {

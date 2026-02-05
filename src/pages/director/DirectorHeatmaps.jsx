@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Users, AlertTriangle } from 'lucide-react';
 
+import config from '../../utils/config';
+
 export default function DirectorHeatmaps() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,7 +12,7 @@ export default function DirectorHeatmaps() {
         // Fetch real data
         const fetchData = async () => {
             try {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+                const API_URL = config.API_URL;
                 const sessionStr = localStorage.getItem('attendance_session');
                 const token = sessionStr ? JSON.parse(sessionStr).token : null;
 

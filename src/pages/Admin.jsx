@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import { Upload, CheckCircle, AlertTriangle, FileText, Lock, Users, LogOut, Database, BookOpen, Calendar } from 'lucide-react';
 import DataIntegrityBanner from '../components/DataIntegrityBanner';
+import config from '../utils/config';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -30,8 +31,8 @@ const Admin = () => {
 
     const fetchStats = async () => {
         try {
-            const sRes = await fetch('http://localhost:4000/debug/counts/students');
-            const sessRes = await fetch('http://localhost:4000/debug/counts/sessions');
+            const sRes = await fetch(`${config.API_URL}/debug/counts/students`);
+            const sessRes = await fetch(`${config.API_URL}/debug/counts/sessions`);
             const sJson = await sRes.json();
             const sessJson = await sessRes.json();
             setStats({ students: sJson.count, sessions: sessJson.count });
@@ -53,7 +54,7 @@ const Admin = () => {
         formData.append('pw', password);
 
         try {
-            const res = await fetch('http://localhost:4000/import/upload', {
+            const res = await fetch(`${config.API_URL}/import/upload`, {
                 method: 'POST',
                 headers: { 'x-admin-pw': password },
                 body: formData
@@ -82,9 +83,9 @@ const Admin = () => {
         setPurgeReport(null);
 
         let url = '';
-        if (confirmType === 'demo') url = 'http://localhost:4000/admin/students/purge-all';
-        if (confirmType === 'schedule') url = 'http://localhost:4000/admin/schedule/purge';
-        if (confirmType === 'curriculum') url = 'http://localhost:4000/admin/curriculum/purge';
+        if (confirmType === 'demo') url = `${config.API_URL}/admin/students/purge-all`;
+        if (confirmType === 'schedule') url = `${config.API_URL}/admin/schedule/purge`;
+        if (confirmType === 'curriculum') url = `${config.API_URL}/admin/curriculum/purge`;
 
         try {
             const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
@@ -219,7 +220,7 @@ const Admin = () => {
                                         const f = e.target.files[0];
                                         if (!f) return;
                                         const fd = new FormData(); fd.append('file', f); fd.append('pw', password);
-                                        fetch('http://localhost:4000/import/curriculum', { method: 'POST', body: fd, headers: { 'x-admin-pw': password } })
+                                        fetch(`${config.API_URL}/import/curriculum`, { method: 'POST', body: fd, headers: { 'x-admin-pw': password } })
                                             .then(r => r.json())
                                             .then(d => {
                                                 if (d.ok) {

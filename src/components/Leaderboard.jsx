@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Star, Crown, Zap, BookOpen, Code } from 'lucide-react';
 import { useStore } from '../context/Store';
+import config from '../utils/config';
 
 export default function Leaderboard() {
     const { user } = useStore();
@@ -17,7 +18,7 @@ export default function Leaderboard() {
             if (!user?.token) return;
             setLoading(true);
             try {
-                const API_URL = 'http://localhost:4000';
+                const API_URL = config.API_URL;
                 const deptQuery = filterDept === 'All' ? '' : `&dept=${filterDept}`;
                 const res = await fetch(`${API_URL}/student/leaderboard?category=${category}${deptQuery}`, {
                     headers: { 'Authorization': `Bearer ${user.token}` }
@@ -75,8 +76,8 @@ export default function Leaderboard() {
                         key={tab.id}
                         onClick={() => setCategory(tab.id)}
                         className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${category === tab.id
-                                ? 'bg-white shadow-sm text-indigo-600 scale-105'
-                                : 'text-slate-400 hover:text-slate-600'
+                            ? 'bg-white shadow-sm text-indigo-600 scale-105'
+                            : 'text-slate-400 hover:text-slate-600'
                             }`}
                     >
                         <tab.icon size={12} /> {tab.label}
