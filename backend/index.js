@@ -58,6 +58,23 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app); // WRAP EXPRESS
 
+// ANTI-GRAVITY: Ensure Runtime Directories Exist (Fix for Render/Multer)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+try {
+    const dirs = ['uploads', 'debug-reports'];
+    dirs.forEach(dir => {
+        const dirPath = path.join(__dirname, dir);
+        if (!fs.existsSync(dirPath)) {
+            console.log(`[STARTUP] Creating directory: ${dirPath}`);
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+    });
+} catch (e) {
+    console.error("[STARTUP] Directory creation failed:", e);
+}
+
 // Init Socket
 socketService.init(server);
 // Init Queue Workers
