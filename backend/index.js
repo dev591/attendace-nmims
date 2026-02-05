@@ -63,24 +63,42 @@ socketService.init(server);
 // Init Queue Workers
 startWorkers(); // Start consumers
 
-// Redis Setup (Optional)
+// Redis Setup
 let redis = null;
+const redisUrl = process.env.REDIS_URL;
+
+console.log(`[REDIS] Initializing Client... Source: ${redisUrl ? 'REDIS_URL (External)' : 'Localhost (Fallback)'}`);
+
 try {
-    redis = new Redis(process.env.REDIS_URL || {
-        host: process.env.REDIS_HOST || '127.0.0.1',
-        port: process.env.REDIS_PORT || 6379,
-        lazyConnect: true,
-        showFriendlyErrorStack: true
-    });
+    if (redisUrl) {
+        redis = new Redis(redisUrl, {
+            lazyConnect: true,
+            showFriendlyErrorStack: true,
+            maxRetriesPerRequest: null
+        });
+    } else {
+        redis = new Redis({
+            host: process.env.REDIS_HOST || '127.0.0.1',
+            port: process.env.REDIS_PORT || 6379,
+            lazyConnect: true,
+            showFriendlyErrorStack: true,
+            maxRetriesPerRequest: null // Required for BullMQ reuse
+        });
+    }
+
+    redis.on('connect', () => console.log('[REDIS] Connection Established to ' + (redisUrl ? 'Cloud' : 'Local')));
     redis.on('error', (err) => {
         if (err.code === 'ECONNREFUSED') {
-            // Suppress connection refused logs if Redis is down (Optional mode)
+            console.error('[REDIS] Connection Refused - Check Connection String or Firewall');
         } else {
             console.warn('[REDIS] Error:', err.message);
         }
     });
+
+    // Attempt Initial Connection
     redis.connect().catch(() => console.log("[REDIS] Cache Disabled (Connection Failed)"));
-} catch (e) { console.log("[REDIS] Client Init Failed"); }
+
+} catch (e) { console.log("[REDIS] Client Init Failed", e.message); }
 
 app.use(compression()); // Gzip
 app.use(helmet({

@@ -4,10 +4,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const connection = process.env.REDIS_URL ? process.env.REDIS_URL : {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-};
+// CONNECTION
+import IORedis from 'ioredis';
+
+const connection = process.env.REDIS_URL
+    ? new IORedis(process.env.REDIS_URL, { maxRetriesPerRequest: null })
+    : new IORedis({
+        host: process.env.REDIS_HOST || 'localhost',
+        port: process.env.REDIS_PORT || 6379,
+        maxRetriesPerRequest: null
+    });
+
+console.log(`[WORKER] Redis Target: ${process.env.REDIS_URL ? 'Cloud' : 'Local'}`);
 
 // --- Processors ---
 const emailProcessor = async (job) => {
