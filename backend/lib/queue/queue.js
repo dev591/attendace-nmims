@@ -1,12 +1,13 @@
 
 import { Queue } from 'bullmq';
 import dotenv from 'dotenv';
+import IORedis from 'ioredis'; // Explicit Import
 
 dotenv.config();
 
 // 1. Singleton Redis Connection logic for Queues
 const redisConfig = process.env.REDIS_URL
-    ? { connection: new Queue.Redis(process.env.REDIS_URL, { maxRetriesPerRequest: null }) }
+    ? { connection: new IORedis(process.env.REDIS_URL, { maxRetriesPerRequest: null }) }
     : {
         connection: {
             host: process.env.REDIS_HOST || 'localhost',
