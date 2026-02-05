@@ -1,4 +1,5 @@
-session_id,student_sapid,present
-S100,70012023,true
-S101,70012023,false
-S102,70012023,true
+session_id,student_id,present,marked_at
+SESS_E1,S100,true,2025-01-10 10:05
+SESS_E2,S100,true,2025-01-11 10:05
+SESS_E1,S103,false,2025-01-10 10:05
+SESS_P1,S101,true,2025-01-10 09:05

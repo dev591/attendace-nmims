@@ -59,23 +59,36 @@ export async function importTimetable(filePath) {
 
                 // 4. VALIDATE AGAINST CURRICULUM (Strict Timetable Rule)
                 // The subject MUST exist in the curriculum for this program/branch
-                // We trust 'subject_code' is the PK in 'subjects' table, 
-                // AND it must link to 'curriculum' for this batch.
 
-                // Key format: engineering-ds
-                const curriculumKey = `${prog}-${br}`;
+                // Construct KEYS
+                const strictKey = `${prog}-${br}`; // e.g. engineering-ds
+                const commonKey = prog;            // e.g. engineering
 
-                const currCheck = await client.query(`
+                // Try Strict First
+                let currCheck = await client.query(`
                     SELECT 1 FROM curriculum 
                     WHERE program = $1 
                       AND year = $2 
                       AND semester = $3 
                       AND subject_code = $4
-                `, [curriculumKey, year, sem, subjectCode]);
+                `, [strictKey, year, sem, subjectCode]);
 
                 if (currCheck.rowCount === 0) {
-                    // Check if subject exists at all?
-                    throw new Error(`Subject '${subjectCode}' is NOT in curriculum for ${curriculumKey} Y${year}S${sem}. Add to curriculum first.`);
+                    // Try Common Fallback (e.g. for Engineering 1st Year)
+                    const commonCheck = await client.query(`
+                        SELECT 1 FROM curriculum 
+                        WHERE program = $1 
+                        AND year = $2 
+                        AND semester = $3 
+                        AND subject_code = $4
+                    `, [commonKey, year, sem, subjectCode]);
+
+                    if (commonCheck.rowCount > 0) {
+                        // Found in common!
+                        // console.log(`[TIMETABLE] Subject '${subjectCode}' found in Common Curriculum (${commonKey}).`);
+                    } else {
+                        throw new Error(`Subject '${subjectCode}' is NOT in curriculum for ${strictKey} OR ${commonKey} Y${year}S${sem}. Add to curriculum first.`);
+                    }
                 }
 
                 // 5. INSERT CLASS SESSION

@@ -22,12 +22,13 @@ export const query = async (text, params) => {
   try {
     return await pool.query(text, params);
   } catch (err) {
-    console.error(`[DB SAFETY GUARD] Query failed: ${err.message}`);
+    console.error(`[DB SAFETY GUARD] Query failed:`, err);
     // Return empty safe result to prevent crash
     return {
       rows: [],
       rowCount: 0,
-      __db_unavailable: true
+      __db_unavailable: true,
+      error: err.message // EXPOSE ERROR FOR DEBUGGING
     };
   }
 };

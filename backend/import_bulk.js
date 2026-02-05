@@ -42,11 +42,19 @@ const importBulk = async () => {
         // 3. Import Subjects
         const subjects = readCsv('subjects.csv');
         for (const row of subjects) {
-            await client.query(`
-                INSERT INTO subjects (subject_id, code, name, credits)
-                VALUES ($1, $2, $3, $4)
-                ON CONFLICT (subject_id) DO UPDATE SET code=$2, name=$3, credits=$4
-            `, [row.subject_id, row.code, row.name, parseInt(row.credits) || 3]);
+            try {
+                await client.query(`
+                    INSERT INTO subjects (subject_id, code, name, credits)
+                    VALUES ($1, $2, $3, $4)
+                    ON CONFLICT (subject_id) DO UPDATE SET code=$2, name=$3, credits=$4
+                `, [row.subject_id, row.code, row.name, parseInt(row.credits) || 3]);
+            } catch (err) {
+                if (err.code === '23505') { // Unique violation (likely status code)
+                    console.warn(`⚠️ Skipped duplicate subject code: ${row.code}`);
+                } else {
+                    throw err;
+                }
+            }
         }
         console.log(`📚 Subjects imported: ${subjects.length}`);
 
@@ -68,17 +76,24 @@ const importBulk = async () => {
             // If sapid provided, ensure uniqueness.
             if (!row.sapid) continue;
 
-            await client.query(`
-                INSERT INTO students (student_id, sapid, password_hash, name, email, program, year, dept, course_id)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-                ON CONFLICT (student_id) DO UPDATE SET 
-                    sapid=$2, 
-                    name=$4, email=$5, program=$6, year=$7, dept=$8, course_id=$9,
-                    password_hash = CASE WHEN EXCLUDED.password_hash IS NOT NULL AND EXCLUDED.password_hash <> '' THEN EXCLUDED.password_hash ELSE students.password_hash END
-             `, [
-                row.student_id, row.sapid, row.password_hash, row.name, row.email,
-                row.program, parseInt(row.year), row.dept, row.course_id || null
-            ]);
+            try {
+                await client.query(`
+                    INSERT INTO students (student_id, sapid, password_hash, name, email, program, year, dept, course_id, semester)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    ON CONFLICT (student_id) DO UPDATE SET 
+                        sapid=$2, 
+                        name=$4, email=$5, program=$6, year=$7, dept=$8, course_id=$9, semester=$10,
+                        password_hash = CASE WHEN EXCLUDED.password_hash IS NOT NULL AND EXCLUDED.password_hash <> '' THEN EXCLUDED.password_hash ELSE students.password_hash END
+                 `, [
+                    row.student_id, row.sapid, row.password_hash, row.name, row.email,
+                    row.program, parseInt(row.year), row.dept, row.course_id || null,
+                    parseInt(row.semester) || 1
+                ]);
+            } catch (err) {
+                if (err.code === '23505') { // Unique violation (legacy SAPID or Email collision)
+                    console.warn(`⚠️ Skipped duplicate student: ${row.sapid} / ${row.email}`);
+                } else { throw err; }
+            }
 
             // Auto-Enroll based on course_id
             if (row.course_id) {

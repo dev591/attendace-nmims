@@ -3,13 +3,14 @@ import { getSession, setSession, clearSession } from '../lib/session';
 
 const StoreContext = createContext();
 
-const API_BASE = 'http://localhost:4000'; // Real Backend
+
 
 export const StoreProvider = ({ children }) => {
     // Init User from Session
     const [user, setUser] = useState(() => {
         const s = getSession();
-        return s.token ? { name: s.user_name, id: s.student_id, role: 'student', token: s.token } : null;
+        // ANTI-GRAVITY: Read role from session
+        return s.token ? { name: s.user_name, id: s.student_id, role: s.role || 'student', token: s.token } : null;
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -28,42 +29,50 @@ export const StoreProvider = ({ children }) => {
     const fetchData = useCallback(async () => {
         if (!user || !user.token) return;
 
+        if (user.role === 'director' || user.role === 'admin') return;
+
         setIsLoading(true);
         try {
-            console.log("Fetching dashboard data for", user.id);
+            // BACKEND INTEGRATION
+            console.log("[STORE] Fetching Dashboard Data from Backend...");
+            const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
 
-            // ANTI-GRAVITY FIX: Use /snapshot endpoint which is verified to work with the updated subject logic.
-            // Using user.id (e.g. S90030770) is correct for this endpoint too.
-            const res = await fetch(`${API_BASE}/student/${user.id}/snapshot`, {
-                headers: { 'Authorization': `Bearer ${user.token}` }
+            const res = await fetch(`${API_URL}/student/${user.id}/dashboard`, {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
             });
 
-            if (!res.ok) {
-                if (res.status === 401 || res.status === 403) logout();
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
+            if (!res.ok) throw new Error("Failed to fetch dashboard data");
 
-            const json = await res.json();
+            const dashData = await res.json();
 
-            // Extract Badges
-            // Snapshot returns 'badges' array directly at root, or inside analytics
-            const badges = json.badges || [];
+            // Map Backend Data structure to Frontend Store
+            // Backend returns: { currentUser, subjects, timetable, analytics, notifications... }
 
             setData(prev => ({
                 ...prev,
-                // MAP snapshot 'student' -> Store 'currentUser'
-                currentUser: { ...json.student, badges },
-                subjects: json.subjects || [],
-                timetable: json.timetable || [],
-                notifications: json.notifications || [],
-                upcoming_events: json.upcoming_events || [],
-                analytics: json.analytics || {},
-                weighted_pct: json.analytics?.weighted_pct || 0,
-                safe_miss_suggestions: json.safe_miss_suggestions || []
+                currentUser: dashData.currentUser,
+                subjects: dashData.subjects || [],
+                timetable: dashData.timetable || [],
+                notifications: dashData.notifications || [],
+                upcoming_events: dashData.upcoming_events || [],
+                analytics: dashData.analytics || {
+                    risk_summary: {
+                        heroStatus: 'NO_DATA',
+                        heroMsg: 'Waiting for attendance updates...',
+                        overallPct: 0,
+                        safeSubjects: 0,
+                        atRiskSubjects: 0,
+                        healthLabel: 'Neutral'
+                    }
+                }
             }));
             setError(null);
+            console.log("[STORE] Data Hydrated Successfully");
+
         } catch (err) {
-            console.error("Dashboard Fetch Error:", err);
+            console.error("Backend Fetch Error:", err);
             setError(err.message);
         } finally {
             setIsLoading(false);
@@ -77,13 +86,18 @@ export const StoreProvider = ({ children }) => {
 
     // Actions
     const login = (userData) => {
-        // userData: { name, student_id, token, sapid ... }
-        const u = { name: userData.name, id: userData.student_id, role: 'student', token: userData.token };
+        // userData: { name, sapid, role, token, ... }
+        // ANTI-GRAVITY: Respect role from backend
+        const role = userData.role || 'student';
+        const id = userData.sapid; // Use SAPID as ID for routing
+
+        const u = { name: userData.name, id, role, token: userData.token };
         setUser(u);
         setSession({
             token: userData.token,
-            student_id: userData.student_id,
-            user_name: userData.name
+            student_id: id,
+            user_name: userData.name,
+            role: role // Save role to session
         });
     };
 

@@ -1,0 +1,17 @@
+
+// ... 
+// Inside /auth/login
+        // Return Token + User Data
+        res.json({
+            token,
+            user: {
+                sapid: student.sapid, // Ensure this matches frontend 'student_id' expectation if needed, but 'sapid' is safer
+                student_id: student.sapid, // DOUBLE DOWN: Send both to be sure
+                name: student.name,
+                role: student.role, // Explicitly send what currently exists in DB
+                program: student.program,
+                year: student.year
+            },
+            role: student.role // Send at root level too for safety
+        });
+// ...

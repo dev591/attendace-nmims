@@ -1,249 +1,357 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+
+import React, { useState, useLayoutEffect, useRef } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useStore } from '../context/Store';
-import { ShieldCheck, User, Lock, Loader2, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ShieldCheck, User, Lock, Loader2, ArrowLeft, ArrowRight, CheckCircle, BarChart2, Briefcase, Users, Zap, Globe, Bot, Sparkles, Target, Award } from 'lucide-react';
+import HeroBG from '../assets/hero_bg.png';
+import NMIMSLogo from '../assets/nmims_logo.png';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
     const navigate = useNavigate();
     const { login } = useStore();
+    const [searchParams] = useSearchParams();
+
+    // Default to 'director' if ?mode=director is in URL, else 'student'
+    const [loginType, setLoginType] = useState(searchParams.get('mode') === 'director' ? 'director' : 'student');
+
     const [loading, setLoading] = useState(false);
     const [sapid, setSapid] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [isShaking, setIsShaking] = useState(false);
 
-    // Floating Label Helpers
-    const [focusedField, setFocusedField] = useState(null);
-    const isFieldActive = (val) => val && val.length > 0;
+    const containerRef = useRef(null);
+
+    // --- ANIMATIONS ---
+    useLayoutEffect(() => {
+        let ctx = gsap.context(() => {
+            const tl = gsap.timeline();
+
+            // 1. Initial State
+            gsap.set(".login-card", { y: 100, opacity: 0, rotateX: 10 });
+            gsap.set(".hero-text", { y: 50, opacity: 0 });
+
+            // 2. Entrance
+            tl.to(".login-card", {
+                y: 0,
+                rotateX: 0,
+                opacity: 1,
+                duration: 1.2,
+                ease: "power3.out"
+            });
+
+            tl.to(".hero-text", {
+                y: 0,
+                opacity: 1,
+                stagger: 0.2,
+                duration: 1,
+                ease: "power2.out"
+            }, "-=0.8");
+
+            // Scroll Animations for Sections
+            gsap.utils.toArray('.showcase-section').forEach(section => {
+                gsap.from(section, {
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                    },
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.out"
+                });
+            });
+
+        }, containerRef);
+        return () => ctx.revert();
+    }, []);
 
     async function handleLogin(e) {
         if (e) e.preventDefault();
         setError("");
-        setIsShaking(false);
 
-        if (!sapid || !password) {
-            setError("Please enter both SAP ID and Password");
-            setIsShaking(true);
-            return;
+        let payloadSapid = sapid;
+        if (loginType === 'director') {
+            payloadSapid = 'DIRECTOR';
+            if (!password) return setError("Please enter password");
+        } else {
+            if (!sapid || !password) return setError("Please enter SAP ID and Password");
         }
 
         setLoading(true);
 
         try {
-            localStorage.removeItem("token");
-            localStorage.removeItem("student_id");
-            localStorage.removeItem("user_name");
-        } catch (e) { }
-
-        const body = { sapid, password };
-
-        try {
-            console.log("[FRONTEND DEBUG] Attempting login with", body.sapid);
-            const res = await fetch("http://localhost:4000/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
+            const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sapid: payloadSapid, password })
             });
 
-            let data;
-            try {
-                data = await res.json();
-            } catch (err) {
-                setError("Invalid server response");
-                setLoading(false);
-                setIsShaking(true);
-                return;
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Login failed");
 
-            console.log("[FRONTEND DEBUG] login response:", res.status, data);
+            login({
+                name: data.user.name,
+                student_id: data.user.sapid,
+                token: data.token,
+                sapid: data.user.sapid,
+                role: data.role || 'student'
+            });
 
-            if (!res.ok) {
-                const msg = data && data.error ? data.error : `Login failed (status ${res.status})`;
-                setError(msg);
-                setLoading(false);
-                setIsShaking(true);
-                return;
-            }
+            gsap.to(".login-card", { scale: 0.9, opacity: 0, y: -50, duration: 0.5 });
+            setTimeout(() => {
+                if (data.role === 'director') navigate('/director', { replace: true });
+                else if (data.role === 'admin') navigate('/admin/dashboard', { replace: true });
+                else navigate('/student/' + data.user.sapid, { replace: true });
+            }, 500);
 
-            if (data.error || !data.token) {
-                setError(data.error || "Login failed: no token returned");
-                setLoading(false);
-                setIsShaking(true);
-                return;
-            }
-
-            // Success Animation wait? No, instant feel is better, maybe tiny delay for pure aesthetics
-            await new Promise(r => setTimeout(r, 600)); // Just 600ms to show the success state
-
-            try {
-                login({
-                    token: data.token,
-                    student_id: data.student_id,
-                    name: data.name
-                });
-                navigate(`/student/${data.student_id}`);
-            } catch (navErr) {
-                console.error("Navigation/State Error:", navErr);
-                alert("Critical Error during redirect: " + navErr.message);
-            }
         } catch (err) {
-            console.error("Login fetch error", err);
-            setError("Connection failed. Is backend running?");
+            console.error(err);
+            setError(err.message || "Login failed. Check Credentials.");
             setLoading(false);
-            setIsShaking(true);
+            gsap.to(".login-card", { x: [-5, 5, -5, 5, 0], duration: 0.4, ease: "none" });
         }
     }
 
+    const toggleMode = () => {
+        setLoginType(prev => prev === 'student' ? 'director' : 'student');
+        setError(""); setSapid(""); setPassword("");
+    };
+
     return (
-        <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-4 relative overflow-hidden font-sans">
-            {/* Background Ambience */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] bg-red-50/50 rounded-full blur-[100px] opacity-60 animate-pulse-slow"></div>
-                <div className="absolute top-[40%] -right-[10%] w-[50vw] h-[50vw] bg-gray-100/50 rounded-full blur-[80px] opacity-40"></div>
-                <div className="absolute bottom-0 w-full h-[50vh] bg-gradient-to-t from-white via-transparent to-transparent"></div>
+        <div ref={containerRef} className="bg-white overflow-x-hidden font-sans text-slate-900">
+
+            {/* HER0 SECTION */}
+            <div className="relative min-h-screen w-full flex flex-col md:flex-row items-center justify-center p-6 md:p-20 bg-slate-50">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-red-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                    <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-600/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                </div>
+
+                {/* Left Content */}
+                <div className="relative z-10 w-full md:w-1/2 space-y-8 mb-12 md:mb-0 md:pr-12">
+                    <div className="hero-text">
+                        {/* BIG LOGO */}
+                        <img src={NMIMSLogo} alt="NMIMS" className="h-32 object-contain mb-8 drop-shadow-md" />
+                    </div>
+
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight hero-text text-slate-900">
+                        The Future of <br />
+                        <span className="text-red-700">Student Success</span>
+                    </h1>
+                    <p className="text-xl text-slate-600 max-w-lg hero-text font-medium leading-relaxed">
+                        Your all-in-one portal for attendance, advanced analytics, and AI-powered career growth.
+                    </p>
+                    <div className="flex gap-4 pt-4 hero-text">
+                        <span className="px-5 py-2.5 rounded-full bg-red-50 text-red-700 text-sm font-bold flex items-center gap-2 border border-red-100 shadow-sm">
+                            <Bot size={18} /> AI Coach
+                        </span>
+                        <span className="px-5 py-2.5 rounded-full bg-slate-100 text-slate-700 text-sm font-bold flex items-center gap-2 border border-slate-200 shadow-sm">
+                            <Users size={18} /> Alumni Network
+                        </span>
+                    </div>
+                </div>
+
+                {/* Right Login Card */}
+                <div className="relative z-10 w-full md:w-1/2 max-w-md">
+                    <div className={`login-card bg-white border ${loginType === 'director' ? 'border-red-500' : 'border-slate-200'} shadow-2xl rounded-3xl p-8 md:p-10 relative`}>
+                        {/* Decorative Red Line */}
+                        <div className="absolute top-0 left-0 w-full h-2 bg-red-600 rounded-t-3xl"></div>
+
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2 text-center mt-2">
+                            {loginType === 'director' ? 'Director Portal' : 'Student Login'}
+                        </h2>
+                        <p className="text-center text-slate-500 text-sm mb-6">
+                            Sign in with your University Credentials
+                        </p>
+
+                        <form onSubmit={handleLogin} className="space-y-5">
+                            {loginType !== 'director' && (
+                                <div>
+                                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">SAP ID</label>
+                                    <input
+                                        type="text"
+                                        value={sapid}
+                                        onChange={(e) => setSapid(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all font-medium"
+                                        placeholder="Enter SAP ID"
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all font-medium"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg flex items-center gap-2 font-medium">
+                                    <ShieldCheck size={16} /> {error}
+                                </div>
+                            )}
+
+                            <button type="submit" disabled={loading} className="w-full font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20 hover:shadow-red-600/40">
+                                {loading ? <Loader2 className="animate-spin" size={20} /> : "Sign In"}
+                            </button>
+                        </form>
+                        <button onClick={toggleMode} className="w-full text-center text-xs text-slate-400 mt-6 hover:text-red-600 font-medium transition-colors">
+                            Switch to {loginType === 'director' ? 'Student' : 'Director'} Login
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-full max-w-[420px] relative z-10 perspective-1000"
-            >
-                {/* Shake Wrapper */}
-                <motion.div
-                    animate={isShaking ? { x: [-10, 10, -10, 10, 0] } : {}}
-                    transition={{ duration: 0.4 }}
-                    className="bg-white/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white/60 p-8 md:p-10 relative overflow-hidden ring-1 ring-black/5"
-                >
-                    {/* Top Accent Gradient */}
-                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-500"></div>
+            {/* STATS TICKER (Red Brand) */}
+            <div className="bg-red-700 text-white py-12 relative z-20 shadow-inner">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
+                    <div><h3 className="text-4xl font-bold">15k+</h3><p className="text-red-100 text-sm font-medium mt-1">Active Students</p></div>
+                    <div><h3 className="text-4xl font-bold">98%</h3><p className="text-red-100 text-sm font-medium mt-1">Attendance Accuracy</p></div>
+                    <div><h3 className="text-4xl font-bold">500+</h3><p className="text-red-100 text-sm font-medium mt-1">Faculty Members</p></div>
+                    <div><h3 className="text-4xl font-bold">24/7</h3><p className="text-red-100 text-sm font-medium mt-1">System Uptime</p></div>
+                </div>
+            </div>
 
-                    {/* BRANDING */}
-                    <div className="text-center mb-10">
-                        <motion.div
-                            initial={{ rotate: -10, opacity: 0 }}
-                            animate={{ rotate: 0, opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.6 }}
-                            className="w-16 h-16 bg-gradient-to-br from-[#D21F3C] to-[#B01830] text-white rounded-2xl flex items-center justify-center text-3xl font-black mx-auto mb-5 shadow-lg shadow-red-200"
-                        >
-                            N
-                        </motion.div>
-                        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Student Portal</h1>
-                        <p className="text-sm text-gray-500 mt-2 font-medium">Access your attendance, insights & academic progress.</p>
+            {/* SHOWCASE: AI CAREER COACH */}
+            <div className="bg-white py-24 border-b border-slate-100 showcase-section">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+                    <div className="w-full md:w-1/2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs font-bold uppercase tracking-wide mb-6 border border-red-100">
+                            <Sparkles size={14} /> Powered by Gemini
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                            Your Personal <br />
+                            <span className="text-red-700">Career Strategist.</span>
+                        </h2>
+                        <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+                            Stop guessing your next step. Our AI Career Pilot analyzes your goals, identifies gaps, and creates a personalized daily roadmap to land your dream job.
+                        </p>
+                        <ul className="space-y-5 mb-8">
+                            <li className="flex items-center gap-4 text-slate-800 font-bold p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-red-600 shadow-sm"><CheckCircle size={20} /></div>
+                                24/7 Resume Reviews
+                            </li>
+                            <li className="flex items-center gap-4 text-slate-800 font-bold p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-red-600 shadow-sm"><CheckCircle size={20} /></div>
+                                Smart Skill Gap Analysis
+                            </li>
+                        </ul>
                     </div>
-
-                    {/* FORM */}
-                    <div className="space-y-6">
-                        {/* SAPID INPUT */}
-                        <div className="relative group">
-                            <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${focusedField === 'sapid' ? 'text-nmims-primary' : 'text-gray-400'}`}>
-                                <User size={20} />
+                    <div className="w-full md:w-1/2">
+                        <div className="relative rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 rotate-1 hover:rotate-0 transition-all duration-500">
+                            {/* Mock Chat UI (Light Mode) */}
+                            <div className="absolute -top-3 left-6 bg-red-600 text-white px-3 py-1 rounded text-xs font-bold shadow-lg">Live Demo</div>
+                            <div className="flex gap-4 mb-4 mt-2">
+                                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"><Bot size={20} /></div>
+                                <div className="bg-slate-100 p-4 rounded-2xl rounded-tl-none text-slate-700 text-sm font-medium max-w-[80%]">
+                                    I see you're aiming for Google! Let's work on your Data Structures today. Here's a challenge. 🚀
+                                </div>
                             </div>
-                            <input
-                                type="text"
-                                name="sapid"
-                                className={`
-                                    w-full pl-12 pr-4 py-4 bg-gray-50/50 border rounded-xl outline-none transition-all duration-300 font-medium
-                                    ${focusedField === 'sapid' ? 'border-nmims-primary ring-2 ring-red-50 bg-white' : 'border-gray-200 hover:border-gray-300'}
-                                    ${error ? 'border-red-300 bg-red-50/10' : ''}
-                                `}
-                                value={sapid}
-                                onChange={e => setSapid(e.target.value)}
-                                onFocus={() => setFocusedField('sapid')}
-                                onBlur={() => setFocusedField(null)}
-                                onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                            />
-                            <label className={`
-                                absolute left-12 transition-all duration-300 pointer-events-none
-                                ${focusedField === 'sapid' || isFieldActive(sapid) ? '-top-2.5 text-xs bg-white px-1 text-nmims-primary font-bold' : 'top-4 text-gray-400 font-medium'}
-                             `}>
-                                SAP ID / Roll No
-                            </label>
-                        </div>
-
-                        {/* PASSWORD INPUT */}
-                        <div className="relative group">
-                            <div className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${focusedField === 'password' ? 'text-nmims-primary' : 'text-gray-400'}`}>
-                                <Lock size={20} />
+                            <div className="flex gap-4 flex-row-reverse mb-4">
+                                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600"><User size={20} /></div>
+                                <div className="bg-red-600 p-4 rounded-2xl rounded-tr-none text-white text-sm font-medium shadow-md shadow-red-500/20">
+                                    Sure! What problem should I solve?
+                                </div>
                             </div>
-                            <input
-                                type="password"
-                                name="password"
-                                className={`
-                                    w-full pl-12 pr-4 py-4 bg-gray-50/50 border rounded-xl outline-none transition-all duration-300 font-medium
-                                    ${focusedField === 'password' ? 'border-nmims-primary ring-2 ring-red-50 bg-white' : 'border-gray-200 hover:border-gray-300'}
-                                    ${error ? 'border-red-300 bg-red-50/10' : ''}
-                                `}
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                onFocus={() => setFocusedField('password')}
-                                onBlur={() => setFocusedField(null)}
-                                onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                            />
-                            <label className={`
-                                absolute left-12 transition-all duration-300 pointer-events-none
-                                ${focusedField === 'password' || isFieldActive(password) ? '-top-2.5 text-xs bg-white px-1 text-nmims-primary font-bold' : 'top-4 text-gray-400 font-medium'}
-                             `}>
-                                Password
-                            </label>
+                            <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600"><Bot size={20} /></div>
+                                <div className="bg-slate-100 p-4 rounded-2xl rounded-tl-none text-slate-700 text-sm font-medium max-w-[80%]">
+                                    Try "Inverting a Binary Tree". It's a classic interview question. I'll review your code in Python.
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    {/* ERROR MSG */}
-                    <AnimatePresence>
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
-                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-100 text-sm font-medium"
-                            >
-                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></div>
-                                {error}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* SUBMIT BUTTON */}
-                    <motion.button
-                        whileHover={{ scale: 1.02, boxShadow: "0 15px 30px -10px rgba(220, 38, 38, 0.4)" }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleLogin}
-                        disabled={loading}
-                        className="w-full mt-8 bg-gradient-to-br from-[#D21F3C] to-[#B01830] text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-red-200/50 flex items-center justify-center gap-2.5 group relative overflow-hidden transition-all disabled:opacity-80 disabled:cursor-not-allowed"
-                    >
-                        {loading ? (
-                            <><Loader2 className="animate-spin" size={20} /> Verifying...</>
-                        ) : (
-                            <>Secure Login <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" /></>
-                        )}
-                        {/* Shine Effect */}
-                        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:animate-shine" />
-                    </motion.button>
-
-                    {/* FOOTER */}
-                    <div className="mt-8 text-center">
-                        <div className="flex items-center justify-center gap-2 text-xs text-gray-400 font-medium bg-gray-50/50 py-2 rounded-lg border border-gray-100/50">
-                            <ShieldCheck size={14} className="text-green-600" />
-                            Synced securely with NMIMS academic systems
+            {/* SHOWCASE: PROFESSIONAL NETWORK */}
+            <div className="bg-slate-50 py-24 showcase-section border-t border-slate-200">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col-reverse md:flex-row items-center gap-16">
+                    <div className="w-full md:w-1/2">
+                        <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-200">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-12 h-12 bg-red-100 text-red-700 rounded-xl flex items-center justify-center"><Users size={24} /></div>
+                                <div>
+                                    <h4 className="text-xl font-bold text-slate-900">Alumni Network</h4>
+                                    <p className="text-slate-500 text-sm">Connect with verified graduates.</p>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <div className="w-10 h-10 rounded-full bg-slate-200"></div>
+                                        <div className="flex-1">
+                                            <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
+                                            <div className="h-3 w-20 bg-slate-100 rounded"></div>
+                                        </div>
+                                        <button className="text-xs bg-white border border-slate-200 px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-red-600 transition-colors">Connect</button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-
-                        <Link to="/admin/login" className="mt-5 inline-block text-xs font-semibold text-gray-400 hover:text-nmims-primary transition-colors">
-                            Admin Access
-                        </Link>
                     </div>
+                    <div className="w-full md:w-1/2 md:pl-12">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase tracking-wide mb-6">
+                            <Globe size={14} /> Global Community
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                            Connect. Verify. <br />
+                            <span className="text-red-700">Succeed Together.</span>
+                        </h2>
+                        <p className="text-lg text-slate-600 mb-8 leading-relaxed font-medium">
+                            Build a professional portfolio that speaks for itself. Connect with verified alumni, showcase your certifications, and get discovered by top recruiters.
+                        </p>
+                        <button onClick={() => window.scrollTo(0, 0)} className="bg-red-700 text-white px-8 py-4 rounded-xl font-bold hover:bg-red-800 transition-all shadow-xl shadow-red-700/20 flex items-center gap-2">
+                            Start Building Your Network <ArrowRight size={18} />
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-                </motion.div>
+            {/* FOOTER */}
+            <footer className="bg-white border-t border-slate-200 py-12 text-slate-500 text-sm">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                    <div className="col-span-1 md:col-span-2">
+                        <div className="flex items-center gap-2 mb-4">
+                            <img src={NMIMSLogo} className="h-8 object-contain" alt="Logo" />
+                        </div>
+                        <p className="max-w-xs text-slate-600">
+                            Empowering students with real-time data and career tools.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-slate-900 mb-4">Platform</h4>
+                        <ul className="space-y-2">
+                            <li className="hover:text-red-600 cursor-pointer">Attendance</li>
+                            <li className="hover:text-red-600 cursor-pointer">Analytics</li>
+                            <li className="hover:text-red-600 cursor-pointer">Career Coach</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-slate-900 mb-4">Support</h4>
+                        <ul className="space-y-2">
+                            <li className="hover:text-red-600 cursor-pointer">Help Center</li>
+                            <li><Link to="/admin/login" className="hover:text-red-600 cursor-pointer">Admin Portal</Link></li>
+                            <li className="hover:text-red-600 cursor-pointer">Privacy Policy</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto px-6 text-center pt-8 border-t border-slate-100 text-slate-400">
+                    &copy; 2026 NMIMS University. All rights reserved. • v2.0
+                </div>
+            </footer>
 
-                <p className="text-center text-xs text-gray-400 mt-6 font-medium tracking-wide">
-                    © 2025 NMIMS University. All rights reserved.
-                </p>
-
-            </motion.div>
         </div>
     );
 };
 
 export default Landing;
-

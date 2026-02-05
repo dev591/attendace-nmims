@@ -2,24 +2,25 @@
 import React, { useState, useEffect } from 'react';
 
 export default function MissCalculator({ analytics }) {
-    if (!analytics) return null;
-
-    const {
-        subject_name,
-        // Strict Schema
-        percentage = analytics.attendance_percentage ?? 0,
-        conducted = analytics.sessions_conducted ?? 0,
-        attended = analytics.attended_classes ?? 0,
-        // Calculations
-        absent_so_far = analytics.missed_classes ?? (conducted - attended),
-        max_allowed_absent = analytics.allowed_absences ?? (analytics.stats?.canMiss ?? 5) // Fallback estimation
-    } = analytics;
-
     const [missCount, setMissCount] = useState(0);
-    const [simulatedPct, setSimulatedPct] = useState(percentage);
+    const [simulatedPct, setSimulatedPct] = useState(analytics?.attendance_percentage ?? 0);
     const [simulatedRisk, setSimulatedRisk] = useState('low');
 
+    // Safe Destructuring
+    const safeAnalytics = analytics || {};
+    const {
+        subject_name,
+        percentage = safeAnalytics.attendance_percentage ?? 0,
+        conducted = safeAnalytics.sessions_conducted ?? 0,
+        attended = safeAnalytics.attended_classes ?? 0,
+        absent_so_far = safeAnalytics.missed_classes ?? (conducted - attended),
+        max_allowed_absent = safeAnalytics.allowed_absences ?? (safeAnalytics.stats?.canMiss ?? 5)
+    } = safeAnalytics;
+
     useEffect(() => {
+        if (!analytics) return;
+
+        // Calculate simulation
         // Calculate simulation
         // If I miss 'missCount' MORE classes:
         // New Conducted = conducted + missCount

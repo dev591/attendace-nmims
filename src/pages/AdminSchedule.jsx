@@ -17,6 +17,13 @@ const AdminSchedule = () => {
     const [templateSem, setTemplateSem] = useState(1);
     const [downloading, setDownloading] = useState(false);
 
+    // Upload Scope State (Strict)
+    const [uploadSchool, setUploadSchool] = useState('MPSTME');
+    const [uploadPro, setUploadPro] = useState('B.Tech');
+    const [uploadYear, setUploadYear] = useState(3);
+    const [uploadSem, setUploadSem] = useState(6);
+    const [uploadSec, setUploadSec] = useState('A');
+
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
@@ -30,6 +37,15 @@ const AdminSchedule = () => {
 
         setStatus('uploading');
         const formData = new FormData();
+
+        // Append Strict Scope (MUST BE BEFORE FILE)
+        formData.append('school', uploadSchool);
+        formData.append('program', uploadPro);
+        formData.append('year', uploadYear);
+        formData.append('semester', uploadSem);
+        formData.append('section', uploadSec);
+
+        // Append File Last
         formData.append('file', file);
 
         try {
@@ -142,6 +158,50 @@ const AdminSchedule = () => {
                             <Upload size={24} />
                         </div>
                         <h2 className="text-xl font-bold text-gray-900">2. Upload Timetable</h2>
+                    </div>
+
+                    {/* SCOPE SELECTORS (STRICT) */}
+                    <div className="grid grid-cols-2 gap-4 mb-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                        <div className="col-span-2">
+                            <label className="block text-xs font-bold text-purple-700 uppercase mb-1">Target School</label>
+                            <select value={uploadSchool} onChange={(e) => setUploadSchool(e.target.value)} className="w-full p-2 text-sm border-purple-200 rounded">
+                                <option value="MPSTME">Engineering (MPSTME)</option>
+                                <option value="SBM">Management (SBM)</option>
+                                <option value="KPMSOL">Law (KPMSOL)</option>
+                                <option value="SPPSPTM">Pharma (SPPSPTM)</option>
+                                <option value="ASMSOC">Commerce (ASMSOC)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-purple-700 uppercase mb-1">Program</label>
+                            <input type="text" value={uploadPro} onChange={(e) => setUploadPro(e.target.value)} placeholder="e.g. B.Tech" className="w-full p-2 text-sm border-purple-200 rounded" />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-purple-700 uppercase mb-1">Section</label>
+                            <select value={uploadSec} onChange={(e) => setUploadSec(e.target.value)} className="w-full p-2 text-sm border-purple-200 rounded">
+                                {['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-purple-700 uppercase mb-1">Year</label>
+                            <select value={uploadYear} onChange={(e) => {
+                                setUploadYear(e.target.value);
+                                // Auto-suggest semester
+                                const y = parseInt(e.target.value);
+                                setUploadSem(y * 2 - 1); // Default to odd sem (start of year)
+                            }} className="w-full p-2 text-sm border-purple-200 rounded">
+                                <option value={1}>Year 1</option>
+                                <option value={2}>Year 2</option>
+                                <option value={3}>Year 3</option>
+                                <option value={4}>Year 4</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-purple-700 uppercase mb-1">Semester</label>
+                            <select value={uploadSem} onChange={(e) => setUploadSem(e.target.value)} className="w-full p-2 text-sm border-purple-200 rounded">
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(s => <option key={s} value={s}>Sem {s}</option>)}
+                            </select>
+                        </div>
                     </div>
 
                     <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 border-2 border-dashed border-gray-200 rounded-xl p-6 hover:bg-gray-50 transition-colors">

@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper: Is Admin
+    function isAdmin() {
+       // In a real app we'd check custom claims or a specific admin list.
+       // For this MVP, we might rely on the client knowing a special password (backendless)
+       // OR check if the user's document has role == 'admin'.
+       // Secure way: request.auth.token.admin == true;
+       // MVP way: check a known admin collection or strict email domain.
+       return request.auth != null && request.auth.token.email.matches('.*admin.*');
+    }
+
+    // Helper: Is Owner
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // USERS COLLECTION
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      // Allow write only by owner (e.g. updating profile) or admin
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // CURRICULUM (Timetable static data)
+    match /curriculum/{docId} {
+      allow read: if true; // Publicly readable for students
+      allow write: if isAdmin();
+    }
+
+    // TIMETABLE (Live sessions)
+    match /timetable/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

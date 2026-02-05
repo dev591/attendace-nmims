@@ -11,7 +11,15 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadDir);
+        let dest = uploadDir;
+        if (req.body.uploadType === 'proof' || req.params.uploadType === 'proof' || file.fieldname === 'proof') {
+            dest = path.join(uploadDir, 'proofs');
+            if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+        } else if (file.fieldname === 'certificate') { // NEW
+            dest = path.join(uploadDir, 'achievements');
+            if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+        }
+        cb(null, dest);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

@@ -10,7 +10,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 const SubjectDetail = () => {
     const { subId } = useParams(); // Fixed: match App.jsx route param
     const navigate = useNavigate();
-    const { data } = useStore();
+    const { user, data } = useStore();
     const [difficulty, setDifficulty] = useState('Medium');
 
     // Internal state for sessions fetched from API
@@ -18,19 +18,19 @@ const SubjectDetail = () => {
 
     const subject = data.subjects?.find(s => s.subject_id === subId);
 
-    // Fetch sessions on mount
+    // ANTI-GRAVITY FIX: Use real session history from store
     React.useEffect(() => {
-        if (!data.currentUser?.id || !subId) return;
-        const token = localStorage.getItem('token');
-        fetch(`http://localhost:4000/student/${data.currentUser.id}/subject/${subId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(res => res.json())
-            .then(res => {
-                if (res.sessions) setSessions(res.sessions);
-            })
-            .catch(console.error);
-    }, [subId, data.currentUser?.id]);
+        if (!data?.session_history || !subId) return;
+
+        // Filter global history for this subject
+        // Ensure subject_id matches (handle mocked vs real ID formats if needed, but snapshots should suffice)
+        const relevantSessions = data.session_history.filter(s => s.subject_id === subId);
+
+        // Sort by date descending (newest first) for history table
+        const sorted = [...relevantSessions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        setSessions(sorted);
+    }, [subId, data?.session_history]);
 
     if (!subject) return <div className="p-8 text-center text-gray-500">Subject sync failed. Not found.</div>;
 
@@ -53,19 +53,8 @@ const SubjectDetail = () => {
                     </div>
                 </div>
 
-                {/* Feature #4: Difficulty Tag */}
-                <div className="flex items-center gap-2">
-                    <Tag size={16} className="text-gray-400" />
-                    <select
-                        className="text-sm bg-white border border-gray-300 rounded px-2 py-1 text-gray-700 outline-none focus:border-nmims-primary"
-                        value={difficulty}
-                        onChange={(e) => setDifficulty(e.target.value)}
-                    >
-                        <option>Easy</option>
-                        <option>Medium</option>
-                        <option>High</option>
-                    </select>
-                </div>
+                {/* Difficulty Tag Removed - Not supported by backend yet */}
+                {/* <div className="flex items-center gap-2">...</div> */}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -78,43 +67,59 @@ const SubjectDetail = () => {
                             <h3 className="font-bold text-gray-800">Session History</h3>
                             <span className="text-xs text-gray-400">Synced from Portal</span>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left">
-                                <thead className="bg-gray-50 text-gray-500 border-b border-gray-200">
-                                    <tr>
-                                        <th className="p-3 font-medium">Date</th>
-                                        <th className="p-3 font-medium">Type</th>
-                                        <th className="p-3 font-medium">Status</th>
-                                        <th className="p-3 font-medium text-right">Attendance</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {sessions.map((session, i) => (
-                                        <tr key={i} className="hover:bg-gray-50">
-                                            <td className="p-3 text-gray-900">
-                                                {new Date(session.date).toLocaleDateString(undefined, {
-                                                    day: 'numeric',
-                                                    month: 'short',
-                                                    year: 'numeric'
-                                                })}
-                                                <span className="text-gray-400 text-xs ml-1">{session.time}</span>
-                                            </td>
-                                            <td className="p-3 text-gray-500">{session.type}</td>
-                                            <td className="p-3">
-                                                <span className="text-gray-500">{session.status}</span>
-                                            </td>
-                                            <td className="p-3 text-right">
-                                                {session.status === 'UPCOMING' ? (
-                                                    <span className="text-blue-500 font-bold flex items-center justify-end gap-1">⏰ Upcoming</span>
-                                                ) : (
-                                                    <span className="text-gray-500 font-bold flex items-center justify-end gap-1"><CheckCircle size={14} /> Conducted</span>
-                                                )}
-                                            </td>
+
+                        {sessions.length === 0 ? (
+                            <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                                <p className="text-gray-500 font-medium">No sessions synced yet.</p>
+                                <p className="text-xs text-gray-400 mt-1">Check back later for Oracle updates.</p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-gray-50 text-gray-500 border-b border-gray-200">
+                                        <tr>
+                                            <th className="p-3 font-medium">Date</th>
+                                            <th className="p-3 font-medium">Type</th>
+                                            <th className="p-3 font-medium">Status</th>
+                                            <th className="p-3 font-medium text-right">Attendance</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {sessions.map((session, i) => (
+                                            <tr key={i} className="hover:bg-gray-50">
+                                                <td className="p-3 text-gray-900">
+                                                    {new Date(session.date).toLocaleDateString(undefined, {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric'
+                                                    })}
+                                                    <span className="text-gray-400 text-xs ml-1">{session.time}</span>
+                                                </td>
+                                                <td className="p-3 text-gray-500">{session.type}</td>
+                                                <td className="p-3">
+                                                    <span className="text-gray-500">{session.status}</span>
+                                                </td>
+                                                <td className="p-3 text-right">
+                                                    {session.status === 'UPCOMING' ? (
+                                                        <span className="text-blue-500 font-bold flex items-center justify-end gap-1">⏰ Upcoming</span>
+                                                    ) : (
+                                                        <span className="text-gray-500 font-bold flex items-center justify-end gap-1">
+                                                            {session.attendance === 'PRESENT' ? (
+                                                                <span className="text-green-600 flex items-center gap-1"><CheckCircle size={14} /> Present</span>
+                                                            ) : session.attendance === 'ABSENT' ? (
+                                                                <span className="text-red-500 flex items-center gap-1"><AlertTriangle size={14} /> Absent</span>
+                                                            ) : (
+                                                                <span className="text-gray-400">Marking...</span>
+                                                            )}
+                                                        </span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </Card>
                 </div>
 

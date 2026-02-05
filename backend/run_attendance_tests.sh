@@ -24,16 +24,16 @@ fi
 
 echo "✅ Token obtained."
 
-# 2. Test Specific Subject Analytics (DSA101)
-echo "Testing /attendance-analytics for DSA101..."
+# 2. Test Specific Subject Analytics (SUB01 - DS101)
+echo "Testing /attendance-analytics for SUB01..."
 curl -s -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:4000/student/S001/subject/DSA101/attendance-analytics" > debug-reports/attendance_dsa_s001.json
+  "http://localhost:4000/student/S001/subject/SUB01/attendance-analytics" > debug-reports/attendance_dsa_s001.json
 
 # Check output content
 if grep -q "max_allowed_absent" debug-reports/attendance_dsa_s001.json; then
-    echo "✅ DSA101 Analytics JSON received."
+    echo "✅ SUB01 Analytics JSON received."
 else
-    echo "❌ DSA101 Analytics Failed. Response saved to debug-reports/attendance_dsa_s001.json"
+    echo "❌ SUB01 Analytics Failed. Response saved to debug-reports/attendance_dsa_s001.json"
     cat debug-reports/attendance_dsa_s001.json
     exit 1
 fi
@@ -43,7 +43,7 @@ echo "Testing /attendance-overview..."
 curl -s -H "Authorization: Bearer $TOKEN" \
   "http://localhost:4000/student/S001/attendance-overview" > debug-reports/attendance_overview_s001.json
 
-if grep -q "DSA101" debug-reports/attendance_overview_s001.json; then
+if grep -q "DS101" debug-reports/attendance_overview_s001.json; then
     echo "✅ Overview JSON received."
 else
     echo "❌ Overview Failed."

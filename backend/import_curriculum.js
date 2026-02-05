@@ -63,8 +63,16 @@ export async function importCurriculumFile(filePath, clientParam = null) {
             let program = normalizeProgram(rawProgram);
             let branch = normalizeBranch(rawBranch);
 
+            if (branch) branch = branch.toLowerCase(); // STRICT LOWERCASE
+
             if (program === 'engineering' && branch) {
-                program = `${program}-${branch.toLowerCase()}`;
+                // Determine if we should append branch to program or keep separate
+                // Current architecture seems to prefer 'engineering' as program and 'ds' as branch in Student table
+                // BUT Curriculum table often uses 'engineering-ds' as program Key?
+                // Let's check how import_timetable uses it.
+                // Timetable Construct strictKey = `${prog}-${br}`
+                // So Curriculum table MUST store `program` as `engineering-ds`.
+                program = `${program}-${branch}`;
             }
 
             const cleanInt = (val) => {
@@ -90,6 +98,22 @@ export async function importCurriculumFile(filePath, clientParam = null) {
                 continue;
             }
 
+            // 0. CLEANUP (Sync Mode) - Added by Anti-Gravity
+            // We track which Program-Year-Semester groups we have cleaned to avoid wiping data repeatedly in loop
+            const groupKey = `${program}|${year}|${semester}`;
+            if (!report._processedGroups) report._processedGroups = new Set();
+
+            if (!report._processedGroups.has(groupKey)) {
+                console.log(`[CURRICULUM] Syncing Group: ${groupKey} -> Cleaning old entries...`);
+                await client.query(`
+                    DELETE FROM curriculum 
+                    WHERE LOWER(program) = $1 
+                    AND year = $2 
+                    AND semester = $3
+                `, [program, year, semester]);
+                report._processedGroups.add(groupKey);
+            }
+
             // 1. Ensure Subject Exists in master subjects table
             await client.query(`
                 INSERT INTO subjects (subject_id, code, name)
@@ -97,14 +121,11 @@ export async function importCurriculumFile(filePath, clientParam = null) {
                 ON CONFLICT (code) DO UPDATE SET name = EXCLUDED.name
             `, [subjectCode, subjectCode, subjectName || subjectCode]);
 
-            // 2. Upsert into Curriculum
+            // 2. Insert into Curriculum (No need for upsert since we wiped)
             await client.query(`
                 INSERT INTO curriculum (program, year, semester, subject_code, subject_name, total_classes, min_attendance_pct)
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
-                ON CONFLICT (program, year, semester, subject_code) 
-                DO UPDATE SET 
-                    total_classes = EXCLUDED.total_classes,
-                    min_attendance_pct = EXCLUDED.min_attendance_pct;
+                ON CONFLICT (program, year, semester, subject_code) DO NOTHING
             `, [program, year, semester, subjectCode, subjectName || subjectCode, total, minPct]);
 
             console.log(`[CURRICULUM] Inserted subject ${subjectCode}`);

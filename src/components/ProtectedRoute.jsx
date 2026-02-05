@@ -10,12 +10,12 @@ export default function ProtectedRoute({ children }) {
         // Optional lightweight sanity: check token looks like JWT
         if (!token.split || token.split(".").length !== 3) {
             // invalid token format: remove it and force login
-            try { localStorage.clear(); } catch (e) { }
+            try { localStorage.clear(); } catch (e) { /* ignore */ }
             return <Navigate to="/" replace />;
         }
         return children;
     } catch (e) {
-        try { localStorage.clear(); } catch (e) { }
+        try { localStorage.clear(); } catch (e) { /* ignore */ }
         return <Navigate to="/" replace />;
     }
 }

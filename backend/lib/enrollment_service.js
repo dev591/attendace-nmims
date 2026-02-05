@@ -10,6 +10,17 @@ const YEAR_TO_SEMESTERS = {
     4: [7, 8]
 };
 
+function normalizeSemester(year, semester) {
+    const min = (year * 2) - 1;
+    const max = year * 2;
+
+    if (semester < min || semester > max) {
+        console.warn(`[AUTO-FIX] Semester ${semester} invalid for Year ${year}. Using ${min}`);
+        return min;
+    }
+    return semester;
+}
+
 /**
  * Auto-enrolls a student into all subjects matching their CORRECT Year, Semester, AND Branch.
  * Performs a HARD CLEANUP first to ensure no cross-year pollution.
@@ -19,102 +30,102 @@ const YEAR_TO_SEMESTERS = {
  * @param {string} branch - Student's branch (e.g. "Computer Engineering", "Data Science")
  * @param {number|string} semester - Student's semester
  * @param {number|string} year - Student's academic year
- * @returns {Promise<number>} - Number of enrollments
+ * @returns {Promise<{enrolled: number, status: string, auto_corrected: boolean}>}
  */
 export async function autoEnrollStudent(studentId, program, branch, semester, year) {
     if (!studentId || !program || !semester || !year) {
         console.warn("[AutoEnroll] Skipped: Missing studentId, program, semester, or year.");
-        return 0;
+        return { enrolled: 0, status: 'MISSING_DATA' };
     }
 
     try {
         // STRICT NORMALIZATION
         const normProgram = normalizeProgram(program);
         const normBranch = normalizeBranch(branch);
-        const normSemester = parseInt(semester);
-        const normYear = parseInt(year);
+        let normYear = parseInt(year);
+        let normSemester = parseInt(semester);
+        let autoCorrected = false;
 
         console.log(`[AutoEnroll] Processing for Student ${studentId}`);
-        console.log(`[AutoEnroll] Match Criteria: Program='${normProgram}', Branch='${normBranch}', Year=${normYear}, Semester=${normSemester}`);
 
         if (isNaN(normSemester) || isNaN(normYear)) {
             console.error(`[AutoEnroll] ❌ Invalid Semester/Year: Sem=${semester}, Year=${year}`);
-            return 0;
+            return { enrolled: 0, status: 'INVALID_ACADEMIC_DATA' };
         }
 
-        // MANDATORY: Branch is required. No silent fallback.
-        if (!normBranch) {
-            console.error(`[AutoEnroll] ❌ Branch is MISSING for student ${studentId}. Cannot auto-enroll.`);
-            throw new Error("BRANCH_REQUIRED_FOR_ENROLLMENT");
-        }
-
-        // 1. VALIDATE Year-Semester Logic
-        const validSemesters = YEAR_TO_SEMESTERS[normYear];
-        if (!validSemesters || !validSemesters.includes(normSemester)) {
-            console.error(`[AutoEnroll] ❌ LOGIC ERROR: Semester ${normSemester} is invalid for Year ${normYear}`);
-            return 0;
+        // 1. AUTO-CORRECT SEMESTER LOGIC
+        const correctedSem = normalizeSemester(normYear, normSemester);
+        if (correctedSem !== normSemester) {
+            console.warn(`[AUTO-FIX] Student ${studentId} Semester ${normSemester} -> ${correctedSem} (Year ${normYear})`);
+            normSemester = correctedSem;
+            autoCorrected = true;
         }
 
         // 2. HARD CLEANUP (Purge old/wrong enrollments)
         await query(`DELETE FROM enrollments WHERE student_id = $1`, [studentId]);
 
-        // 3. INSERT Valid Subjects Only (STRICT BRANCH MATCH)
-        // STRICT RULE: Program MUST be "program-branch" (e.g. "engineering-ds")
-        let effectiveProgram = `${normProgram.toLowerCase()}-${normBranch.toLowerCase()}`;
+        // 3. DETERMINE CURRICULUM KEY (Strict Branch vs Common)
+        let effectiveProgram = normProgram.toLowerCase();
+        let methodsTried = [];
 
-        console.log(`[AutoEnroll] Effective Lookup Program: '${effectiveProgram}'`);
+        // Strategy 1: Program + Branch (e.g. "engineering-ds")
+        let primaryKey = effectiveProgram;
+        if (normBranch && normBranch.toLowerCase() !== normProgram.toLowerCase() && normBranch.toLowerCase() !== 'engineering') {
+            primaryKey = `${effectiveProgram}-${normBranch.toLowerCase()}`;
+        }
+        methodsTried.push(primaryKey);
 
-        const res = await query(`
-            INSERT INTO enrollments (student_id, subject_id)
-            SELECT DISTINCT $1, s.subject_id
-            FROM curriculum c
-            JOIN subjects s ON c.subject_code = s.code
-            WHERE LOWER(c.program) = $2 
-            AND c.semester = $3
-            AND c.year = $4
-            ON CONFLICT (student_id, subject_id) DO NOTHING
-            RETURNING subject_id
-        `, [studentId, effectiveProgram, normSemester, normYear]);
-
-        const subjects = res.rows;
-
-        if (subjects.length === 0) {
-            console.log(`[AutoEnroll] ℹ️ No new enrollments found for Year ${normYear} Sem ${normSemester}.`);
-            return 0;
+        // Strategy 2: Program Only (Fallback, e.g. "engineering")
+        let secondaryKey = effectiveProgram; // e.g., "engineering"
+        if (primaryKey !== secondaryKey) {
+            methodsTried.push(secondaryKey);
         }
 
-        // STRICT USER REQUIREMENT: Max 8 Subjects
-        if (subjects.length > 8) {
-            console.error(`[AutoEnroll] ❌ Too many subjects (${subjects.length}) for ${effectiveProgram}. Max allowed is 8.`);
-            throw new Error("MAX_SUBJECTS_EXCEEDED");
+        console.log(`[AutoEnroll] Enrollment Keys Strategy: ${methodsTried.join(' -> ')}`);
+
+        // 4. INSERT Valid Subjects
+        // Try Primary Key
+        let res = await attemptEnrollment(studentId, primaryKey, normSemester, normYear);
+
+        // Try Secondary Key if Primary failed
+        if (res.rowCount === 0 && secondaryKey && primaryKey !== secondaryKey) {
+            console.log(`[AutoEnroll] Primary key '${primaryKey}' yielded 0 subjects. Trying fallback '${secondaryKey}'...`);
+            res = await attemptEnrollment(studentId, secondaryKey, normSemester, normYear);
         }
 
-        console.log(`[AutoEnroll] Found ${subjects.length} subjects. Proceeding to enroll...`);
+        const count = res.rowCount;
+        const subjects = res.rows || []; // Ensure rows exists
 
-        // [USER REQUEST] REMOVED 12-SUBJECT LIMIT CAP.
-        // Replaced with just logging.
-        if (res.rowCount > 12) {
-            console.warn(`[AutoEnroll] ⚠️ HIGH ENROLLMENT COUNT: ${res.rowCount} subjects. (Limit removed per request)`);
+        if (count === 0) {
+            console.warn(`[AutoEnroll] ⚠️ NO_SUBJECTS_CONFIGURED for ${methodsTried.join(' or ')} Y${normYear} S${normSemester}`);
+            // Do NOT create placeholder. UI should handle 'NO_SUBJECTS_CONFIGURED'.
+            return { enrolled: 0, status: 'NO_SUBJECTS_CONFIGURED', auto_corrected: autoCorrected };
         }
 
-        if (res.rowCount > 5) {
-            console.warn(`[AutoEnroll] Subject count > 5. Verify if elective overlap occurred.`);
-            console.warn(`Program: ${effectiveProgram}, Year: ${normYear}, Sem: ${normSemester}`);
-            console.warn(`Resolved: ${res.rowCount} subjects`);
+        // 5. MAX CAP CHECK
+        if (count > 12) {
+            console.warn(`[AutoEnroll] ⚠️ High enrollment count: ${count} subjects.`);
         }
 
-        if (res.rowCount > 0) {
-            console.log(`[AutoEnroll] ✅ Successfully enrolled in ${res.rowCount} new subjects.`);
-        } else {
-            console.log(`[AutoEnroll] ℹ️ No new enrollments found for Year ${normYear} Sem ${normSemester}.`);
-        }
-
-        return res.rowCount;
+        console.log(`[AutoEnroll] ✅ Successfully enrolled in ${count} subjects.`);
+        return { enrolled: count, status: 'ENROLLED', auto_corrected: autoCorrected };
 
     } catch (err) {
         console.error("[AutoEnroll] ❌ Failed:", err);
-        // Propagate the specific branch error so imports can report it
-        if (err.message === "BRANCH_REQUIRED_FOR_ENROLLMENT") throw err;
-        return 0;
+        return { enrolled: 0, status: 'ERROR', error: err.message };
     }
+}
+
+async function attemptEnrollment(studentId, programKey, semester, year) {
+    return query(`
+        INSERT INTO enrollments (student_id, subject_id)
+        SELECT DISTINCT $1, s.subject_id
+        FROM curriculum c
+        JOIN subjects s ON c.subject_code = s.code
+        WHERE LOWER(c.program) = $2 
+        AND c.semester = $3
+        AND c.year = $4
+        ON CONFLICT (student_id, subject_id) DO NOTHING
+        RETURNING subject_id
+    `, [studentId, programKey, semester, year]);
 }

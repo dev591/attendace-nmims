@@ -148,36 +148,34 @@ router.post('/students/purge-demo', async (req, res) => {
     }
 });
 
-// POST /admin/students/purge-all
-// Removes ALL students from the database (Hard Reset)
-router.post('/students/purge-all', async (req, res) => {
-    console.log("[ADMIN ACTION] PURGE ALL STUDENTS Requested");
+// DELETE /admin/reset
+// Full System Reset (Students, Attendance, Enrollments, Notifications)
+router.delete('/reset', async (req, res) => {
+    console.log("[ADMIN ACTION] FULL SYSTEM RESET Requested");
 
     try {
         await query('BEGIN');
 
-        // 1. Delete All Enrollments
-        await query('DELETE FROM enrollments');
+        // 1. Truncate dependent tables first
+        // Notifications, Attendance, Enrollments
+        await query('TRUNCATE notifications, attendance, enrollments CASCADE');
 
-        // 2. Delete All Attendance Records
-        await query('DELETE FROM attendance');
-
-        // 3. Delete All Students
-        const deleteRes = await query('DELETE FROM students RETURNING student_id');
+        // 2. Delete Only Students (Preserve Director/Admin accounts if stored here)
+        // Safety: Only delete role='student' 
+        const delRes = await query("DELETE FROM students WHERE role = 'student'");
 
         await query('COMMIT');
 
-        console.log(`[ADMIN ACTION] Purged ALL ${deleteRes.rows.length} students.`);
         res.json({
             success: true,
-            message: "All students removed successfully.",
-            students_removed: deleteRes.rows.length
+            message: `System Reset Successful. Removed ${delRes.rowCount} students.`,
+            count: delRes.rowCount
         });
 
     } catch (e) {
         await query('ROLLBACK');
-        console.error("Purge All Failed:", e);
-        res.status(500).json({ error: "Purge failed: " + e.message });
+        console.error("System Reset Failed:", e);
+        res.status(500).json({ error: "Reset failed: " + e.message });
     }
 });
 

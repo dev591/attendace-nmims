@@ -1,0 +1,145 @@
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Mail, Lock, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
+
+export default function Login() {
+    const [identity, setIdentity] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        if (!identity || !password) {
+            return setError('Please enter both ID and password');
+        }
+
+        try {
+            setError('');
+            setLoading(true);
+
+            // Determine if email or SAP ID
+            let email = identity;
+            if (!identity.includes('@')) {
+                // Assume SAP ID
+                email = `${identity}@university.com`;
+            }
+
+            await login(email, password);
+
+            // Determine redirect based on email domain or other logic
+            if (email.includes('admin')) { // Simple check for now
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/dashboard'); // Generic student dashboard
+            }
+
+        } catch (err) {
+            console.error(err);
+            setError('Failed to sign in. Check your credentials.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white p-4 overflow-hidden relative">
+            {/* Ambient Background */}
+            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 p-8 rounded-3xl shadow-2xl relative z-10"
+            >
+                <div className="mb-8 text-center">
+                    <div className="w-12 h-12 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-purple-500/20">
+                        <ShieldCheck className="text-white w-6 h-6" />
+                    </div>
+                    <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                        Welcome Back
+                    </h2>
+                    <p className="text-white/40 mt-2 text-sm">
+                        Enter your SAP ID or Admin Email to continue
+                    </p>
+                </div>
+
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm flex items-center gap-2"
+                    >
+                        <span>!</span> {error}
+                    </motion.div>
+                )}
+
+                <form onSubmit={handleLogin} className="space-y-5">
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-white/50 uppercase tracking-wider ml-1">Identity</label>
+                        <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/30 group-focus-within:text-purple-400 transition-colors">
+                                <Mail className="h-5 w-5" />
+                            </div>
+                            <input
+                                type="text"
+                                value={identity}
+                                onChange={(e) => setIdentity(e.target.value)}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                                placeholder="SAP ID / Email"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-medium text-white/50 uppercase tracking-wider ml-1">Password</label>
+                        <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-white/30 group-focus-within:text-purple-400 transition-colors">
+                                <Lock className="h-5 w-5" />
+                            </div>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all"
+                                placeholder="••••••••"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm py-1">
+                        <label className="flex items-center gap-2 text-white/40 cursor-pointer hover:text-white/60 transition-colors">
+                            <input type="checkbox" className="rounded bg-white/10 border-white/10 text-purple-500 focus:ring-0 focus:ring-offset-0" />
+                            Remember me
+                        </label>
+                        <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">Forgot password?</a>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-medium py-3.5 rounded-xl transition-all shadow-lg shadow-purple-900/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                            <>
+                                Sign In <ArrowRight className="w-5 h-5" />
+                            </>
+                        )}
+                    </button>
+                </form>
+            </motion.div>
+
+            <div className="absolute bottom-8 text-center w-full text-white/20 text-xs">
+                © 2026 Antigravity System. All rights reserved.
+            </div>
+        </div>
+    );
+}

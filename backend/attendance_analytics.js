@@ -1,5 +1,14 @@
 /* ADDED BY ANTI-GRAVITY */
-import { query } from './db.js';
+/**
+ * attendance_analytics.js
+ * Core logic for calculating attendance stats, risks, and projections.
+ * REFACTORED: Uses Provider Pattern & Optimized for Batch Processing.
+ */
+
+import { PostgresProvider } from './providers/PostgresProvider.js';
+
+// Configuration
+const provider = new PostgresProvider();
 
 /**
  * Calculate detailed attendance analytics for a student in a subject.
@@ -8,117 +17,21 @@ import { query } from './db.js';
  */
 export async function calcAttendanceStats(studentId, subjectId) {
     try {
-        console.log(`[ANALYTICS] Calculating stats for Student: ${studentId}, Subject: ${subjectId}`);
+        // 1. Fetch Subject Context
+        const enrollments = await provider.getSubjectEnrollments(studentId);
+        console.log(`[calcAttendanceStats] Looking for '${subjectId}' in enrollments:`, enrollments.map(e => e.subject_id));
+        console.log(`[DEBUG] IDs:`, enrollments.map(e => ({ val: e.subject_id, len: e.subject_id.length, type: typeof e.subject_id })));
+        console.log(`[DEBUG] Target:`, { val: subjectId, len: subjectId.length, type: typeof subjectId });
 
-        // 1. Fetch Subject Details (Total Planned & Min Pct)
-        const subjectRes = await query(
-            'SELECT subject_id, name, total_classes, min_attendance_pct FROM subjects WHERE subject_id = $1',
-            [subjectId]
-        );
+        const subject = enrollments.find(s => String(s.subject_id).trim() === String(subjectId).trim());
 
-        if (subjectRes.rows.length === 0) {
-            throw new Error(`Subject not found: ${subjectId}`);
-        }
+        if (!subject) throw new Error(`Subject not found or not enrolled: ${subjectId}`);
 
-        const subject = subjectRes.rows[0];
-        const totalPlanned = subject.total_classes || 0;
-        const minPct = subject.min_attendance_pct || 75; // 75 is standard, not random.
+        // 2. Fetch Metrics
+        const metricsRows = await provider.getAttendanceMetrics([subjectId], studentId);
+        const metrics = metricsRows[0] || { conducted: 0, attended: 0, total_planned: 0 };
 
-        // 2. Fetch Conducted Sessions Count (STRICT TIME-BASED)
-        // User Rule: conducted = COUNT(sessions WHERE now() >= end_time)
-        // Note: 'sessions' has 'date' and 'end_time'. We need to combine them.
-        // Assuming end_time is time type and date is date type.
-
-        const conductedRes = await query(
-            `SELECT COUNT(*) as count 
-             FROM sessions 
-             WHERE subject_id = $1 
-               AND (date + end_time) <= CURRENT_TIMESTAMP`,
-            [subjectId]
-        );
-        const conducted = parseInt(conductedRes.rows[0].count, 10);
-
-        // 3. Fetch Attended Sessions Count
-        // strict check: valid attendance record AND session was actually conducted
-        const attendedRes = await query(
-            `SELECT COUNT(*) as count 
-             FROM attendance a 
-             JOIN sessions s ON a.session_id = s.session_id 
-             WHERE s.subject_id = $1 
-               AND a.student_id = $2 
-               AND a.present = true 
-               AND (s.date + s.end_time) <= CURRENT_TIMESTAMP`,
-            [subjectId, studentId]
-        );
-        const attended = parseInt(attendedRes.rows[0].count, 10);
-
-        // 4. Calculate Core Metrics
-        let percentage = 0;
-        if (conducted > 0) {
-            percentage = (attended / conducted) * 100;
-        }
-
-        const absentSoFar = conducted - attended;
-
-        // Max allowed absent based on Total Planned
-        const maxAllowedAbsent = Math.floor(totalPlanned * (1 - (minPct / 100)));
-        const absentLeft = Math.max(0, maxAllowedAbsent - absentSoFar);
-
-        // 5. Calculate Predictions
-        const percentIfAttend = ((attended + 1) / (conducted + 1)) * 100;
-        const percentIfMiss = (attended / (conducted + 1)) * 100;
-
-        // 6. Risk Level
-        let riskLevel = 'moderate';
-        if (percentage >= minPct + 3) {
-            riskLevel = 'low';
-        } else if (percentage < minPct) {
-            riskLevel = 'high';
-        }
-
-        // 7. Suggestions
-        let safeMissMessage = "";
-        if (absentLeft > 0) {
-            safeMissMessage = `You can miss ${absentLeft} more classes safely.`;
-        } else {
-            safeMissMessage = `You cannot miss any more classes. You are ${Math.abs(absentLeft)} classes over the limit.`;
-        }
-
-        // 8. Confidence Logic (STRICT DATA VOLUME BASED) (MATCHING lib/analytics.js)
-        const progress_pct = (conducted / totalPlanned) * 100;
-        let confidence = 'LOW';
-
-        if (conducted === 0) confidence = 'HIGH'; // Awaiting Data is technically high confidence state of emptiness
-        else if (progress_pct >= 20) confidence = 'HIGH';
-        else if (progress_pct >= 10) confidence = 'MODERATE';
-
-        // Safe Status: True if currently above minPct
-        const isSafe = percentage >= minPct;
-
-        const result = {
-            subject_id: subject.subject_id,
-            subject_name: subject.name,
-            total_planned: totalPlanned,
-            conducted,
-            attended,
-            percentage: parseFloat(percentage.toFixed(2)),
-            max_allowed_absent: maxAllowedAbsent,
-            absent_so_far: absentSoFar,
-            absent_left: absentLeft,
-            skip_next: {
-                attend: parseFloat(percentIfAttend.toFixed(2)),
-                miss: parseFloat(percentIfMiss.toFixed(2))
-            },
-            safe_miss_suggestions: {
-                can_miss_more: absentLeft,
-                message: safeMissMessage
-            },
-            risk_level: riskLevel,
-            confidence: confidence,
-            is_safe: isSafe
-        };
-
-        return result;
+        return computeStatsFromMetrics(subject, metrics);
 
     } catch (error) {
         console.error(`[ANALYTICS] Error calculating stats`, error);
@@ -127,94 +40,143 @@ export async function calcAttendanceStats(studentId, subjectId) {
 }
 
 /**
+ * Helper to compute PURE business logic from raw data.
+ * @param {Object} subject - { subject_name, min_attendance_pct, total_classes, ... }
+ * @param {Object} metrics - { conducted, attended, total_planned }
+ */
+function computeStatsFromMetrics(subject, metrics) {
+    const conducted = parseInt(metrics.conducted);
+    const attended = parseInt(metrics.attended);
+    const totalPlanned = metrics.total_planned > 0 ? parseInt(metrics.total_planned) : (subject.total_classes || 0); // Fallback
+    const minPct = subject.min_attendance_pct || 75;
+
+    // STRICT AUDIT: No guessing. 0 conducted = 0% known attendance (or N/A).
+    // We will separate "No Data" from "0%".
+    let percentage = 0;
+    if (conducted > 0) percentage = (attended / conducted) * 100;
+    else percentage = 0; // Default to 0, not 100.
+
+    const absentSoFar = conducted - attended;
+
+    // Max allowed absent based on Total Planned
+    const maxAllowedAbsent = Math.floor(totalPlanned * (1 - (minPct / 100)));
+    const absentLeft = Math.max(0, maxAllowedAbsent - absentSoFar);
+
+    // Calculate Predictions
+    const percentIfAttend = ((attended + 1) / (conducted + 1)) * 100;
+    const percentIfMiss = (attended / (conducted + 1)) * 100;
+
+    // Risk Level
+    let riskLevel = 'moderate';
+    if (percentage >= minPct + 3) riskLevel = 'low';
+    else if (percentage < minPct) riskLevel = 'high';
+
+    // Suggestions
+    let safeMissMessage = "";
+    if (absentLeft > 0) safeMissMessage = `You can miss ${absentLeft} more classes safely.`;
+    else safeMissMessage = `You cannot miss any more classes. You are ${Math.abs(absentLeft)} classes over the limit.`;
+
+    // Confidence Logic
+    const progress_pct = totalPlanned > 0 ? (conducted / totalPlanned) * 100 : 0;
+    let confidence = 'LOW';
+    if (conducted === 0) confidence = 'NO_DATA'; // New strict state
+    else if (progress_pct >= 20) confidence = 'HIGH';
+    else if (progress_pct >= 10) confidence = 'MODERATE';
+
+    // Safe Status
+    const isSafe = percentage >= minPct;
+
+    return {
+        subject_id: subject.subject_id,
+        subject_code: subject.subject_code || subject.code, // Pass through
+        subject_name: subject.subject_name || subject.name, // Handle variation
+        total_planned: totalPlanned,
+        conducted,
+        attended,
+        percentage: parseFloat(percentage.toFixed(2)),
+        max_allowed_absent: maxAllowedAbsent,
+        absent_so_far: absentSoFar,
+        absent_left: absentLeft,
+        skip_next: {
+            attend: parseFloat(percentIfAttend.toFixed(2)),
+            miss: parseFloat(percentIfMiss.toFixed(2))
+        },
+        safe_miss_suggestions: {
+            can_miss_more: absentLeft,
+            message: safeMissMessage
+        },
+        risk_level: riskLevel,
+        confidence: confidence,
+        is_safe: isSafe
+    };
+}
+
+/**
  * Get analytics overview for all enrolled subjects
+ * OPTIMIZED: Batch Fetch
  * @param {string} studentId 
  */
 export async function getStudentAnalyticsOverview(studentId) {
-    // 1. Get enrolled subjects
-    // Uses the 'students.course_id' -> 'course_subjects' relation OR 'enrollments' table if we had strictly that.
-    // The previous implementation added 'enrollments' table but also relied on 'course_subjects'.
-    // Let's assume we look for subjects derived from enrollments + course mapping.
-    // For simplicity and robustness, let's query the enrollments table first, falling back to course_subjects.
+    try {
+        const enrollments = await provider.getSubjectEnrollments(studentId);
+        if (!enrollments || enrollments.length === 0) return [];
 
-    // Actually, looking at previous steps (Step 532 seed), we inserted into 'enrollments'.
-    // So let's rely on 'enrollments'.
+        const subjectIds = enrollments.map(s => s.subject_id);
+        const metricsRows = await provider.getAttendanceMetrics(subjectIds, studentId);
 
-    const enrollmentsRes = await query(
-        'SELECT subject_id FROM enrollments WHERE student_id = $1',
-        [studentId]
-    );
+        // Map metrics by SubjectID for O(1) lookup
+        const metricsMap = {};
+        metricsRows.forEach(m => metricsMap[m.subject_id] = m);
 
-    let subjects = enrollmentsRes.rows.map(r => r.subject_id);
+        const results = enrollments.map(sub => {
+            const metrics = metricsMap[sub.subject_id] || { conducted: 0, attended: 0, total_planned: 0 };
+            return computeStatsFromMetrics(sub, metrics);
+        });
 
-    // ANTI-GRAVITY: Removed fallback to course_subjects.
-    // Strict adherence to 'enrollments' table (Single Source of Truth).
-    // If subjects.length is 0, the student sees no data until auto-enroll runs.
-    if (subjects.length === 0) {
-        console.warn(`[ANALYTICS] Student ${studentId} has no enrollments.`);
+        return results;
+    } catch (e) {
+        console.error(`[ANALYTICS] Overview Calculation Error`, e);
+        return [];
     }
-
-    const results = [];
-    for (const subId of subjects) {
-        try {
-            const stats = await calcAttendanceStats(studentId, subId);
-            results.push(stats);
-        } catch (e) {
-            console.error(`Failed to get stats for ${subId}`, e);
-            // push simplified error object or skip?
-            // pushing partial info might be better but for now let's skip
-        }
-    }
-
-    return results;
 }
 
 /**
  * Calculate Momentum: Consecutive days with >=1 conducted session.
- * Strict Rule: "If no classes today -> momentum = 0"
+ * @param {string} studentId
  */
 export async function calculateMomentum(studentId) {
     try {
-        // Get all dates with at least one CONDUCTED session for this student's subjects
-        // We join enrollments -> subjects -> sessions
-        const res = await query(
-            `SELECT DISTINCT date::text as date
-             FROM sessions s
-             JOIN enrollments e ON s.subject_id = e.subject_id
-             WHERE e.student_id = $1
-               AND (s.date + s.end_time) <= CURRENT_TIMESTAMP
-             ORDER BY date DESC`,
-            [studentId]
-        );
+        const history = await provider.getDetailedSessionHistory(studentId);
+        // History is sorted Date ASC
 
-        const dates = res.rows.map(r => r.date); // 'YYYY-MM-DD'
+        if (history.length === 0) return 0;
+
+        // Extract Unique Dates in Descending Order (Revoke Logic)
+        const uniqueDatesSet = new Set(history.map(h => {
+            // Assuming h.date is a Date object or string. 
+            // PostgresProvider returns `s.date` (likely Date object).
+            const d = new Date(h.date);
+            return d.toISOString().split('T')[0];
+        }));
+
+        const dates = Array.from(uniqueDatesSet).sort((a, b) => new Date(b) - new Date(a)); // Descending
 
         if (dates.length === 0) return 0;
 
-        // Check strictly if today is present
+        // Strict Rule: If today (server time) has no conducted classes, momentum is 0?
+        // Let's stick to the previous verified logic.
         const todayStr = new Date().toISOString().split('T')[0];
-        // Note: Server time might differ slightly in "now()", but date string comparison is safe for "Day".
-        // Actually, let's use the DB's current date to be 100% consistent with "today".
-        // But for JS logic, let's assumes dates[0] is the most recent.
-
-        // Strict Rule: If the most recent conducted session is NOT today, momentum is 0.
-        // Wait, what if today's classes haven't happened *yet*?
-        // "Momentum = consecutive days with >=1 conducted session"
-        // "If no classes today -> momentum = 0"
-        // This implies you lose momentum if you haven't attended *yet* today? 
-        // Or if there ARE NO classes today?
-        // Let's assume strict literal meaning: If today has no *conducted* session, momentum = 0.
-        // This effectively means momentum resets every morning until the first class ends.
-        // That seems harsh but compliant with "If no classes today -> momentum = 0".
 
         if (dates[0] !== todayStr) {
+            // Need to verify if 'today' works with timezone. 
+            // Ideally we check if "Last Active Date" == "Today".
+            // If not today, momentum breaks.
             return 0;
         }
 
         let momentum = 1;
         let currentDate = new Date(dates[0]);
 
-        // Check backwards
         for (let i = 1; i < dates.length; i++) {
             const prevDate = new Date(dates[i]);
 
@@ -226,10 +188,9 @@ export async function calculateMomentum(studentId) {
                 momentum++;
                 currentDate = prevDate;
             } else {
-                break; // Gap found
+                break;
             }
         }
-
         return momentum;
 
     } catch (e) {
@@ -250,3 +211,4 @@ export function calculateOverallStatus(statsArray) {
         danger_subjects: dangerSubjects
     };
 }
+

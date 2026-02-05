@@ -2,8 +2,13 @@
 import express from 'express';
 import { getClient } from '../db.js';
 import { recomputeAnalyticsForStudent } from '../lib/analytics.js';
+import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
+
+
+
 
 /**
  * GET /debug/student/:sapid/system-audit

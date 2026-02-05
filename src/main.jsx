@@ -5,6 +5,7 @@ import { StoreProvider } from './context/Store'
 import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 
+console.log("[DEBUG] Mounting React App...");
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <ErrorBoundary>

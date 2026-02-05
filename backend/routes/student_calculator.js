@@ -127,4 +127,27 @@ router.post('/attendance-calculator', authenticateToken, async (req, res) => {
     }
 });
 
+
+/**
+ * POST /student/project
+ * Student can upload/submit a project status.
+ */
+router.post('/project', authenticateToken, async (req, res) => {
+    const { title, description, link } = req.body;
+    if (!title || !link) return res.status(400).json({ error: "Title and Link are required" });
+
+    try {
+        const client = await getClient();
+        // Insert
+        await client.query(
+            "INSERT INTO student_projects (student_id, title, description, link) VALUES ($1, $2, $3, $4)",
+            [req.user.student_id, title, description, link]
+        );
+        client.release();
+        res.json({ success: true, message: "Project submitted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default router;

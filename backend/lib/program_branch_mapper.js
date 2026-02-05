@@ -49,5 +49,10 @@ export function normalizeBranch(input) {
     // Cybersecurity
     if (["cyber security", "cybersecurity", "cys"].includes(v)) return "cys";
 
+    // Management / Law / Pharma (Explicit Preservers)
+    if (["finance", "marketing", "hr", "operations", "analytics"].includes(v)) return v;
+    if (["pharmacy"].includes(v)) return "pharmacy";
+    if (["law"].includes(v)) return "law";
+
     return input.toLowerCase(); // Default to Lowercase for strictly normalized keys
 }

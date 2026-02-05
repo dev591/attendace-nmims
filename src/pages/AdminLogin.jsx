@@ -4,23 +4,40 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import { Shield, Lock, AlertCircle } from 'lucide-react';
+import { useStore } from '../context/Store';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { login } = useStore(); // Access global store
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Simple client-side check sufficient for this demo level
-        // In prod, this would hit an /auth/admin endpoint
-        if (password === 'antigravity') {
-            localStorage.setItem('admin_authenticated', 'true');
-            // Also set the pw for API calls
-            localStorage.setItem('admin_pw', password);
-            navigate('/admin/dashboard');
-        } else {
-            setError('Invalid Admin Password');
+        setError('');
+
+        try {
+            const res = await fetch('http://localhost:4000/auth/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                // Correctly Login to Store
+                login({
+                    name: "System Admin",
+                    sapid: "ADMIN",
+                    role: "admin",
+                    token: data.token
+                });
+                navigate('/admin/dashboard');
+            } else {
+                setError(data.error || 'Login failed');
+            }
+        } catch (err) {
+            setError('Connection failed');
         }
     };
 

@@ -1,3 +1,17 @@
 course_id,name,year,dept
-C_CS_SEM3,B.Tech CS Semester 3,2,Computer Science
-C_IT_SEM3,B.Tech IT Semester 3,2,Information Technology
+C_CS_SEM1,B.Tech CS Sem 1,2023,CS
+C_CS_SEM2,B.Tech CS Sem 2,2023,CS
+C_CS_SEM3,B.Tech CS Sem 3,2024,CS
+C_CS_SEM4,B.Tech CS Sem 4,2024,CS
+C_CS_SEM5,B.Tech CS Sem 5,2025,CS
+C_CS_SEM6,B.Tech CS Sem 6,2025,CS
+C_CS_SEM7,B.Tech CS Sem 7,2026,CS
+C_CS_SEM8,B.Tech CS Sem 8,2026,CS
+C_CSE_SEM1,B.Tech CSE Sem 1,2023,CSE
+C_CSE_SEM2,B.Tech CSE Sem 2,2023,CSE
+C_CSE_SEM3,B.Tech CSE Sem 3,2024,CSE
+C_CSE_SEM4,B.Tech CSE Sem 4,2024,CSE
+C_CSE_SEM5,B.Tech CSE Sem 5,2025,CSE
+C_CSE_SEM6,B.Tech CSE Sem 6,2025,CSE
+C_CSE_SEM7,B.Tech CSE Sem 7,2026,CSE
+C_CSE_SEM8,B.Tech CSE Sem 8,2026,CSE

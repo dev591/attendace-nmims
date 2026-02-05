@@ -5,14 +5,17 @@ import { parse } from 'csv-parse/sync';
 import xlsx from 'xlsx';
 
 /**
- * Parses and processes a schedule upload file.
- * Expects columns: program, semester, subject_code, date (YYYY-MM-DD), start_time (HH:MM), end_time (HH:MM), location (optional), faculty (optional)
- * @param {Object} file - Multer file object
- * @returns {Promise<Object>} - Result summary { success: boolean, count: number, errors: [] }
+ * GOD-LEVEL SCHEDULE UPLOADER
+ * Rules:
+ * 1. Inputs: Weekly Timetable (Day, Time, Subject, etc.)
+ * 2. Output: Generated Sessions from Jan 02 2026 to May 31 2026
+ * 3. Scoping: Program, Branch, Semester, Section strict matching.
+ * 4. Weighting: LAB = 2 classes, THEORY = 1.
  */
-/**
- * Helper for safe logging of rejections
- */
+
+const SEMESTER_START = '2026-01-02';
+const SEMESTER_END = '2026-05-31';
+
 const logRejection = (resObject, logEntry) => {
     try {
         resObject.skipped_sessions++;
@@ -24,242 +27,296 @@ const logRejection = (resObject, logEntry) => {
     }
 };
 
-export async function processScheduleUpload(file) {
+export async function processScheduleUpload(file, ignoredScope = {}) {
     const client = await getClient();
     const results = {
         inserted_sessions: 0,
         skipped_sessions: 0,
         reasons: {},
-        errors: [] // Detailed log for transparency
+        errors: []
     };
 
-
     try {
-        const filePath = file.path;
-        let records = [];
-
-        // 1. Parse File
-        const isExcel = file.mimetype.includes('spreadsheet') || file.mimetype.includes('excel') || file.originalname.match(/\.(xlsx|xls)$/i);
-        const isCsv = file.mimetype.includes('csv') || file.originalname.match(/\.csv$/i);
-
-        try {
-            if (isExcel) {
-                const buf = fs.readFileSync(filePath);
-                const workbook = xlsx.read(buf, { type: 'buffer' });
-                const sheetName = workbook.SheetNames[0];
-                records = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-            } else {
-                // Default to CSV behavior for text/csv or fallback
-                const content = fs.readFileSync(filePath);
-                records = parse(content, {
-                    columns: true,
-                    skip_empty_lines: true,
-                    trim: true
-                });
-            }
-        } catch (parseError) {
-            throw new Error(`File Validation Failed: Unable to parse file. Ensure it is a valid CSV or Excel file. (${parseError.message})`);
-        }
-
-        // 2. Normalize Headers
-        records = records.map(r => {
-            const normalized = {};
-            Object.keys(r).forEach(k => {
-                normalized[k.toLowerCase().trim().replace(/ /g, '_')] = r[k];
-            });
-            return normalized;
-        });
-
         await client.query('BEGIN');
 
-        for (const [index, row] of records.entries()) {
-            const rowIndex = index + 2; // Assuming header row is 1
-            const rejectionLog = { row: rowIndex, status: 'REJECTED' };
+        // 1. Parse File 
+        const filePath = file.path;
+        let workbook;
+        let isExcel = file.mimetype.includes('spreadsheet') || file.mimetype.includes('excel') || file.originalname.match(/\.(xlsx|xls)$/i);
 
-            // 3. Normalize & Basic Validation
-            let program = row.program;
-            if (typeof program === 'string') program = program.trim();
+        if (isExcel) {
+            const buf = fs.readFileSync(filePath);
+            workbook = xlsx.read(buf, { type: 'buffer' });
+        }
 
-            let subject_code = row.subject_code;
-            if (subject_code !== undefined && subject_code !== null) {
-                subject_code = String(subject_code).trim().toUpperCase();
+        // PRE-FETCH Subject Map (Once for all sheets)
+        const subRes = await client.query('SELECT code, subject_id FROM subjects');
+        const subjectMap = new Map();
+        subRes.rows.forEach(s => subjectMap.set(s.code.toUpperCase(), s.subject_id));
+
+        // Generate Date Range (Once)
+        const dateMap = new Map();
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        for (let d = new Date(SEMESTER_START); d <= new Date(SEMESTER_END); d.setDate(d.getDate() + 1)) {
+            const dayName = days[d.getDay()];
+            if (!dateMap.has(dayName.toLowerCase())) dateMap.set(dayName.toLowerCase(), []);
+            dateMap.get(dayName.toLowerCase()).push(d.toISOString().split('T')[0]);
+        }
+
+        const sheets = workbook ? workbook.SheetNames : ['CSV_DATA'];
+
+        for (const sheetName of sheets) {
+            console.log(`[Schedule] Scanning Sheet: ${sheetName}`);
+
+            let records = [];
+            if (workbook) {
+                records = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            } else {
+                // CSV Fallback
+                const content = fs.readFileSync(filePath);
+                records = parse(content, { columns: true, skip_empty_lines: true, trim: true });
             }
 
-            let semester = row.semester;
+            if (records.length === 0) continue;
+
+            // 2. Normalize Headers
+            records = records.map(r => {
+                const normalized = {};
+                Object.keys(r).forEach(k => {
+                    const cleanKey = k.toLowerCase().trim().replace(/ /g, '_');
+                    normalized[cleanKey] = r[k];
+                });
+                return normalized;
+            });
+
+            // 3. EXTRACT SCOPE FROM ROW 1 (AUTO-INFERENCE)
+            const firstRow = records[0];
+
+            // Allow Header Hunting? (MVP: Stick to Row 1 for Timetable, it's usually cleaner)
+            // If Row 1 is garbage, try Row 2?
+            // Let's assume Row 1 for now to avoid complexity, usually Timetables are strict.
+
+            const SCHOOL_MAP = {
+                "mba": "MBA", "pharma": "PHARMA", "law": "LAW",
+                "btech": "STME", "engineering": "STME", "mpstme": "STME", "b.tech": "STME"
+            };
+
+            let school = firstRow.school || firstRow.school_name || firstRow.institute;
+            const program = firstRow.program || firstRow.course;
+            let section = firstRow.section || firstRow.division || null;
+            let semester = firstRow.semester || firstRow.sem || firstRow.term;
+
+            // INFERENCE: SCHOOL
+            if (!school && program) {
+                const progKey = program.toLowerCase().replace(/[^a-z]/g, '');
+                for (const [key, val] of Object.entries(SCHOOL_MAP)) {
+                    if (progKey.includes(key)) {
+                        school = val;
+                        break;
+                    }
+                }
+            }
+
+            // VALIDATION: Skip invalid sheets instead of failing hard?
+            // If a sheet lacks Program/Sem/Subject, it might be a "Legend" sheet.
+            if (!program || !semester) {
+                console.warn(`[Schedule] Skipping sheet '${sheetName}': Missing Program/Semester in Row 1.`);
+                continue;
+            }
+
+            if (!school) school = 'STME';
+
+            // Normalize Semester
             if (typeof semester === 'string') {
                 const digits = semester.replace(/\D/g, '');
                 semester = digits ? parseInt(digits) : NaN;
-            } else if (typeof semester === 'number') {
-                semester = Math.floor(semester);
             }
 
-            // Robust Date Parsing
-            let date = row.date;
-            if (typeof date === 'number') {
-                const d = new Date(Math.round((date - 25569) * 86400 * 1000));
-                date = d.toISOString().split('T')[0];
-            } else if (typeof date === 'string') {
-                date = date.trim();
-            }
+            console.log(`[Schedule] Processing Scope for '${sheetName}': ${school} | ${program} | Sem ${semester}`);
 
-            // Robust Time Parsing
-            const normalizeTime = (t) => {
-                if (typeof t === 'number') {
-                    const totalSeconds = Math.round(t * 86400);
-                    const hours = Math.floor(totalSeconds / 3600);
-                    const minutes = Math.floor((totalSeconds % 3600) / 60);
-                    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                }
-                return t?.toString().trim();
-            };
-
-            const start_time = normalizeTime(row.start_time);
-            const end_time = normalizeTime(row.end_time);
-
-            if (!program || !subject_code || !semester || !date || !start_time || !end_time) {
-                rejectionLog.reason = 'MISSING_FIELDS';
-                rejectionLog.details = `Required: program, semester, subject_code, date, start_time, end_time. Got: ${JSON.stringify({ program, semester, subject_code })}`;
-                logRejection(results, rejectionLog);
-                continue;
-            }
-
-            if (isNaN(semester)) {
-                rejectionLog.reason = 'INVALID_SEMESTER';
-                rejectionLog.details = `Parsed semester is NaN. Original: ${row.semester}`;
-                logRejection(results, rejectionLog);
-                continue;
-            }
-
-            // 4. Strict Curriculum Check
-            console.log(`[Validation] Checking: Program='${program}', Sem=${semester}, Code='${subject_code}'`);
-
-            const currRes = await client.query(`
-                SELECT s.subject_id 
-                FROM subjects s
-                JOIN curriculum c ON s.code = c.subject_code
-                WHERE s.code = $1 
-                AND LOWER(c.program) = LOWER($2) 
-                AND c.semester = $3
-                LIMIT 1
-            `, [subject_code, program, semester]);
-
-            if (currRes.rows.length === 0) {
-                const progCheck = await client.query('SELECT 1 FROM curriculum WHERE LOWER(program) = LOWER($1) LIMIT 1', [program]);
-                if (progCheck.rowCount === 0) {
-                    rejectionLog.reason = 'PROGRAM_NOT_FOUND';
-                    logRejection(results, rejectionLog);
-                    continue;
-                }
-
-                const subCheck = await client.query('SELECT 1 FROM subjects WHERE code = $1 LIMIT 1', [subject_code]);
-                if (subCheck.rowCount === 0) {
-                    rejectionLog.reason = 'SUBJECT_CODE_NOT_FOUND_GLOBALLY';
-                    rejectionLog.details = `Code '${subject_code}' not found in master subjects.`;
-                    logRejection(results, rejectionLog);
-                    continue;
-                }
-
-                console.warn(`[Validation Fail] Curriculum Mismatch: ${subject_code} not in ${program} Sem ${semester}`);
-                rejectionLog.reason = 'CURRICULUM_MISMATCH';
-                rejectionLog.details = `Subject ${subject_code} not found in ${program} Sem ${semester}. Ensure Program/Semester match exactly.`;
-                logRejection(results, rejectionLog);
-                continue;
-            }
-
-            const subject_id = currRes.rows[0].subject_id;
-            const sessionId = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-            // Check for duplicates (same subject, date, time)
-            // Note: Schema constraints might handle this, but let's be explicit
-            const dupCheck = await client.query(`
-                SELECT 1 FROM sessions 
-                WHERE subject_id = $1 AND date = $2 AND start_time = $3
-            `, [subject_id, date, start_time]);
-
-            if (dupCheck.rowCount > 0) {
-                rejectionLog.reason = 'DUPLICATE_SESSION';
-                logRejection(results, rejectionLog);
-                continue;
-            }
-
+            // 4. CLEANUP OLD SESSIONS for this Scope
             await client.query(`
-                INSERT INTO sessions (session_id, subject_id, date, start_time, end_time, location, status)
-                VALUES ($1, $2, $3, $4, $5, $6, 'scheduled')
-            `, [sessionId, subject_id, date, start_time, end_time, row.location || 'TBA']);
+                DELETE FROM sessions 
+                WHERE school = $1 
+                AND program = $2
+                AND semester = $3
+                AND section IS NOT DISTINCT FROM $4
+                AND date > CURRENT_DATE
+            `, [school, program, semester, section]);
 
-            results.inserted_sessions++;
-            // Optional: Log success for debug levels
-            // console.log(`Row ${rowIndex} ACCEPTED: ${program} Sem ${semester} - ${subject_code}`);
+            // 5. PROCESS ROWS
+            for (const [index, row] of records.entries()) {
+                const rowIndex = index + 2;
+                const rejectionLog = { sheet: sheetName, row: rowIndex, status: 'REJECTED' };
+
+                if (!row.subject_code || !row.start_time || !row.end_time) {
+                    rejectionLog.reason = 'MISSING_CORE_FIELDS';
+                    logRejection(results, rejectionLog);
+                    continue;
+                }
+
+                if (!row.day && !row.date) {
+                    rejectionLog.reason = 'MISSING_TIMING';
+                    logRejection(results, rejectionLog);
+                    continue;
+                }
+
+                const subjectCode = row.subject_code.trim().toUpperCase();
+                let subjectId = null;
+
+                if (!subjectMap.has(subjectCode)) {
+                    // AUTO-CREATE SUBJECT
+                    try {
+                        const name = row.subject_name || `Subject ${subjectCode}`;
+                        await client.query(`
+                            INSERT INTO subjects (subject_id, code, name)
+                            VALUES ($1, $2, $3)
+                            ON CONFLICT (code) DO NOTHING
+                        `, [subjectCode, subjectCode, name]);
+                        subjectMap.set(subjectCode, subjectCode);
+                        subjectId = subjectCode;
+                    } catch (e) {
+                        rejectionLog.reason = 'SUBJECT_CREATION_FAILED';
+                        logRejection(results, rejectionLog);
+                        continue;
+                    }
+                } else {
+                    subjectId = subjectMap.get(subjectCode);
+                }
+
+                // DATES
+                let targetDates = [];
+                if (row.date) {
+                    let dStr = row.date;
+                    if (!isNaN(Date.parse(dStr))) {
+                        targetDates = [new Date(dStr).toISOString().split('T')[0]];
+                    } else {
+                        rejectionLog.reason = 'INVALID_DATE';
+                        logRejection(results, rejectionLog);
+                        continue;
+                    }
+                } else {
+                    const dayName = (row.day || '').trim().toLowerCase();
+                    targetDates = dateMap.get(dayName);
+                    if (!targetDates || targetDates.length === 0) {
+                        rejectionLog.reason = 'INVALID_DAY';
+                        logRejection(results, rejectionLog);
+                        continue;
+                    }
+                }
+
+                const normalizedType = (row.session_type || 'Lecture').toUpperCase();
+                const conductedCount = (normalizedType.includes('LAB')) ? 2 : 1;
+                let counts = true;
+                if (row.counts_for_attendance !== undefined) {
+                    const val = String(row.counts_for_attendance).toLowerCase();
+                    counts = (val === 'true' || val === 'yes' || val === '1');
+                }
+
+                for (const date of targetDates) {
+                    // Unique ID
+                    const rawId = `${subjectCode}_${date}_${row.start_time.replace(/[:\s]/g, '')}_${section || 'ALL'}`;
+                    const sessionId = `sess_${rawId.replace(/[^a-zA-Z0-9]/g, '')}`;
+
+                    let status = 'scheduled';
+                    if (date < new Date().toISOString().split('T')[0]) status = 'conducted';
+
+                    await client.query(`
+                        INSERT INTO sessions (
+                            session_id, subject_id, date, start_time, end_time, location, 
+                            status, type, session_type, counts_for_attendance, conducted_count,
+                            school, program, semester, branch, section
+                        ) VALUES (
+                            $1, $2, $3, $4, $5, $6,
+                            $7, $8, $8, $9, $10,
+                            $11, $12, $13, $14, $15
+                        )
+                        ON CONFLICT (session_id) DO UPDATE SET
+                            location = EXCLUDED.location,
+                            start_time = EXCLUDED.start_time,
+                            end_time = EXCLUDED.end_time;
+                    `, [
+                        sessionId, subjectId, date,
+                        row.start_time, row.end_time, row.location,
+                        status, normalizedType, counts, conductedCount,
+                        school, program, semester, null, section
+                    ]);
+                    results.inserted_sessions++;
+                }
+            }
         }
 
         await client.query('COMMIT');
-
-        // Clean up temp file
         try { fs.unlinkSync(filePath); } catch (e) { }
-
         return results;
 
     } catch (err) {
         await client.query('ROLLBACK');
-        console.error("Schedule Upload Critical Failure:", err);
-        throw err; // Let route handle 500
+        console.error("Schedule Generation Failure:", err);
+        throw err;
     } finally {
         client.release();
     }
 }
 
-
 /**
- * Generates a pre-filled Excel template for a specific Program & Semester.
- * @param {string} program 
- * @param {number} semester 
- * @returns {Promise<Buffer>} Excel file buffer
- */
+         * Generates what the Admin UI calls "Official Template"
+         * returns a buffer (Excel file)
+         */
 export async function generateTimetableTemplate(program, semester) {
     const client = await getClient();
     try {
-        // Fetch subjects from Curriculum
+        // 1. Get Subjects for this specific Program + Sem
+        // Note: Curriculum table must be accurate
         const res = await client.query(`
-            SELECT subject_code, subject_name 
+            SELECT subject_name, code, credits 
             FROM curriculum 
-            WHERE LOWER(program) = LOWER($1) AND semester = $2
-            ORDER BY subject_code
+            WHERE program = $1 
+            AND semester = $2
+            ORDER BY subject_name
         `, [program, semester]);
 
-        let data = [];
-        if (res.rows.length > 0) {
-            // Pre-fill rows for each subject to help the admin
-            data = res.rows.map(s => ({
-                program: program,
-                semester: semester,
-                subject_code: s.subject_code,
-                subject_name: s.subject_name, // Helper column, ignored by parser
-                date: 'YYYY-MM-DD',
-                start_time: '09:00',
-                end_time: '10:00',
-                location: 'Room 101'
-            }));
-        } else {
-            // Empty template if no curriculum found
-            data = [{
-                program: program,
-                semester: semester,
-                subject_code: '',
-                subject_name: 'No subjects found in curriculum',
-                date: 'YYYY-MM-DD',
-                start_time: '09:00',
-                end_time: '10:00',
-                location: ''
-            }];
+        // Default subjects if none found (fallback)
+        let subjects = res.rows;
+        if (subjects.length === 0) {
+            subjects = [
+                { code: 'CS101', subject_name: 'Example Subject 1' },
+                { code: 'CS102', subject_name: 'Example Subject 2' },
+            ];
         }
 
-        const worksheet = xlsx.utils.json_to_sheet(data);
-        const workbook = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(workbook, worksheet, "Timetable Template");
+        // 2. Create Header Row (God Level Specs)
+        const headers = [
+            'School', 'Program', 'Year', 'Semester', 'Section',
+            'Day', 'Start Time', 'End Time',
+            'Subject Code', 'Session Type', 'Venue'
+        ];
 
-        return xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+        // 3. Create Sample Rows
+        // Just fill one row as example
+        const sampleRow = {
+            'School': 'MPSTME',
+            'Program': program || 'B.Tech',
+            'Year': Math.ceil((semester || 1) / 2),
+            'Semester': semester || 1,
+            'Section': 'A',
+            'Day': 'Monday',
+            'Start Time': '09:00',
+            'End Time': '10:00',
+            'Subject Code': subjects[0]?.code || 'SUB123',
+            'Session Type': 'THEORY', // or LAB
+            'Venue': 'CR-501'
+        };
+
+        // 4. Build Sheet
+        const ws = xlsx.utils.json_to_sheet([sampleRow], { header: headers });
+        const wb = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(wb, ws, "Timetable_Template");
+
+        return xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
 
     } finally {
         client.release();
     }
 }
+

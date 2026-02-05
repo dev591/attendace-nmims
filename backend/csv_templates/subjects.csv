@@ -1,5 +1,5 @@
-subject_id,code,name,credits
-SUB01,DS101,Data Structures,4
-SUB02,AL102,Algorithms,4
-SUB03,DB103,Database Systems,3
-SUB04,OS104,Operating System,3
+subject_id,code,name,total_classes,min_attendance_pct
+SUB01,CS101,Advanced Java,40,75
+SUB02,PH101,Organic Chemistry,30,80
+SUB03,MB101,Business Stats,35,70
+SUB04,CS102,Data Structures,40,75
