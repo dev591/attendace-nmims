@@ -6,7 +6,7 @@ dotenv.config();
 
 // Use the same Redis connection as IORedis/Socket.IO if possible, 
 // or let BullMQ handle its own connection params.
-const connection = {
+const connection = process.env.REDIS_URL ? process.env.REDIS_URL : {
     host: process.env.REDIS_HOST || 'localhost',
     port: process.env.REDIS_PORT || 6379,
 };
