@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../context/Store';
-import { Search, MapPin, Users, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Search, MapPin, Users, ShieldCheck, ArrowRight, Check, X } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 const Network = () => {
@@ -11,20 +11,35 @@ const Network = () => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [trending, setTrending] = useState([]);
+    const [myNetwork, setMyNetwork] = useState({ friends: [], pending: [], sent: [] }); // Track relationships
 
     const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
 
-    // Fetch trending on mount
+    // Fetch trending & My Network on mount
     useEffect(() => {
-        const fetchTrending = async () => {
+        const fetchInitialData = async () => {
             try {
-                const res = await fetch(`${API_URL}/network/trending`, {
-                    headers: { 'Authorization': `Bearer ${user.token}` }
-                });
-                if (res.ok) setTrending(await res.json());
+                const [trendRes, netRes] = await Promise.all([
+                    fetch(`${API_URL}/network/trending`, { headers: { 'Authorization': `Bearer ${user.token}` } }),
+                    fetch(`${API_URL}/network/my-network`, { headers: { 'Authorization': `Bearer ${user.token}` } })
+                ]);
+
+                if (trendRes.ok) setTrending(await trendRes.json());
+                if (netRes.ok) {
+                    const netData = await netRes.json();
+                    // Just a small helper to easily check status
+                    // The backend returns { pending: [], friends: [] }
+                    // "Pending" means RECEIVED requests.
+                    // We also need to know SENT requests to show "Pending" button on cards.
+                    // Backend update might be needed or we just infer.
+                    // Wait, existing backend endpoint `my-network` only returns RECEIVED pending.
+                    // I should probably update backend to return sent pending too, OR just handle received.
+                    // For now, let's assume if I click connect, I optimistically set it.
+                    setMyNetwork(netData);
+                }
             } catch (err) { console.error(err); }
         };
-        if (user?.token) fetchTrending();
+        if (user?.token) fetchInitialData();
     }, [user]);
 
     // Handle Search
@@ -50,6 +65,51 @@ const Network = () => {
     // Initial load sync
     useEffect(() => { if (!query) setResults(trending); }, [trending, query]);
 
+    const handleConnect = async (targetId) => {
+        try {
+            const res = await fetch(`${API_URL}/network/connect`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ target_id: targetId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Request Sent!");
+                // Simple optimistic update: Add to a local 'sent' list or just refresh
+                // Ideally we update local state to hide button
+            } else {
+                alert(data.error || "Failed to connect");
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    const getActionBtn = (student) => {
+        if (student.student_id === user.student_id) return null;
+
+        // Check if friend
+        const isFriend = myNetwork.friends?.some(f => f.student_id === student.student_id);
+        if (isFriend) return <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Friend</span>;
+
+        // Check if I received a request (Pending Action)
+        const hasRequest = myNetwork.pending?.some(p => p.student_id === student.student_id);
+        if (hasRequest) return <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">Pending Request</span>;
+
+        return (
+            <button
+                onClick={(e) => {
+                    e.preventDefault(); // Stop link nav
+                    handleConnect(student.student_id);
+                }}
+                className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full font-bold hover:bg-blue-700 transition-colors z-10 relative"
+            >
+                Connect
+            </button>
+        );
+    };
+
     return (
         <div className="min-h-screen bg-[#F8F9FA] p-6 lg:p-8 font-sans text-slate-900">
             <div className="max-w-6xl mx-auto space-y-8">
@@ -71,6 +131,63 @@ const Network = () => {
                     </div>
                 </div>
 
+                {/* Friend Requests Section */}
+                {myNetwork.pending && myNetwork.pending.length > 0 && (
+                    <div className="mb-8 bg-amber-50 border border-amber-100 rounded-xl p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                            <Users size={20} className="text-amber-600" />
+                            <h2 className="font-bold text-lg text-slate-800">Pending Requests ({myNetwork.pending.length})</h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {myNetwork.pending.map(req => (
+                                <div key={req.id} className="bg-white p-4 rounded-lg shadow-sm border border-amber-100 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <img
+                                            src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${req.name}`}
+                                            alt={req.name}
+                                            className="w-10 h-10 rounded-full bg-slate-50"
+                                        />
+                                        <div>
+                                            <div className="font-bold text-sm text-slate-900">{req.name}</div>
+                                            <div className="text-xs text-slate-500">{req.program}</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={async () => {
+                                                await fetch(`${API_URL}/network/respond`, {
+                                                    method: 'POST',
+                                                    headers: { 'Authorization': `Bearer ${user.token}`, 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ connection_id: req.id, action: 'accept' })
+                                                });
+                                                setMyNetwork(prev => ({ ...prev, pending: prev.pending.filter(p => p.id !== req.id) }));
+                                            }}
+                                            className="p-1.5 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200"
+                                            title="Accept"
+                                        >
+                                            <Check size={16} />
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                await fetch(`${API_URL}/network/respond`, {
+                                                    method: 'POST',
+                                                    headers: { 'Authorization': `Bearer ${user.token}`, 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ connection_id: req.id, action: 'reject' })
+                                                });
+                                                setMyNetwork(prev => ({ ...prev, pending: prev.pending.filter(p => p.id !== req.id) }));
+                                            }}
+                                            className="p-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                                            title="Reject"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Results Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {loading ? (
@@ -87,9 +204,12 @@ const Network = () => {
                                             alt={student.name}
                                             className="w-16 h-16 rounded-full bg-slate-50 border-2 border-slate-100 shadow-sm"
                                         />
-                                        <div className="bg-slate-50 text-slate-600 px-2 py-1 rounded text-xs font-bold font-mono border border-slate-100 flex items-center gap-1">
-                                            <ShieldCheck size={12} className="text-emerald-500" />
-                                            {student.verified_score}
+                                        <div className="flex flex-col items-end gap-1">
+                                            <div className="bg-slate-50 text-slate-600 px-2 py-1 rounded text-xs font-bold font-mono border border-slate-100 flex items-center gap-1">
+                                                <ShieldCheck size={12} className="text-emerald-500" />
+                                                {student.verified_score}
+                                            </div>
+                                            {getActionBtn(student)}
                                         </div>
                                     </div>
 

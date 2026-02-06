@@ -22689,3 +22689,147 @@
 [2026-02-04T12:43:23.347Z] Profile found: false
 [2026-02-05T11:08:20.391Z] START Recompute for ADMIN
 [2026-02-05T11:08:20.501Z] Profile found: false
+[2026-02-05T11:17:25.984Z] START Recompute for ADMIN
+[2026-02-05T11:17:26.071Z] Profile found: false
+[2026-02-05T11:28:52.693Z] START Recompute for ADMIN
+[2026-02-05T11:28:53.109Z] Profile found: false
+[2026-02-05T11:28:53.363Z] START Recompute for ADMIN
+[2026-02-05T11:28:53.387Z] Profile found: false
+[2026-02-05T11:34:17.323Z] START Recompute for ADMIN
+[2026-02-05T11:34:18.454Z] Profile found: false
+[2026-02-05T11:34:19.179Z] START Recompute for ADMIN
+[2026-02-05T11:34:19.272Z] Profile found: false
+[2026-02-05T11:34:19.396Z] START Recompute for ADMIN
+[2026-02-05T11:34:19.474Z] Profile found: false
+[2026-02-05T16:33:51.350Z] START Recompute for ADMIN
+[2026-02-05T16:33:51.645Z] Profile found: false
+[2026-02-05T16:33:51.754Z] START Recompute for ADMIN
+[2026-02-05T16:33:51.771Z] Profile found: false
+[2026-02-05T16:33:51.817Z] START Recompute for ADMIN
+[2026-02-05T16:33:51.836Z] Profile found: false
+[2026-02-05T16:33:51.859Z] START Recompute for ADMIN
+[2026-02-05T16:33:51.934Z] Profile found: false
+[2026-02-05T16:33:51.998Z] START Recompute for ADMIN
+[2026-02-05T16:33:52.117Z] Profile found: false
+[2026-02-05T16:33:52.162Z] START Recompute for ADMIN
+[2026-02-05T16:33:52.175Z] Profile found: false
+[2026-02-05T16:33:52.198Z] START Recompute for ADMIN
+[2026-02-05T16:33:52.212Z] Profile found: false
+[2026-02-05T16:33:52.240Z] START Recompute for ADMIN
+[2026-02-05T16:33:52.273Z] Profile found: false
+[2026-02-05T16:35:08.450Z] START Recompute for ADMIN
+[2026-02-05T16:35:08.517Z] Profile found: false
+[2026-02-05T16:35:56.251Z] START Recompute for S9000002
+[2026-02-05T16:35:56.255Z] Profile found: true
+[2026-02-05T16:35:56.255Z] studentId resolved: SS9000002
+[2026-02-05T16:35:56.282Z] currRows length: 0
+[2026-02-05T16:36:20.713Z] START Recompute for S9000002
+[2026-02-05T16:36:20.751Z] Profile found: true
+[2026-02-05T16:36:20.751Z] studentId resolved: SS9000002
+[2026-02-05T16:36:20.769Z] currRows length: 0
+[2026-02-05T16:36:20.851Z] START Recompute for S9000002
+[2026-02-05T16:36:20.853Z] Profile found: true
+[2026-02-05T16:36:20.853Z] studentId resolved: SS9000002
+[2026-02-05T16:36:20.855Z] currRows length: 0
+[2026-02-05T16:40:40.142Z] START Recompute for S9000002
+[2026-02-05T16:40:40.186Z] Profile found: true
+[2026-02-05T16:40:40.186Z] studentId resolved: SS9000002
+[2026-02-05T16:40:40.216Z] currRows length: 0
+[2026-02-05T16:40:40.260Z] START Recompute for S9000002
+[2026-02-05T16:40:40.264Z] Profile found: true
+[2026-02-05T16:40:40.265Z] studentId resolved: SS9000002
+[2026-02-05T16:40:40.275Z] currRows length: 0
+[2026-02-05T16:43:26.116Z] START Recompute for S9000002
+[2026-02-05T16:43:26.125Z] Profile found: true
+[2026-02-05T16:43:26.125Z] studentId resolved: SS9000002
+[2026-02-05T16:43:26.135Z] currRows length: 0
+[2026-02-05T16:44:32.134Z] START Recompute for DIRECTOR
+[2026-02-05T16:44:32.149Z] Profile found: true
+[2026-02-05T16:44:32.150Z] studentId resolved: DIRECTOR
+[2026-02-05T16:44:32.169Z] currRows length: 0
+[2026-02-05T16:45:07.440Z] START Recompute for DIRECTOR
+[2026-02-05T16:45:07.486Z] Profile found: true
+[2026-02-05T16:45:07.486Z] studentId resolved: DIRECTOR
+[2026-02-05T16:45:07.498Z] currRows length: 0
+[2026-02-05T16:45:07.534Z] START Recompute for DIRECTOR
+[2026-02-05T16:45:07.558Z] Profile found: true
+[2026-02-05T16:45:07.559Z] studentId resolved: DIRECTOR
+[2026-02-05T16:45:07.564Z] currRows length: 0
+[2026-02-05T16:45:07.594Z] START Recompute for DIRECTOR
+[2026-02-05T16:45:07.612Z] Profile found: true
+[2026-02-05T16:45:07.613Z] studentId resolved: DIRECTOR
+[2026-02-05T16:45:07.618Z] currRows length: 0
+[2026-02-05T16:45:07.644Z] START Recompute for DIRECTOR
+[2026-02-05T16:45:07.672Z] Profile found: true
+[2026-02-05T16:45:07.672Z] studentId resolved: DIRECTOR
+[2026-02-05T16:45:07.676Z] currRows length: 0
+[2026-02-05T17:22:30.054Z] START Recompute for DIRECTOR
+[2026-02-05T17:22:30.241Z] Profile found: true
+[2026-02-05T17:22:30.241Z] studentId resolved: DIRECTOR
+[2026-02-05T17:22:30.260Z] currRows length: 0
+[2026-02-05T17:22:30.273Z] START Recompute for DIRECTOR
+[2026-02-05T17:22:30.275Z] Profile found: true
+[2026-02-05T17:22:30.275Z] studentId resolved: DIRECTOR
+[2026-02-05T17:22:30.279Z] currRows length: 0
+[2026-02-05T17:22:30.287Z] START Recompute for DIRECTOR
+[2026-02-05T17:22:30.302Z] Profile found: true
+[2026-02-05T17:22:30.302Z] studentId resolved: DIRECTOR
+[2026-02-05T17:22:30.306Z] currRows length: 0
+[2026-02-05T17:22:30.321Z] START Recompute for DIRECTOR
+[2026-02-05T17:22:30.330Z] Profile found: true
+[2026-02-05T17:22:30.330Z] studentId resolved: DIRECTOR
+[2026-02-05T17:22:30.333Z] currRows length: 0
+[2026-02-05T17:26:45.914Z] START Recompute for DIRECTOR
+[2026-02-05T17:26:48.604Z] Profile found: true
+[2026-02-05T17:26:48.605Z] studentId resolved: DIRECTOR
+[2026-02-05T17:26:48.614Z] currRows length: 0
+[2026-02-05T17:26:48.631Z] START Recompute for DIRECTOR
+[2026-02-05T17:26:48.633Z] Profile found: true
+[2026-02-05T17:26:48.633Z] studentId resolved: DIRECTOR
+[2026-02-05T17:26:48.635Z] currRows length: 0
+[2026-02-05T17:26:48.657Z] START Recompute for DIRECTOR
+[2026-02-05T17:26:48.659Z] Profile found: true
+[2026-02-05T17:26:48.659Z] studentId resolved: DIRECTOR
+[2026-02-05T17:26:48.661Z] currRows length: 0
+[2026-02-05T17:26:48.684Z] START Recompute for DIRECTOR
+[2026-02-05T17:26:48.699Z] Profile found: true
+[2026-02-05T17:26:48.699Z] studentId resolved: DIRECTOR
+[2026-02-05T17:26:48.703Z] currRows length: 0
+[2026-02-05T18:12:43.762Z] START Recompute for DIRECTOR
+[2026-02-05T18:12:44.497Z] Profile found: true
+[2026-02-05T18:12:44.498Z] studentId resolved: DIRECTOR
+[2026-02-05T18:12:44.506Z] currRows length: 0
+[2026-02-05T18:12:44.529Z] START Recompute for DIRECTOR
+[2026-02-05T18:12:44.531Z] Profile found: true
+[2026-02-05T18:12:44.532Z] studentId resolved: DIRECTOR
+[2026-02-05T18:12:44.539Z] currRows length: 0
+[2026-02-05T18:12:44.579Z] START Recompute for DIRECTOR
+[2026-02-05T18:12:44.602Z] Profile found: true
+[2026-02-05T18:12:44.602Z] studentId resolved: DIRECTOR
+[2026-02-05T18:12:44.608Z] currRows length: 0
+[2026-02-05T18:12:44.654Z] START Recompute for DIRECTOR
+[2026-02-05T18:12:44.720Z] Profile found: true
+[2026-02-05T18:12:44.720Z] studentId resolved: DIRECTOR
+[2026-02-05T18:12:44.728Z] currRows length: 0
+[2026-02-05T21:35:18.605Z] START Recompute for DIRECTOR
+[2026-02-06T03:52:22.077Z] Profile found: true
+[2026-02-06T03:52:22.171Z] studentId resolved: DIRECTOR
+[2026-02-06T03:52:33.025Z] currRows length: 0
+[2026-02-06T04:19:37.689Z] START Recompute for ADMIN
+[2026-02-06T04:19:37.782Z] Profile found: false
+[2026-02-06T04:44:06.155Z] START Recompute for DIRECTOR
+[2026-02-06T04:44:06.211Z] Profile found: true
+[2026-02-06T04:44:06.211Z] studentId resolved: DIRECTOR
+[2026-02-06T04:44:06.218Z] currRows length: 0
+[2026-02-06T04:44:06.229Z] START Recompute for DIRECTOR
+[2026-02-06T04:44:06.231Z] Profile found: true
+[2026-02-06T04:44:06.231Z] studentId resolved: DIRECTOR
+[2026-02-06T04:44:06.234Z] currRows length: 0
+[2026-02-06T04:44:06.239Z] START Recompute for DIRECTOR
+[2026-02-06T04:44:06.250Z] Profile found: true
+[2026-02-06T04:44:06.250Z] studentId resolved: DIRECTOR
+[2026-02-06T04:44:06.255Z] currRows length: 0
+[2026-02-06T04:44:06.275Z] START Recompute for DIRECTOR
+[2026-02-06T04:44:06.286Z] Profile found: true
+[2026-02-06T04:44:06.286Z] studentId resolved: DIRECTOR
+[2026-02-06T04:44:06.290Z] currRows length: 0

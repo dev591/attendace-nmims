@@ -40,6 +40,7 @@ import Portfolio from './pages/Portfolio'; // ADDED BY ANTI-GRAVITY
 import SocialFeed from './pages/SocialFeed'; // ADDED BY ANTI-GRAVITY
 import Network from './pages/Network'; // ADDED BY ANTI-GRAVITY
 import UserProfile from './pages/UserProfile'; // ADDED BY ANTI-GRAVITY
+import Chat from './components/Chat'; // ADDED BY ANTI-GRAVITY
 import OnboardingWizard from './pages/OnboardingWizard'; // ADDED BY ANTI-GRAVITY
 // Duplicates removed
 import CareerCoach from './pages/CareerCoach'; // ADDED BY ANTI-GRAVITY
@@ -114,6 +115,7 @@ function App() {
                                                 <Route path="portfolio" element={<Portfolio />} />
                                                 <Route path="network" element={<Network />} />
                                                 <Route path="feed" element={<SocialFeed />} /> {/* NEW: Social Feed */}
+                                                <Route path="chat" element={<Chat />} /> {/* NEW: Chat */}
                                                 <Route path="network/profile/:sapid" element={<UserProfile />} />
                                                 <Route path="lost-found" element={<LostFound />} /> {/* NEW */}
                                             </Route>
