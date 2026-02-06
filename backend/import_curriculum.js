@@ -48,7 +48,7 @@ export async function importCurriculumFile(filePath, clientParam = null) {
             }
 
             console.log(`[CURRICULUM] Found ${rows.length} rows in ${sheetName}`);
-            console.log(`[CURRICULUM DEBUG] First row keys:`, Object.keys(rows[0]));
+            // console.log(`[CURRICULUM DEBUG] First row keys:`, rows.length > 0 ? Object.keys(rows[0]) : []);
 
             report.total_rows += rows.length;
 
@@ -95,8 +95,18 @@ export async function importCurriculumFile(filePath, clientParam = null) {
                 const subjectCode = rawSubjectCode ? String(rawSubjectCode).trim() : null;
 
                 const subjectName = findKey(row, 'SubjectName') || findKey(row, 'Subject Name') || findKey(row, 'Subject') || findKey(row, 'Name');
-                const total = parseInt(findKey(row, 'TotalClasses') || findKey(row, 'Total Classes') || findKey(row, 'Total') || 40);
-                const minPct = parseInt(findKey(row, 'MandatoryPct') || findKey(row, 'Mandatory') || findKey(row, 'MinPct') || 80);
+
+                // Credits & Total Classes
+                const credits = parseInt(findKey(row, 'Credits') || findKey(row, 'Credit') || 3);
+                let total = parseInt(findKey(row, 'TotalClasses') || findKey(row, 'Total Classes') || findKey(row, 'Total') || 0);
+
+                // Heuristic: If TotalClasses is missing but Credits exists, assume 15 hrs/credit
+                if (total === 0 && credits > 0) {
+                    total = credits * 15;
+                }
+                if (total === 0) total = 45; // Fallback default
+
+                const minPct = parseInt(findKey(row, 'MandatoryPct') || findKey(row, 'Mandatory') || findKey(row, 'MinPct') || 75);
 
                 if (!program || !subjectCode) {
                     // Log detailed error but don't throw (allow skipping bad rows)
@@ -111,10 +121,6 @@ export async function importCurriculumFile(filePath, clientParam = null) {
 
                 if (!report._processedGroups.has(groupKey)) {
                     console.log(`[CURRICULUM] Syncing Group: ${groupKey} -> Cleaning old entries...`);
-                    // Ensure we don't wipe data if we are processing multiple sheets of same group?
-                    // Actually, if multiple sheets handle same group, we might wipe data from prev sheet!
-                    // Fix: Check if groupKey was processed in THIS REQUEST, not just this sheet.
-                    // Since report._processedGroups is shared across loop, it's fine.
 
                     await client.query(`
                         DELETE FROM curriculum 
@@ -132,12 +138,15 @@ export async function importCurriculumFile(filePath, clientParam = null) {
                     ON CONFLICT (code) DO UPDATE SET name = EXCLUDED.name
                 `, [subjectCode, subjectCode, subjectName || subjectCode]);
 
-                // 2. Insert into Curriculum (No need for upsert since we wiped)
+                // 2. Insert into Curriculum (Updated for new Schema)
                 await client.query(`
-                    INSERT INTO curriculum (program, year, semester, subject_code, subject_name, total_classes, min_attendance_pct)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    INSERT INTO curriculum (
+                        program, year, semester, subject_code, subject_name, 
+                        total_classes, min_attendance_pct, credits
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     ON CONFLICT (program, year, semester, subject_code) DO NOTHING
-                `, [program, year, semester, subjectCode, subjectName || subjectCode, total, minPct]);
+                `, [program, year, semester, subjectCode, subjectName || subjectCode, total, minPct, credits]);
 
                 console.log(`[CURRICULUM] Inserted subject ${subjectCode}`);
                 report.inserted++;

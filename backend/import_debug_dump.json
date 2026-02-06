@@ -1,0 +1,45 @@
+{
+  "sheet": "Curriculum",
+  "headers": [
+    "Subject Name",
+    "Subject Code",
+    "Program",
+    "Semester",
+    "Year",
+    "Credits"
+  ],
+  "firstRow": {
+    "Subject Name": "Mathematics Sem1",
+    "Subject Code": "CS101",
+    "Program": "B.Tech",
+    "Semester": 1,
+    "Year": 1,
+    "Credits": 4
+  },
+  "allRowsSample": [
+    {
+      "Subject Name": "Mathematics Sem1",
+      "Subject Code": "CS101",
+      "Program": "B.Tech",
+      "Semester": 1,
+      "Year": 1,
+      "Credits": 4
+    },
+    {
+      "Subject Name": "Physics Sem1",
+      "Subject Code": "CS102",
+      "Program": "B.Tech",
+      "Semester": 1,
+      "Year": 1,
+      "Credits": 4
+    },
+    {
+      "Subject Name": "Chemistry Sem1",
+      "Subject Code": "CS103",
+      "Program": "B.Tech",
+      "Semester": 1,
+      "Year": 1,
+      "Credits": 4
+    }
+  ]
+}

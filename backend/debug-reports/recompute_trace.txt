@@ -22833,3 +22833,73 @@
 [2026-02-06T04:44:06.286Z] Profile found: true
 [2026-02-06T04:44:06.286Z] studentId resolved: DIRECTOR
 [2026-02-06T04:44:06.290Z] currRows length: 0
+[2026-02-06T04:59:25.470Z] START Recompute for ADMIN
+[2026-02-06T04:59:25.567Z] Profile found: false
+[2026-02-06T04:59:25.633Z] START Recompute for ADMIN
+[2026-02-06T04:59:25.652Z] Profile found: false
+[2026-02-06T05:03:16.767Z] START Recompute for ADMIN
+[2026-02-06T05:03:16.848Z] Profile found: false
+[2026-02-06T05:04:29.968Z] START Recompute for ADMIN
+[2026-02-06T05:04:30.049Z] Profile found: false
+[2026-02-06T05:04:30.145Z] START Recompute for ADMIN
+[2026-02-06T05:04:30.165Z] Profile found: false
+[2026-02-06T05:04:30.192Z] START Recompute for ADMIN
+[2026-02-06T05:04:30.208Z] Profile found: false
+[2026-02-06T05:04:30.228Z] START Recompute for ADMIN
+[2026-02-06T05:04:30.240Z] Profile found: false
+[2026-02-06T05:05:37.391Z] START Recompute for ADMIN
+[2026-02-06T05:05:37.964Z] Profile found: false
+[2026-02-06T05:05:38.048Z] START Recompute for ADMIN
+[2026-02-06T05:05:38.071Z] Profile found: false
+[2026-02-06T05:05:38.119Z] START Recompute for ADMIN
+[2026-02-06T05:05:38.137Z] Profile found: false
+[2026-02-06T05:05:38.181Z] START Recompute for ADMIN
+[2026-02-06T05:05:38.197Z] Profile found: false
+[2026-02-06T05:07:03.519Z] START Recompute for ADMIN
+[2026-02-06T05:07:04.176Z] Profile found: false
+[2026-02-06T05:07:04.238Z] START Recompute for ADMIN
+[2026-02-06T05:07:04.260Z] Profile found: false
+[2026-02-06T05:07:04.298Z] START Recompute for ADMIN
+[2026-02-06T05:07:04.314Z] Profile found: false
+[2026-02-06T05:07:04.351Z] START Recompute for ADMIN
+[2026-02-06T05:07:04.366Z] Profile found: false
+[2026-02-06T05:10:24.018Z] START Recompute for ADMIN
+[2026-02-06T05:10:24.351Z] Profile found: false
+[2026-02-06T05:10:24.411Z] START Recompute for ADMIN
+[2026-02-06T05:10:24.431Z] Profile found: false
+[2026-02-06T05:10:24.451Z] START Recompute for ADMIN
+[2026-02-06T05:10:24.463Z] Profile found: false
+[2026-02-06T05:10:24.496Z] START Recompute for ADMIN
+[2026-02-06T05:10:24.511Z] Profile found: false
+[2026-02-06T05:10:50.169Z] START Recompute for ADMIN
+[2026-02-06T05:10:50.279Z] Profile found: false
+[2026-02-06T05:10:50.337Z] START Recompute for ADMIN
+[2026-02-06T05:10:50.352Z] Profile found: false
+[2026-02-06T05:10:50.373Z] START Recompute for ADMIN
+[2026-02-06T05:10:50.391Z] Profile found: false
+[2026-02-06T05:10:50.408Z] START Recompute for ADMIN
+[2026-02-06T05:10:50.420Z] Profile found: false
+[2026-02-06T05:10:50.973Z] START Recompute for ADMIN
+[2026-02-06T05:10:51.007Z] Profile found: false
+[2026-02-06T05:10:51.037Z] START Recompute for ADMIN
+[2026-02-06T05:10:51.049Z] Profile found: false
+[2026-02-06T05:10:51.069Z] START Recompute for ADMIN
+[2026-02-06T05:10:51.099Z] Profile found: false
+[2026-02-06T05:10:51.122Z] START Recompute for ADMIN
+[2026-02-06T05:10:51.140Z] Profile found: false
+[2026-02-06T05:11:12.660Z] START Recompute for ADMIN
+[2026-02-06T05:11:12.702Z] Profile found: false
+[2026-02-06T05:11:12.822Z] START Recompute for ADMIN
+[2026-02-06T05:11:12.838Z] Profile found: false
+[2026-02-06T05:11:12.858Z] START Recompute for ADMIN
+[2026-02-06T05:11:12.870Z] Profile found: false
+[2026-02-06T05:11:12.888Z] START Recompute for ADMIN
+[2026-02-06T05:11:12.901Z] Profile found: false
+[2026-02-06T05:13:17.476Z] START Recompute for ADMIN
+[2026-02-06T05:13:18.357Z] Profile found: false
+[2026-02-06T05:13:18.476Z] START Recompute for ADMIN
+[2026-02-06T05:13:18.493Z] Profile found: false
+[2026-02-06T05:13:18.514Z] START Recompute for ADMIN
+[2026-02-06T05:13:18.528Z] Profile found: false
+[2026-02-06T05:13:18.552Z] START Recompute for ADMIN
+[2026-02-06T05:13:18.568Z] Profile found: false
