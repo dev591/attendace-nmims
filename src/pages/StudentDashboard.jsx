@@ -13,7 +13,7 @@ import config from '../utils/config';
 gsap.registerPlugin(ScrollTrigger);
 
 const StudentDashboard = () => {
-    const { data } = useStore();
+    const { data, user } = useStore();
     const navigate = useNavigate();
     const [stats, setStats] = useState(null);
 
@@ -161,6 +161,15 @@ const StudentDashboard = () => {
                             </div>
                         </div>
 
+                        {/* TIMETABLE SHORTCUT */}
+                        <div
+                            className="hero-text bg-white p-3 rounded-full border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer text-slate-400 hover:text-red-600"
+                            onClick={() => document.getElementById('timetable-section')?.scrollIntoView({ behavior: 'smooth' })}
+                            title="View Timetable"
+                        >
+                            <BookOpen size={20} />
+                        </div>
+
                         {/* XP PILL */}
                         <div className="hero-text bg-white border border-slate-200 rounded-full px-6 py-3 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate('/student/dashboard/analytics')}>
                             <div className="flex flex-col items-end">
@@ -249,7 +258,7 @@ const StudentDashboard = () => {
 
                 <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-2">
                     <div className="p-4 md:p-6">
-                        <ClassesTab studentId={data.currentUser?.student_id} token={localStorage.getItem('token')} />
+                        <ClassesTab studentId={user?.sapid || data.currentUser?.student_id} token={localStorage.getItem('token')} />
                     </div>
                 </div>
             </div>

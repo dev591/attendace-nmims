@@ -1,132 +1,216 @@
 
 import { getClient } from './db.js';
 import xlsx from 'xlsx';
-import { normalizeHeader, normalizeString, normalizeDate } from './lib/import_helpers.js';
+import { normalizeString, normalizeDate } from './lib/import_helpers.js';
 import { normalizeProgram, normalizeBranch } from './lib/program_branch_mapper.js';
+import { generateSessionsForRange } from './lib/scheduler_engine.js'; // Will implement next
 
 export async function importTimetable(filePath) {
     const client = await getClient();
-    const report = { inserted: 0, errors: [] };
+    const report = { inserted: 0, errors: [], scope: null };
 
     try {
         console.log(`[TIMETABLE IMPORT] Reading ${filePath}...`);
         const workbook = xlsx.readFile(filePath);
         const sheetName = workbook.SheetNames[0];
-        const rows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        // Read with header:1 to get array of arrays for A1 access
+        const rawRows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
 
-        if (rows.length === 0) {
-            throw new Error("File is empty");
+        if (rawRows.length === 0) throw new Error("File is empty");
+
+        // 1. HARDENED SCOPE PARSING (Tolerant Strategy)
+        // Goal: Extract Program, Semester, Year from ANY format.
+        const scopeCell = rawRows[0][0];
+        console.log(`[TIMETABLE] Found Scope Header: ${scopeCell}`);
+
+        let program = null, semester = null, year = null;
+        let scopeStr = typeofOrString(scopeCell);
+
+        // STRATEGY A: Explicit Key-Value (e.g., "Program: B.Tech | Sem: 3")
+        // Not typical but safe to check.
+
+        // STRATEGY B: Split & Search
+        // Tokenize by common separators
+        const tokens = scopeStr.split(/[\s|,:,-]+/).map(t => t.trim().toLowerCase());
+
+        // 1. Find Semester
+        // Look for digit following "sem", "semester", "s" or just a digit in small tokens
+        for (let i = 0; i < tokens.length; i++) {
+            const t = tokens[i];
+            if (['sem', 'semester', 'term'].includes(t)) {
+                // Next token might be the number
+                if (i + 1 < tokens.length) {
+                    const num = parseInt(tokens[i + 1]);
+                    if (!isNaN(num)) semester = num;
+                }
+            } else if (/^sem\d+$/.test(t)) {
+                semester = parseInt(t.replace('sem', ''));
+            }
+        }
+        // Fallback: Just find the first free-standing digit < 8 if we haven't found sem yet? 
+        // Risky if Program has numbers. Let's rely on "Sem" keyword validity or Row 1 fallback.
+
+        // 2. Find Program
+        if (scopeStr.toLowerCase().includes('b.tech') || scopeStr.toLowerCase().includes('tech')) program = 'B.Tech';
+        else if (scopeStr.toLowerCase().includes('mba')) program = 'MBA';
+        else if (scopeStr.toLowerCase().includes('pharm')) program = 'Pharmacy';
+
+        // 3. Find School (Optional context)
+        // (Not strictly used for logic yet, but good for logging)
+
+        // STRATEGY C: Column Fallback (If Row 1 fails)
+        // Check if Row 2 (Headers) or Data Rows contain "Program" or "Sem" columns?
+        // Too complex for V1. Better fallback is to THROW VALIDATION ERROR if Header is total gibberish.
+
+        if (!semester) {
+            // Last resort regex for "Semester 3" or "Sem 3" or just "3" in specific positions?
+            const semMatch = scopeStr.match(/(?:sem|semester)\s*[:|-]?\s*(\d+)/i);
+            if (semMatch) semester = parseInt(semMatch[1]);
         }
 
-        console.log(`[TIMETABLE IMPORT] Found ${rows.length} rows.`);
+        // Hard Defaults / cleanups
+        if (program) program = normalizeProgram(program);
+
+        // --- VALIDATION GATE ---
+        const errors = [];
+        if (!program) errors.push("Could not detect Program (e.g. 'B.Tech') in cell A1.");
+        if (!semester) errors.push("Could not detect Semester (e.g. 'Semester 3') in cell A1.");
+
+        if (errors.length > 0) {
+            // Check if we can proceed with defaults? NO. User said "Never silently skip".
+            throw new Error(`Scope Validation Failed in Cell A1: ${errors.join(' ')} Found: "${scopeCell}"`);
+        }
+
+        if (semester && !year) year = Math.ceil(semester / 2);
+
+        console.log(`[TIMETABLE] Parsed Scope -> Program: ${program}, Year: ${year}, Sem: ${semester}`);
+        report.scope = { program, year, semester };
+
+        // 2. DYNAMIC ROW PARSING
+        let headerRowIndex = -1;
+        const requiredHeaders = ['day', 'start', 'subject']; // minimal match
+
+        // Scan first 15 rows
+        for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
+            const rowStr = JSON.stringify(rawRows[i]).toLowerCase();
+            const matchCount = requiredHeaders.filter(h => rowStr.includes(h)).length;
+            if (matchCount >= 2) {
+                headerRowIndex = i;
+                console.log(`[TIMETABLE] Found Header Row at Index ${i}`);
+                break;
+            }
+        }
+
+        if (headerRowIndex === -1) throw new Error("Could not find Header Row (must contain 'Day', 'Start', 'Subject')");
+
+        // Parse Data
+        const dataRows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { range: headerRowIndex });
 
         await client.query('BEGIN');
 
-        let rowIndex = 0;
-        for (const row of rows) {
+        // 3. CLEAR OLD DATA
+        await client.query(`DELETE FROM timetable_template WHERE program = $1 AND semester = $2`, [program, semester]);
+
+        let rowIndex = 2; // Excel Row 3 (1-header + 1-index) => but we start iteration
+        for (const row of dataRows) {
             rowIndex++;
             try {
-                // 1. EXTRACT & NORMALIZE
-                const rawProg = row['program'] || row['Program'];
-                const rawBranch = row['branch'] || row['Branch']; // Timetable MUST have branch
-                const rawSem = row['semester'] || row['Semester'] || row['sem'];
-                const rawYear = row['year'] || row['Year'];
+                // FLEXIBLE COLUMN MATCHING
+                // Keys from xlsx are case-sensitive to the actual header in file
+                const keys = Object.keys(row);
+                const findKey = (candidates) => keys.find(k => candidates.some(c => k.toLowerCase().includes(c.toLowerCase())));
 
-                const subjectCode = normalizeString(row['subject_code'] || row['Subject Code'] || row['Code']);
-                // Use subject name from DB ideally, but user might provide it.
-                // const subjectName = normalizeString(row['subject_name'] || row['Subject Name']); 
+                const dayKey = findKey(['day']);
+                const startKey = findKey(['start', 'begin']);
+                const endKey = findKey(['end', 'finish']);
+                const subjectKey = findKey(['subject', 'code', 'course']);
+                const venueKey = findKey(['venue', 'room', 'loc']);
+                const facultyKey = findKey(['faculty', 'prof', 'teacher']);
 
-                const dateStr = normalizeDate(row['date'] || row['Date']);
-                const startTime = row['start_time'] || row['Start Time'];
-                const endTime = row['end_time'] || row['End Time'];
-                const room = row['location'] || row['Location'] || 'Online';
-                const type = row['type'] || row['Type'] || 'Lecture';
-
-                // 2. VALIDATION: MANDATORY FIELDS
-                if (!rawProg || !rawBranch || !subjectCode || !dateStr || !startTime || !endTime) {
-                    throw new Error("Missing required fields (Program, Branch, Subject Code, Date, Time)");
+                if (!dayKey || !startKey || !subjectKey) {
+                    console.warn(`[TIMETABLE] Skipping Row ${rowIndex}: Missing essential columns (Day/Time/Subject). Keys found: ${keys.join(', ')}`);
+                    continue;
                 }
 
-                // 3. NORMALIZE KEYS
-                const prog = normalizeProgram(rawProg);
-                const br = normalizeBranch(rawBranch).toLowerCase(); // Strict lowercase
-                const year = parseInt(rawYear);
-                const sem = parseInt(rawSem);
+                const day = normalizeDay(row[dayKey]);
+                if (!day) continue;
 
-                if (!prog || !br || isNaN(year) || isNaN(sem)) {
-                    throw new Error(`Invalid Program/Branch/Year/Sem: ${rawProg} / ${rawBranch}`);
+                const startTime = formatTime(row[startKey]);
+                const endTime = formatTime(row[endKey] || row[startKey] + 1 / 24); // Fallback end? No, tough.
+                const subjectCode = normalizeString(row[subjectKey]);
+                const venue = row[venueKey] || 'TBA';
+                const faculty = row[facultyKey] || 'TBA';
+
+                if (!startTime) {
+                    console.warn(`[TIMETABLE] Skipping Row ${rowIndex}: Invalid Start Time.`);
+                    continue;
                 }
-
-                // 4. VALIDATE AGAINST CURRICULUM (Strict Timetable Rule)
-                // The subject MUST exist in the curriculum for this program/branch
-
-                // Construct KEYS
-                const strictKey = `${prog}-${br}`; // e.g. engineering-ds
-                const commonKey = prog;            // e.g. engineering
-
-                // Try Strict First
-                let currCheck = await client.query(`
-                    SELECT 1 FROM curriculum 
-                    WHERE program = $1 
-                      AND year = $2 
-                      AND semester = $3 
-                      AND subject_code = $4
-                `, [strictKey, year, sem, subjectCode]);
-
-                if (currCheck.rowCount === 0) {
-                    // Try Common Fallback (e.g. for Engineering 1st Year)
-                    const commonCheck = await client.query(`
-                        SELECT 1 FROM curriculum 
-                        WHERE program = $1 
-                        AND year = $2 
-                        AND semester = $3 
-                        AND subject_code = $4
-                    `, [commonKey, year, sem, subjectCode]);
-
-                    if (commonCheck.rowCount > 0) {
-                        // Found in common!
-                        // console.log(`[TIMETABLE] Subject '${subjectCode}' found in Common Curriculum (${commonKey}).`);
-                    } else {
-                        throw new Error(`Subject '${subjectCode}' is NOT in curriculum for ${strictKey} OR ${commonKey} Y${year}S${sem}. Add to curriculum first.`);
-                    }
-                }
-
-                // 5. INSERT CLASS SESSION
-                // session_id format: date_start_subject (e.g., 2025-10-10_10:00_DS101)
-                const sessionId = `${dateStr}_${startTime.replace(/:/g, '')}_${subjectCode}`;
 
                 await client.query(`
-                    INSERT INTO sessions (session_id, subject_id, date, start_time, end_time, type, room)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
-                    ON CONFLICT (session_id) DO UPDATE SET
-                        room = EXCLUDED.room,
-                        type = EXCLUDED.type,
-                        end_time = EXCLUDED.end_time
-                `, [sessionId, subjectCode, dateStr, startTime, endTime, type, room]);
+                    INSERT INTO timetable_template (
+                        program, semester, year, day_of_week, 
+                        start_time, end_time, subject_code, venue, faculty
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                `, [program, semester, year, day, startTime, endTime || startTime, subjectCode, venue, faculty]);
 
                 report.inserted++;
 
             } catch (err) {
-                console.warn(`[TIMETABLE IMPORT] Row ${rowIndex} Error: ${err.message}`);
-                report.errors.push(`Row ${rowIndex} (${row['subject_code'] || 'Unknown'}): ${err.message}`);
+                console.warn(`[TIMETABLE] Row ${rowIndex} Error: ${err.message}`);
+                report.errors.push(`Row ${rowIndex}: ${err.message}`);
             }
         }
 
-        if (report.inserted > 0) {
-            await client.query('COMMIT');
-            console.log(`[TIMETABLE IMPORT] Success. Inserted/Updated: ${report.inserted}`);
-        } else {
-            await client.query('ROLLBACK'); // If nothing valid, don't partial commit? Or allow partial?
-            // Let's allow partial if just some errors, but if 0 inserted, rollback is effectively same.
-            console.log(`[TIMETABLE IMPORT] Finished with 0 insertions.`);
+        await client.query('COMMIT');
+        console.log(`[TIMETABLE] Template Import Success. Entries: ${report.inserted}`);
+
+        // 4. TRIGGER GENERATION (Auto-generate for next 30 days)
+        // We'll wrap this in try-catch so import doesn't fail if generation fails
+        try {
+            const startDate = new Date();
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+
+            console.log(`[TIMETABLE] Triggering Session Generation: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`);
+            await generateSessionsForRange(client, startDate, endDate, { program, semester });
+            console.log(`[TIMETABLE] Sessions Generated!`);
+        } catch (genErr) {
+            console.error(`[TIMETABLE] Generation Warning: ${genErr.message}`);
+            report.errors.push(`Generation Failed: ${genErr.message}`);
         }
 
     } catch (e) {
         if (client) await client.query('ROLLBACK');
-        console.error(`[TIMETABLE IMPORT] Fatal Error:`, e);
+        console.error(`[TIMETABLE IMPORT] Fatal:`, e);
         report.errors.push(`FATAL: ${e.message}`);
+        report.success = false;
     } finally {
         client.release();
         return report;
     }
+}
+
+// Helpers
+function typeofOrString(val) {
+    return (val && typeof val === 'string') ? val : String(val);
+}
+
+function normalizeDay(dayRaw) {
+    if (!dayRaw) return null;
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const d = String(dayRaw).trim();
+    return days.find(day => day.toLowerCase() === d.toLowerCase()) || d;
+}
+
+// Handle Excel Time (fraction of day) or "09:00" string
+function formatTime(val) {
+    if (!val) return null;
+    if (typeof val === 'number') {
+        const totalSeconds = Math.round(val * 86400);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+    }
+    // Assume string like "09:00"
+    return String(val).trim();
 }

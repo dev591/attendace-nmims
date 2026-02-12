@@ -20,6 +20,7 @@ const Analytics = () => {
     // --- STATE FOR SIMULATOR ---
     const [simMode, setSimMode] = useState(false);
     const [simValues, setSimValues] = useState({});
+    const [showAllSubjects, setShowAllSubjects] = useState(false);
 
     // Fetch Deep Analytics on Mount
     useEffect(() => {
@@ -318,7 +319,7 @@ const Analytics = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {subjects.map((sub, idx) => (
+                                {subjects.slice(0, showAllSubjects ? subjects.length : 5).map((sub, idx) => (
                                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
                                         <td className="p-4 pl-6 font-bold text-slate-700">
                                             {sub.subject}
@@ -341,6 +342,16 @@ const Analytics = () => {
                                 ))}
                             </tbody>
                         </table>
+                        {subjects.length > 5 && (
+                            <div className="p-4 text-center border-t border-slate-50">
+                                <button
+                                    onClick={() => setShowAllSubjects(!showAllSubjects)}
+                                    className="text-xs font-bold text-slate-500 hover:text-slate-800 uppercase tracking-wider transition-colors"
+                                >
+                                    {showAllSubjects ? 'Show Less' : `View All (${subjects.length})`}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 

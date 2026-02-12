@@ -11,6 +11,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import CareerCoach from './CareerCoach';
 import { UploadModal } from './Achievements';
 
+import config from '../utils/config'; // Import config
+
 const Portfolio = () => {
     const { user } = useStore();
     const navigate = useNavigate();
@@ -21,11 +23,14 @@ const Portfolio = () => {
     const [addingSkill, setAddingSkill] = useState(false);
     const [showUploadModal, setShowUploadModal] = useState(false);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
+    // Use config.API_URL
+    const API_URL = config.API_URL;
 
     const fetchProfile = async () => {
         try {
-            const res = await fetch(`${API_URL}/student/${user.id}/portfolio`, {
+            // Ensure we use SAPID. Store usually sets user.id = sapid, but strict user.sapid is safer if available.
+            const targetId = user.sapid || user.id;
+            const res = await fetch(`${API_URL}/student/${targetId}/portfolio`, {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
             if (res.ok) {

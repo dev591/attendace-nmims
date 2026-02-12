@@ -116,6 +116,8 @@ async function runSystemAudit() {
         // Cleanup
         console.log("\n🔹 [CLEANUP] Removing test data...");
         // Updated Cleanup Order:
+        await query("DELETE FROM ica_marks WHERE student_id = $1", [TEST_SAPID]);
+        await query("DELETE FROM student_projects WHERE student_id = $1", [TEST_SAPID]);
         await query("DELETE FROM sessions WHERE subject_id = 'TEST_SUB_1'");
         await query("DELETE FROM students WHERE sapid IN ($1, $2)", [TEST_SAPID, TEST_DIR_SAPID]);
         await query("DELETE FROM subjects WHERE subject_id = 'TEST_SUB_1'");

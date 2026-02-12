@@ -19,53 +19,20 @@ const NotificationBell = () => {
     const fetchNotifications = async () => {
         if (!user?.token) return;
         try {
-            // Using existing dashboard endpoint or a dedicated one if we make it later. 
-            // For now, let's assume we can fetch from a dedicated endpoint or reuse logic.
-            // Since dashboard returns them, we could just read from store if we stored them global state,
-            // but for a separate widget, a dedicated simple endpoint is cleaner.
-            // Let's rely on dashboard reload or fetch purely.
-            // Actually, server.js GET /student/:id/dashboard returns them.
-            // Let's create a dedicated GET /student/notifications later? 
-            // For now, let's just mock a fetch using the same logic or fetch dashboard context if available.
-            // Simpler: Just rely on dashboard reload or fetch.
-            // Let's verify if we have a route. We don't.
-            // Let's assume passed via props OR fetch from new lightweight route.
-            // Ideally we add GET /student/notifications to student_safe.js. 
-            // But to avoid blocking, let's use the dashboard one? No that's heavy.
-            // Let's adding the endpoint quickly is better.
-
-            // Temporary: We will just fetch dashboard data cleanly (a bit heavy but works without new route)
-            // Or better: use a client-side filter of the dashboard data if we had it in context.
-            // We don't have dashboard data in global context.
-
-            // Plan B: Add route to NotificationBell but for now let's just stub it or use the dashboard endpoint 
-            // effectively.
-
-            // Fetch from new Notification Engine
             // Use user.sapid if available, fallback to user.student_id
             const idToUse = user.sapid || user.student_id;
-            const res = await fetch(`${config.API_URL}/notifications`, {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
-            // Wait, route was mounted in student_safe.js. Where is student_safe mounted?
-            // In index.js: app.use('/college', collegeEcosystemRoutes); ... wait student_safe might be mounted elsewhere.
-            // checking index.js for mount point of student_safe.js ... 
-            // It is usually mounted at root or /api ...
-            // Let's assume it is mounted at root based on previous file views (router.get('/student/:sapid/snapshot')).
-            // NO, typically standard practice is app.use('/', studentSafeRoutes) or similar.
-            // Let me verify mount point.
-            // Assuming root based on existing snapshot code usage in other files.
 
-            const resReal = await fetch(`${config.API_URL}/student/${idToUse}/notifications`, {
+            // Fetch from verified backend endpoint
+            const res = await fetch(`${config.API_URL}/student/${idToUse}/notifications`, {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
 
-            if (resReal.ok) {
-                const data = await resReal.json();
+            if (res.ok) {
+                const data = await res.json();
                 setNotifications(data || []);
                 setUnreadCount((data || []).filter(n => !n.is_read).length);
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Failed to fetch notifications", e); }
     };
 
     const handleNotificationClick = (n) => {

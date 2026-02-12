@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useStore } from '../context/Store';
+import config from '../utils/config';
 
 const AppealModal = ({ isOpen, onClose }) => {
     const { user } = useStore();
@@ -36,7 +37,7 @@ const AppealModal = ({ isOpen, onClose }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/student/appeal', {
+            const res = await fetch(`${config.API_URL}/student/appeal`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}` // Multipart handled auto by fetch

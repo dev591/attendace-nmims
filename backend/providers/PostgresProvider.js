@@ -55,18 +55,34 @@ export class PostgresProvider extends IDataProvider {
         let fallbackProgram = normalizeProgram(student.program).toLowerCase();
 
         const enrollRes = await query(`
-            SELECT 
+            SELECT DISTINCT 
                 s.code as subject_code, 
                 s.name as subject_name, 
                 s.subject_id,
-                40 as total_classes, -- Default if missing from subjects table (subjects has it, but aliasing might vary)
-                75 as min_attendance_pct, -- Default safety
-                4 as credits
+                40::int as total_classes,
+                75::int as min_attendance_pct,
+                4::int as credits
             FROM enrollments e
             JOIN subjects s ON e.subject_id = s.subject_id
             WHERE e.student_id = $1
-            ORDER BY s.code ASC
-        `, [student.student_id]);
+
+            UNION
+
+            SELECT DISTINCT
+                s.code as subject_code, 
+                s.name as subject_name, 
+                s.subject_id,
+                40::int as total_classes,
+                75::int as min_attendance_pct,
+                4::int as credits
+            FROM sessions ses
+            JOIN subjects s ON ses.subject_id = s.subject_id
+            WHERE ses.program = $2 AND ses.semester = $3
+            
+            ORDER BY subject_code ASC
+        `, [student.student_id, effectiveProgram, student.semester]);
+
+
 
         return enrollRes.rows;
     }
@@ -83,33 +99,59 @@ export class PostgresProvider extends IDataProvider {
 
     async getTimetable(studentId, days = 2) {
         try {
+            // 1. Fetch Student Context for Cohort Logic
+            const student = await this.getStudentProfile(studentId);
+            if (!student) return [];
+
+            // 2. Normalize Program for Query (DB 'Engineering' -> Excel 'B.Tech')
+            // The upload service saves as 'B.Tech', while students table says 'Engineering'.
+            let queryProgram = student.program;
+            const norm = normalizeProgram(student.program);
+            if (norm === 'Engineering') {
+                queryProgram = 'B.Tech';
+            } else if (norm === 'MBA') {
+                queryProgram = 'MBA';
+            }
+
+            console.log(`[Timetable] Strategy: Fetching for Payload[${studentId}]Cohort: [${queryProgram} | Sem ${student.semester}]`);
+
             const res = await query(`
-                SELECT
-                    s.name as subject_name,
-                    s.code,
-                    ses.date,
-                    ses.start_time as time,
-                    ses.room,
-                    CASE 
-                        WHEN (ses.date + ses.start_time) <= CURRENT_TIMESTAMP THEN 'CONDUCTED'
+                SELECT DISTINCT
+        s.name as subject_name,
+            s.code,
+            ses.date,
+            ses.start_time as time,
+            ses.end_time,
+            ses.type,
+            ses.location as room,
+            CASE
+        WHEN(ses.date + ses.start_time) <= CURRENT_TIMESTAMP THEN 'CONDUCTED'
                         ELSE 'UPCOMING'
-                    END as status,
-                    ses.session_id,
-                    ses.subject_id
+        END as status,
+            ses.session_id,
+            ses.subject_id
                 FROM sessions ses
                 JOIN subjects s ON ses.subject_id = s.subject_id
-                JOIN enrollments e ON s.subject_id = e.subject_id
-                WHERE e.student_id = $1
-                  AND ses.date >= CURRENT_DATE 
-                  AND ses.date < CURRENT_DATE + ($2::int * INTERVAL '1 day')
+                LEFT JOIN enrollments e ON s.subject_id = e.subject_id AND e.student_id = $1
+        WHERE
+        ses.date >= CURRENT_DATE 
+                  AND ses.date < CURRENT_DATE + ($2:: int * INTERVAL '1 day')
+        AND(
+            e.student_id IS NOT NULL
+                    OR
+                (ses.program = $3 AND ses.semester = $4)
+        )
                 ORDER BY ses.date, ses.start_time
-            `, [studentId, days]);
+            `, [studentId, days, queryProgram, student.semester]);
 
             return res.rows.map(t => ({
                 id: t.session_id,
                 subject_id: t.subject_id,
-                date: t.date, // Required for Frontend Filter
+                date: t.date,
                 time: t.time,
+                start_time: t.time, // Alias for compatibility
+                end_time: t.end_time,
+                type: t.type,
                 room: t.room || 'TBA',
                 code: t.code,
                 status: t.status
@@ -125,40 +167,40 @@ export class PostgresProvider extends IDataProvider {
         // A. Conducted: All sessions in past for the student's subjects
         // B. Attended: Conducted sessions where (Attendance = Present OR Attendance IS NULL)
         const metricsRes = await query(`
-            WITH relevant_sessions AS (
+            WITH relevant_sessions AS(
                 SELECT session_id, subject_id, conducted_count
                 FROM sessions
                 WHERE subject_id = ANY($1)
                 AND status = 'conducted' -- STRICT: Only explicitly conducted sessions
             ),
-            attended_count AS (
+            attended_count AS(
                 SELECT rs.subject_id, SUM(rs.conducted_count) as a_count
                 FROM relevant_sessions rs
                 LEFT JOIN attendance a ON rs.session_id = a.session_id AND a.student_id = $2
                 WHERE a.present = true -- STRICT: Only explicitly marked present
                 GROUP BY rs.subject_id
             ),
-            conducted_count AS (
-                SELECT subject_id, SUM(conducted_count) as c_count
+                conducted_count AS(
+                    SELECT subject_id, SUM(conducted_count) as c_count
                 FROM relevant_sessions
                 GROUP BY subject_id
-            ),
-            all_planned_count AS (
-                SELECT subject_id, SUM(conducted_count) as p_count
+                ),
+                    all_planned_count AS(
+                        SELECT subject_id, SUM(conducted_count) as p_count
                 FROM sessions
                 WHERE subject_id = ANY($1)
                 GROUP BY subject_id
-            )
-            SELECT 
-                sub.subject_id, 
-                COALESCE(cc.c_count, 0) as conducted,
-                COALESCE(ac.a_count, 0) as attended,
-                COALESCE(ap.p_count, 0) as total_planned
-            FROM unnest($1::text[]) as sub(subject_id)
+                    )
+        SELECT
+        sub.subject_id,
+            COALESCE(cc.c_count, 0) as conducted,
+            COALESCE(ac.a_count, 0) as attended,
+            COALESCE(ap.p_count, 0) as total_planned
+            FROM unnest($1:: text[]) as sub(subject_id)
             LEFT JOIN conducted_count cc ON cc.subject_id = sub.subject_id
             LEFT JOIN attended_count ac ON ac.subject_id = sub.subject_id
             LEFT JOIN all_planned_count ap ON ap.subject_id = sub.subject_id
-        `, [subjectIds, studentId]);
+            `, [subjectIds, studentId]);
 
         return metricsRes.rows;
     }
@@ -166,20 +208,20 @@ export class PostgresProvider extends IDataProvider {
     async getRecentTrend(subjectIds, studentId) {
         try {
             const trendRes = await query(`
-                WITH recent_sessions AS (
-                    SELECT 
-                        subject_id, 
-                        conducted_count,
-                        session_id,
-                        ROW_NUMBER() OVER (PARTITION BY subject_id ORDER BY date DESC, start_time DESC) as rn
+                WITH recent_sessions AS(
+                SELECT 
+                        subject_id,
+                conducted_count,
+                session_id,
+                ROW_NUMBER() OVER(PARTITION BY subject_id ORDER BY date DESC, start_time DESC) as rn
                     FROM sessions
                     WHERE subject_id = ANY($1)
                     AND status = 'conducted'
-                )
-                SELECT 
-                    rs.subject_id,
-                    SUM(rs.conducted_count) as recent_conducted,
-                    COALESCE(SUM(CASE WHEN a.present = true THEN rs.conducted_count ELSE 0 END), 0) as recent_attended
+            )
+        SELECT
+        rs.subject_id,
+            SUM(rs.conducted_count) as recent_conducted,
+            COALESCE(SUM(CASE WHEN a.present = true THEN rs.conducted_count ELSE 0 END), 0) as recent_attended
                 FROM recent_sessions rs
                 LEFT JOIN attendance a ON rs.session_id = a.session_id AND a.student_id = $2
                 WHERE rs.rn <= 5
@@ -196,10 +238,10 @@ export class PostgresProvider extends IDataProvider {
     async getWeeklyHeatmap(studentId) {
         try {
             const res = await query(`
-                SELECT 
-                    to_char(date, 'Dy') as day_name,
-                    COUNT(*) as total_classes,
-                    COALESCE(SUM(CASE WHEN a.present = true THEN 1 ELSE 0 END), 0) as attended
+        SELECT
+        to_char(date, 'Dy') as day_name,
+            COUNT(*) as total_classes,
+            COALESCE(SUM(CASE WHEN a.present = true THEN 1 ELSE 0 END), 0) as attended
                 FROM sessions s
                 LEFT JOIN attendance a ON s.session_id = a.session_id AND a.student_id = $1
                 WHERE s.date >= CURRENT_DATE - INTERVAL '6 days'
@@ -222,18 +264,18 @@ export class PostgresProvider extends IDataProvider {
             JOIN enrollments e ON s.subject_id = e.subject_id
             LEFT JOIN attendance a ON s.session_id = a.session_id AND a.student_id = $1
             WHERE e.student_id = $1
-              AND s.status = 'conducted' -- STRICT: Only conducted sessions count for history/badges
+              AND s.status = 'conducted' -- STRICT: Only conducted sessions count for history / badges
             ORDER BY s.date ASC, s.start_time ASC
-        `, [studentId]);
+            `, [studentId]);
         return historyRes.rows;
     }
 
     async awardBadge(studentId, badgeCode) {
         await query(`
-            INSERT INTO student_badges (student_id, badge_code, awarded_at)
-            VALUES ($1, $2, CURRENT_TIMESTAMP)
-            ON CONFLICT (student_id, badge_code) DO NOTHING
-        `, [studentId, badgeCode]);
+            INSERT INTO student_badges(student_id, badge_code, awarded_at)
+        VALUES($1, $2, CURRENT_TIMESTAMP)
+            ON CONFLICT(student_id, badge_code) DO NOTHING
+            `, [studentId, badgeCode]);
     }
 
     async getEarnedBadges(studentId) {

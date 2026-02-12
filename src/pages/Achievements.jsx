@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../context/Store';
 import { Upload, X, Check, Award, Clock, FileText } from 'lucide-react';
+import config from '../utils/config';
 
 const Achievements = () => {
     const { user } = useStore();
@@ -12,7 +13,7 @@ const Achievements = () => {
 
     const fetchAchievements = async () => {
         try {
-            const res = await fetch('http://localhost:5000/student/achievements', {
+            const res = await fetch(`${config.API_URL}/student/achievements`, {
                 headers: { 'Authorization': `Bearer ${user.token}` }
             });
             if (res.ok) setAchievements(await res.json());
@@ -130,7 +131,7 @@ export const UploadModal = ({ onClose, onUpload }) => {
     const [submitting, setSubmitting] = useState(false);
 
     // ANTI-GRAVITY: Dynamic API URL
-    const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:4000';
+    const API_URL = config.API_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();

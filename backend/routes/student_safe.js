@@ -14,33 +14,50 @@ const router = express.Router();
 router.get('/student/:sapid/snapshot', async (req, res) => {
     try {
         let sapid = req.params.sapid;
-        // Normalize: If ID starts with 'S' or 's', strip it to match numeric DB sapid
-        // REMOVED ANTI-GRAVITY: Do NOT strip 'S'. DB stores 'S9000050'.
-        // if (/^[Ss]\d+$/.test(sapid)) {
-        //    sapid = sapid.substring(1);
-        // }
+
+        // --- 1. ADMIN CIRCUIT BREAKER ---
+        // If User is Admin/Director, DO NOT attempt to load student pipeline.
+        if (sapid === 'ADMIN' || sapid === 'DIRECTOR' || sapid.startsWith('ADMIN')) {
+            console.log(`[Circuit Breaker] Admin/Director '${sapid}' accessing student snapshot. Returning minimal dash.`);
+            return res.json({
+                student: { name: 'Administrator', sapid, program: 'Administration', role: 'admin' },
+                todays_classes: [],
+                session_history: [],
+                analytics: { attendanceRate: 100, momentum: 'stable' },
+                meta: { role_override: true }
+            });
+        }
+
         const q = await query('SELECT student_id, sapid, name, course_id, program, year, semester FROM students WHERE sapid=$1 OR student_id=$1 LIMIT 1', [sapid]);
-        if (q.rows.length === 0) return res.status(404).json({ error: 'Student not found' });
+
+        // --- 2. STUDENT NOT FOUND SAFETY ---
+        if (q.rows.length === 0) {
+            console.warn(`[Snapshot] Student '${sapid}' not found. Returning safe empty state.`);
+            return res.json({
+                student: { name: 'Guest/Unknown', sapid, program: 'N/A' },
+                todays_classes: [],
+                analytics: { attendanceRate: 0 },
+                meta: { error: 'Student Not Found' }
+            });
+        }
+
         const studentRow = q.rows[0];
 
         // compute analytics (fast) and attach if none
         const { analytics, attendanceSummary, subjectMetrics } = await recomputeAnalyticsForStudent(sapid);
 
-        // FETCH TODAY'S CLASSES (Timetable)
-        // Only if student is enrolled in them (implicitly via query or curriculum)
-        // Ideally filter by enrolled subjects
         const studentId = studentRow.student_id;
         const enrolledSubjectIds = subjectMetrics.map(s => s.subject_id);
 
-        const todayQ = await query(`
-            SELECT session_id, subject_id, start_time, end_time, type, room, status
-            FROM sessions
-            WHERE date = CURRENT_DATE
-            AND subject_id = ANY($1)
-            ORDER BY start_time ASC
-        `, [enrolledSubjectIds]);
+        // FETCH TODAY'S CLASSES (Timetable)
+        // REFACTOR: Use PostgresProvider to ensure Cohort Logic is applied
+        const { PostgresProvider } = await import('../providers/PostgresProvider.js');
+        const provider = new PostgresProvider();
 
-        const todays_classes = todayQ.rows.map(row => {
+        // Get today's classes (1 day range)
+        const timetableRows = await provider.getTimetable(studentId, 1);
+
+        const todays_classes = timetableRows.map(row => {
             const now = new Date();
             const [sh, sm] = row.start_time.split(':');
             const [eh, em] = row.end_time.split(':');
@@ -55,9 +72,15 @@ router.get('/student/:sapid/snapshot', async (req, res) => {
             // Find subject name
             const subj = subjectMetrics.find(s => s.subject_id === row.subject_id);
             return {
-                ...row,
-                subject_name: subj ? subj.subject_name : 'Unknown',
-                subject_code: subj ? subj.subject_code : row.subject_id,
+                session_id: row.id,
+                subject_id: row.subject_id,
+                start_time: row.start_time,
+                end_time: row.end_time,
+                type: row.type || 'Lecture',
+                room: row.room,
+                status: row.status,
+                subject_name: subj ? subj.subject_name : (row.subject_id || 'Unknown'),
+                subject_code: subj ? subj.subject_code : (row.code || row.subject_id),
                 time_status: timeStatus
             };
         });
@@ -153,7 +176,52 @@ router.get('/student/:sapid/notifications', async (req, res) => {
 
         res.json(rows);
     } catch (err) {
+        // OPTIONAL TABLE SAFETY: If table missing, return empty
+        if (err.message.includes('association') || err.message.includes('relation "notifications" does not exist')) {
+            console.warn("[OPTIONAL] Notifications table missing. Returned [].");
+            return res.json([]);
+        }
         res.status(500).json({ error: err.message });
+    }
+});
+
+/**
+ * GET /student/:sapid/timetable
+ * Helper route for ClassesTab.jsx
+ */
+router.get('/student/:sapid/timetable', async (req, res) => {
+    try {
+        const { sapid } = req.params;
+        const view = req.query.view || 'week'; // 'today' or 'week'
+
+        // Resolve ID
+        const sRes = await query('SELECT student_id, program, semester FROM students WHERE sapid = $1 OR student_id = $1', [sapid]);
+        if (sRes.rows.length === 0) return res.status(404).json({ error: "Student not found" });
+        const student = sRes.rows[0];
+
+        // Provider
+        const { PostgresProvider } = await import('../providers/PostgresProvider.js');
+        const provider = new PostgresProvider();
+
+        // 1 Day for 'today', 7 for 'week'
+        const days = (view === 'today') ? 1 : 7;
+        const rows = await provider.getTimetable(student.student_id, days);
+
+        // Map for Frontend
+        const sessions = rows.map(r => ({
+            ...r,
+            start_time: r.time, // Frontend expects 'start_time'
+            subject_name: r.subject_name || r.code,
+            subject_code: r.code,
+            location: r.room,     // Frontend expects 'location'
+            live_status: r.status // Frontend expects 'live_status'
+        }));
+
+        res.json({ sessions });
+
+    } catch (e) {
+        console.error("Timetable Route Error:", e);
+        res.status(500).json({ error: e.message });
     }
 });
 

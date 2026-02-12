@@ -187,6 +187,12 @@ export async function recomputeAnalyticsForStudent(sapid) {
                 subject_id: sub.subject_id,
                 subject_name: sub.subject_name,
                 subject_code: sub.subject_code,
+
+                // Frontend Compatibility Aliases
+                subject: sub.subject_name,      // For Analytics.jsx
+                code: sub.subject_code,         // For Analytics.jsx
+                percentage: parseFloat(pct.toFixed(2)), // For Analytics.jsx
+
                 attendance_percentage: parseFloat(pct.toFixed(2)),
                 units_conducted: conducted,
                 units_attended: attended,

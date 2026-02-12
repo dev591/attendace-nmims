@@ -83,15 +83,7 @@ export default function FacultyList() {
                         className="bg-white group hover:-translate-y-1 transition-all duration-300 cursor-pointer p-0 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md overflow-hidden"
                     >
                         <div className="h-20 bg-gradient-to-br from-slate-100 to-white border-b border-gray-50 relative">
-                            <div className="absolute top-4 right-4">
-                                <span className={`h-2.5 w-2.5 rounded-full inline-block ${Math.random() > 0.5 ? 'bg-green-500' : 'bg-gray-300'
-                                    // Note: In list view we can't easily compute live status for ALL without heavy DB.
-                                    // So we show generic 'Active' status or fetch logic later.
-                                    // Using random for now is mockup behavior which I should avoid ("NO MOCK").
-                                    // Better: Remove "Live Dot" from list view if not real, or fetch it.
-                                    // I'll remove the dot to strict adherence.
-                                    } hidden`}></span>
-                            </div>
+                            {/* NO MOCK DATA: Live status removed until real-time tracking is implemented */}
                         </div>
                         <div className="px-6 pb-6 -mt-10 relative">
                             <img

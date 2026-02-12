@@ -12,6 +12,7 @@ import AdminSchedule from './pages/AdminSchedule';
 import CourseInfo from './pages/CourseInfo';
 import ScanQR from './pages/ScanQR';
 import Profile from './pages/Profile';
+import Timetable from './pages/Timetable'; // NEW
 import AdminDashboard from './pages/admin/AdminDashboard'; // Import new dashboard
 import { StoreProvider } from './context/Store';
 import { SocketProvider } from './context/SocketContext';
@@ -101,6 +102,7 @@ function App() {
                                             <Route path="/student/:id" element={<Layout />}>
                                                 <Route index element={<StudentDashboard />} />
                                                 <Route path="dashboard" element={<StudentDashboard />} />
+                                                <Route path="timetable" element={<Timetable />} /> {/* NEW */}
                                                 <Route path="analytics" element={<Analytics />} />
                                                 <Route path="scan" element={<ScanQR />} />
                                                 <Route path="profile" element={<Profile />} />

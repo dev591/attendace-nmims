@@ -13,32 +13,7 @@ const Home = () => {
     const [events, setEvents] = useState([]);
     const [loadingEvents, setLoadingEvents] = useState(true);
 
-    // MOCK DATA FOR DEMO
-    const MOCK_EVENTS = [
-        {
-            event_id: 'mock-1',
-            title: 'Annual Tech-Fest "Turing 2026"',
-            description: 'Join us for the biggest technical festival of the year featuring hackathons, robotics, and coding challenges.',
-            date: new Date().setDate(new Date().getDate() + 5), // 5 days from now
-            school: 'STME',
-        },
-        {
-            event_id: 'mock-2',
-            title: 'Guest Lecture: AI in Healthcare',
-            description: 'Distinguished speaker Dr. R. K. Gupta from Apollo Hospitals will discuss the future of AI diagnostics.',
-            date: new Date().setDate(new Date().getDate() + 12),
-            school: 'School of Pharma',
-        },
-        {
-            event_id: 'mock-3',
-            title: 'Cultural Night & Alumni Meet',
-            description: 'A grand evening of music, dance, and networking with our distinguished alumni network.',
-            date: new Date().setDate(new Date().getDate() + 20),
-            school: 'Student Council',
-        }
-    ];
-
-    // FETCH LIVE EVENTS (With Mock Fallback)
+    // FETCH LIVE EVENTS
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -46,18 +21,10 @@ const Home = () => {
                 const res = await fetch(`${API_URL}/events/public`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.length > 0) {
-                        setEvents(data);
-                    } else {
-                        // FALLBACK TO MOCK IF DB IS EMPTY
-                        setEvents(MOCK_EVENTS);
-                    }
-                } else {
-                    setEvents(MOCK_EVENTS);
+                    setEvents(data);
                 }
             } catch (err) {
                 console.error("Failed to fetch public events", err);
-                setEvents(MOCK_EVENTS); // Fallback on error too
             } finally {
                 setLoadingEvents(false);
             }

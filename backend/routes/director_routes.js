@@ -127,9 +127,7 @@ router.get('/student/:sapid', async (req, res) => {
         const { sapid } = req.params;
 
         // 1. Basic Info
-        console.log(`[DEBUG] Director Profile Lookup. SAPID: '${sapid}'`);
         const studentRes = await query("SELECT student_id, sapid, name, email, dept, program, year, phone, parent_phone, joining_year FROM students WHERE sapid = $1", [sapid]);
-        console.log(`[DEBUG] Lookup Result Count: ${studentRes.rows.length}`);
         if (studentRes.rows.length === 0) return res.status(404).json({ error: "Student not found" });
         const student = studentRes.rows[0];
 
@@ -408,6 +406,34 @@ router.get('/heatmaps', authenticateToken, async (req, res) => {
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: "Heatmap generation failed" });
+    }
+});
+
+// 8. GET /director/faculty/list (Directory)
+router.get('/faculty/list', async (req, res) => {
+    try {
+        const { search } = req.query;
+        let sql = `
+            SELECT 
+                student_id, sapid, name, email, dept, designation, 
+                phone, role, joining_year
+            FROM students 
+            WHERE role = 'faculty'
+        `;
+        const params = [];
+
+        if (search) {
+            sql += ` AND (name ILIKE $1 OR sapid ILIKE $1)`;
+            params.push(`%${search}%`);
+        }
+
+        sql += ` ORDER BY name ASC`;
+
+        const { rows } = await query(sql, params);
+        res.json(rows);
+    } catch (err) {
+        console.error("Faculty List Error:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 

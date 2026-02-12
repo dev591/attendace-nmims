@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Crown } from 'lucide-react';
+import config from '../utils/config';
 
 const PointsLeaderboard = () => {
     const [leaders, setLeaders] = useState([]);
@@ -11,7 +12,7 @@ const PointsLeaderboard = () => {
         const fetchLeaderboard = async () => {
             try {
                 // No Auth needed for public leaderboard (or use token if preferred)
-                const res = await fetch('http://localhost:5000/gamification/leaderboard');
+                const res = await fetch(`${config.API_URL}/gamification/leaderboard`);
                 if (res.ok) setLeaders(await res.json());
             } catch (e) {
                 console.error(e);

@@ -1180,6 +1180,104 @@ app.get('/debug/counts/attendance', async (req, res) => {
 /* ADDED BY ANTI-GRAVITY */
 
 import { getSubjectsForStudent } from './lib/subject_service.js';
+import { enrichTimetableWithStatus } from './lib/timetable_status.js';
+
+/* ADDED BY ANTI-GRAVITY: Timetable API */
+app.get('/student/:id/timetable', auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { view } = req.query; // 'today' or 'week'
+
+        // 1. Get Student Profile for filtering
+        const studentRes = await query('SELECT student_id, program, dept, semester, year FROM students WHERE student_id = $1', [id]);
+        if (studentRes.rows.length === 0) return res.status(404).json({ error: 'Student not found' });
+        const student = studentRes.rows[0];
+
+        // 2. Fetch Subjects (Enrolled)
+        // Ideally we filter sessions by enrolled subjects ONLY
+        const enrollments = await query('SELECT subject_id FROM enrollments WHERE student_id = $1', [id]);
+        const subjectIds = enrollments.rows.map(r => r.subject_id);
+
+        if (subjectIds.length === 0) {
+            return res.json({ sessions: [], message: 'No enrollments found' });
+        }
+
+        let sessions = [];
+
+        if (view === 'today') {
+            const today = new Date().toISOString().split('T')[0];
+            const sessionRes = await query(`
+                SELECT s.session_id, s.date, s.start_time, s.end_time, s.location, s.status,
+                       sub.name as subject_name, sub.code as subject_code
+                FROM sessions s
+                JOIN subjects sub ON s.subject_id = sub.code -- Link via Code usually
+                WHERE s.date = $1 
+                AND s.subject_id = ANY($2)
+                ORDER BY s.start_time ASC
+            `, [today, subjectIds]); // NOTE: subject_id in sessions is actually CODE usually based on import logic. 
+            // Correcting: Import stored `subjectCode` in `subject_id` column.
+            // Enrollments has UUIDs or codes? 
+            // Sync script put UUIDs in enrollments.
+            // Import script put CODES in sessions.subject_id.
+            // We need to JOIN via subjects table to bridge UUID -> Code.
+
+            // CORRECT QUERY:
+            /*
+            SELECT s.*, sub.name
+            FROM sessions s
+            JOIN subjects sub ON s.subject_id = sub.code  (Session has 'CS101', Subject has 'CS101')
+            JOIN enrollments e ON sub.subject_id = e.subject_id (Enrollment has UUID)
+            WHERE e.student_id = $1 AND s.date = CURRENT_DATE
+            */
+
+            const realTimeRes = await query(`
+                SELECT s.session_id, s.date, s.start_time, s.end_time, s.location, s.status,
+                       sub.name as subject_name, sub.code as subject_code
+                FROM sessions s
+                JOIN subjects sub ON s.subject_id = sub.code
+                JOIN enrollments e ON sub.subject_id = e.subject_id
+                WHERE e.student_id = $1 
+                AND s.date = $2
+                ORDER BY s.start_time ASC
+             `, [id, today]);
+
+            sessions = realTimeRes.rows;
+
+        } else {
+            // WEEK VIEW (Next 7 days or Current Week)
+            // Let's do Start of Week to End of Week ? Or just Next 7 Days?
+            // User asked "View Full Timetable". Usually means Master Schedule.
+            // But if we have generated sessions, showing actual sessions is better.
+            // Let's show This Week (Mon-Sun).
+
+            // For now, let's return next 7 days for utility
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+
+            const weekRes = await query(`
+                SELECT s.session_id, s.date, s.start_time, s.end_time, s.location, s.status,
+                       sub.name as subject_name, sub.code as subject_code
+                FROM sessions s
+                JOIN subjects sub ON s.subject_id = sub.code
+                JOIN enrollments e ON sub.subject_id = e.subject_id
+                WHERE e.student_id = $1 
+                AND s.date >= $2 AND s.date <= $3
+                ORDER BY s.date ASC, s.start_time ASC
+             `, [id, today.toISOString().split('T')[0], nextWeek.toISOString().split('T')[0]]);
+
+            sessions = weekRes.rows;
+        }
+
+        // 3. Enrich Status
+        const enriched = enrichTimetableWithStatus(sessions);
+        res.json({ sessions: enriched });
+
+    } catch (e) {
+        console.error("Timetable API Error", e);
+        res.status(500).json({ error: e.message });
+    }
+});
 
 
 /* ADDED BY ANTI-GRAVITY: Debug Subject Resolution */
@@ -1292,11 +1390,19 @@ app.get('/__debug/init-notifications', async (req, res) => {
 import tempLostFoundMigration from './routes/temp_migration_lf.js';
 import collegeEcosystemRoutes from './routes/college_ecosystem.js';
 import securityAdminRoutes from './routes/security_admin.js';
+import portfolioRoutes from './routes/portfolio.js';
+import achievementRoutes from './routes/achievements.js'; // FIX: Mount Achievements (contains /gamification/leaderboard)
+import appealRoutes from './routes/appeals.js'; // FIX: Mount Appeals
+import leaderboardRoutes from './routes/leaderboard_routes.js'; // FIX: Mount Leaderboard
 
 // ... (existing mounts)
 app.use('/migrate', tempLostFoundMigration);
 app.use('/college', collegeEcosystemRoutes);
 app.use('/security', securityAdminRoutes);
+app.use('/student', portfolioRoutes); // /student/:sapid/portfolio
+app.use(achievementRoutes); // Mounted at root
+app.use(appealRoutes);      // Mounted at root
+app.use(leaderboardRoutes); // Mounted at root
 import auditRoutes from './routes/audit.js';
 app.use(auditRoutes);
 
@@ -1315,8 +1421,49 @@ app.use('/migrate-chat', tempChatMigration);
 import tempNotifMigration from './routes/temp_migration_notif.js';
 app.use('/migrate-notif', tempNotifMigration);
 
+import scheduleAdminRoutes from './routes/schedule_admin.js';
+app.use('/admin/schedule', auth, scheduleAdminRoutes);
 
 
+
+
+// --- 6. GLOBAL ERROR HANDLER (Production Hardening) ---
+app.use((err, req, res, next) => {
+    // 1. Log the Error with Context
+    const timestamp = new Date().toISOString();
+    console.error(`[ERROR] ${timestamp} ${req.method} ${req.path}`);
+    console.error(`[ERROR] Message: ${err.message}`);
+    console.error(`[ERROR] Stack: ${err.stack}`);
+
+    // 2. Classify & Respond
+    const statusCode = err.statusCode || 500;
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    // Safe Response Config
+    const response = {
+        error: true,
+        message: err.message || "Internal Server Error",
+        code: err.code || 'INTERNAL_ERROR',
+        // In prod, hide stack trace unless admin?
+        stack: isProduction ? undefined : err.stack
+    };
+
+    // 3. Special Case: Multer/Upload Errors
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        response.message = "File too large. Max limit exceeded.";
+        response.code = 'FILE_SIZE_LIMIT';
+    }
+
+    // 4. Special Case: DB Foreign Key / Constraint
+    if (err.code === '23505') { // Postgres Unique Violation
+        response.message = "Duplicate entry detected. This record already exists.";
+        response.code = 'DUPLICATE_ENTRY';
+    }
+
+    if (!res.headersSent) {
+        res.status(statusCode).json(response);
+    }
+});
 
 server.listen(PORT, () => {
     console.log(`🚀 Antigravity Backend running on port ${PORT} `);

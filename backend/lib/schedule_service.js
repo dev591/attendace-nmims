@@ -69,67 +69,132 @@ export async function processScheduleUpload(file, ignoredScope = {}) {
             console.log(`[Schedule] Scanning Sheet: ${sheetName}`);
 
             let records = [];
+            // 1. ROBUST RAW READ (Array of Arrays)
+            let rawRows = [];
             if (workbook) {
-                records = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                rawRows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
             } else {
-                // CSV Fallback
+                // CSV Fallback - parse as arrays
                 const content = fs.readFileSync(filePath);
-                records = parse(content, { columns: true, skip_empty_lines: true, trim: true });
+                // For CSV, we might not have A1 scope. Assume standard headers.
+                const csvRecords = parse(content, { columns: true, skip_empty_lines: true, trim: true });
+                // Convert to normalized structure immediately? 
+                // Let's stick to the robust path for Excel. For CSV, use old logic logic shim.
+                rawRows = [Object.keys(csvRecords[0] || {}), ...csvRecords.map(Object.values)];
             }
 
-            if (records.length === 0) continue;
+            if (rawRows.length === 0) continue;
 
-            // 2. Normalize Headers
-            records = records.map(r => {
-                const normalized = {};
-                Object.keys(r).forEach(k => {
-                    const cleanKey = k.toLowerCase().trim().replace(/ /g, '_');
-                    normalized[cleanKey] = r[k];
-                });
-                return normalized;
-            });
+            // 2. PARSE SCOPE FROM A1 (Accepts "Scope: X | Y" or "X, Y")
+            const scopeCell = rawRows[0][0];
+            let program = null, semester = null, school = null, section = null;
 
-            // 3. EXTRACT SCOPE FROM ROW 1 (AUTO-INFERENCE)
-            const firstRow = records[0];
+            // KNOWN SCHOOLS
+            const KNOWN_SCHOOLS = ['STME', 'SPTM', 'SOL', 'SBM', 'SAMSOE', 'SDSOS', 'KPMSOL', 'SOD', 'SOS'];
 
-            // Allow Header Hunting? (MVP: Stick to Row 1 for Timetable, it's usually cleaner)
-            // If Row 1 is garbage, try Row 2?
-            // Let's assume Row 1 for now to avoid complexity, usually Timetables are strict.
+            // Try to Parse A1
+            if (scopeCell && typeof scopeCell === 'string') {
+                const s = scopeCell.toUpperCase(); // Uppercase for School matching
+                const tokens = s.replace('SCOPE:', '').split(/[\s|,:,-]+/).map(t => t.trim());
 
-            const SCHOOL_MAP = {
-                "mba": "MBA", "pharma": "PHARMA", "law": "LAW",
-                "btech": "STME", "engineering": "STME", "mpstme": "STME", "b.tech": "STME"
-            };
-
-            let school = firstRow.school || firstRow.school_name || firstRow.institute;
-            const program = firstRow.program || firstRow.course;
-            let section = firstRow.section || firstRow.division || null;
-            let semester = firstRow.semester || firstRow.sem || firstRow.term;
-
-            // INFERENCE: SCHOOL
-            if (!school && program) {
-                const progKey = program.toLowerCase().replace(/[^a-z]/g, '');
-                for (const [key, val] of Object.entries(SCHOOL_MAP)) {
-                    if (progKey.includes(key)) {
-                        school = val;
+                // 1. Find School (First token or match)
+                for (const t of tokens) {
+                    if (KNOWN_SCHOOLS.includes(t)) {
+                        school = t;
                         break;
                     }
                 }
+
+                const sLow = scopeCell.toLowerCase(); // Use original scopeCell for lowercase matching
+                // 2. Find Semester
+                const tokensLow = sLow.replace('scope:', '').split(/[\s|,:,-]+/).map(t => t.trim());
+                for (let i = 0; i < tokensLow.length; i++) {
+                    if (['sem', 'semester'].includes(tokensLow[i]) && tokensLow[i + 1]) {
+                        semester = parseInt(tokensLow[i + 1]);
+                    } else if (/^sem\d+$/.test(tokensLow[i])) {
+                        semester = parseInt(tokensLow[i].replace('sem', ''));
+                    }
+                }
+
+                // 3. Find Program
+                if (sLow.includes('b.tech') || sLow.includes('tech')) program = 'B.Tech';
+                else if (sLow.includes('mba')) program = 'MBA';
+                else if (sLow.includes('m.tech')) program = 'M.Tech';
+                else if (sLow.includes('pharm')) program = 'Pharmacy';
+                else if (sLow.includes('law')) program = 'Law';
+
+                // 4. Find Section
+                const secMatch = sLow.match(/section\s*([a-z])/i);
+                if (secMatch) section = secMatch[1].toUpperCase();
             }
 
-            // VALIDATION: Skip invalid sheets instead of failing hard?
-            // If a sheet lacks Program/Sem/Subject, it might be a "Legend" sheet.
-            if (!program || !semester) {
-                console.warn(`[Schedule] Skipping sheet '${sheetName}': Missing Program/Semester in Row 1.`);
+            // Fallback: If not found in A1, look at ignoredScope (passed from admin override?)
+            if (ignoredScope && ignoredScope.program) program = ignoredScope.program;
+            if (ignoredScope.semester) semester = ignoredScope.semester;
+
+            // 3. FIND HEADER ROW & EXTRACT DATA
+            let headerIndex = -1;
+            const knownHeaders = ['subject', 'code', 'start', 'time', 'day', 'date'];
+
+            for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
+                const rowStr = JSON.stringify(rawRows[i]).toLowerCase();
+                const hits = knownHeaders.filter(h => rowStr.includes(h)).length;
+                if (hits >= 2) {
+                    headerIndex = i;
+                    console.log(`[Schedule] Found Header Row at Index ${i}`);
+                    break;
+                }
+            }
+
+            if (headerIndex === -1) {
+                console.warn(`[Schedule] Skipping '${sheetName}': No valid header row found.`);
                 continue;
             }
 
-            if (!school) school = 'STME';
+            // Normalization Helpers
+            const normalizeKey = (k) => (k || '').toString().toLowerCase().trim().replace(/ /g, '_');
 
-            // Normalize Semester
-            if (typeof semester === 'string') {
-                const digits = semester.replace(/\D/g, '');
-                semester = digits ? parseInt(digits) : NaN;
+            const headerRow = rawRows[headerIndex].map(normalizeKey);
+
+            // Build Records
+            records = rawRows.slice(headerIndex + 1).map(row => {
+                const obj = {};
+                headerRow.forEach((key, idx) => {
+                    if (key) obj[key] = row[idx];
+                });
+                return obj;
+            });
+
+            // 4. FINAL SCOPE VALIDATION
+            // Default program if not found
+            if (!program) program = 'B.Tech';
+            if (!semester) {
+                // Try searching in first data row?
+                if (records[0] && (records[0].semester || records[0].sem)) {
+                    semester = parseInt(records[0].semester || records[0].sem);
+                }
+            }
+
+            // STRICT VALIDATION: School Must Be Present
+            if (!school) {
+                // Last ditch: check ignoreScope or file name?
+                // For now, reject as per requirement.
+                console.warn(`[Schedule] Skipping sheet '${sheetName}': Missing SCHOOL in Scope (e.g. 'Scope: STME | ...').`);
+                continue;
+            }
+
+            if (!program || !semester) {
+                console.warn(`[Schedule] Skipping sheet '${sheetName}': Validation Failed.`);
+                console.warn(`[Schedule] Raw A1: "${scopeCell}"`);
+                console.warn(`[Schedule] Parsed -> School: ${school}, Program: ${program}, Sem: ${semester}`);
+                console.warn(`[Schedule] Missing: ${!program ? 'PROGRAM' : ''} ${!semester ? 'SEMESTER' : ''}`);
+
+                // Throwing error for visibility in response?
+                // The user needs to see this reason.
+                if (!program) throw new Error(`Scope Error: Could not detect PROGRAM in cell A1. Found: "${scopeCell}"`);
+                if (!semester) throw new Error(`Scope Error: Could not detect SEMESTER in cell A1. Found: "${scopeCell}"`);
+
+                continue;
             }
 
             console.log(`[Schedule] Processing Scope for '${sheetName}': ${school} | ${program} | Sem ${semester}`);
@@ -164,15 +229,21 @@ export async function processScheduleUpload(file, ignoredScope = {}) {
                 const subjectCode = row.subject_code.trim().toUpperCase();
                 let subjectId = null;
 
+                // ROW-LEVEL SCHOOL OVERRIDE (If Excel has "School" column)
+                // The user explicitly requested mapping Excel "School" column -> DB school field.
+                let effectiveSchool = row.school || school;
+                // Normalize if needed, or trust input? Let's trust input but uppercase.
+                if (effectiveSchool) effectiveSchool = effectiveSchool.toUpperCase();
+
                 if (!subjectMap.has(subjectCode)) {
                     // AUTO-CREATE SUBJECT
                     try {
                         const name = row.subject_name || `Subject ${subjectCode}`;
                         await client.query(`
-                            INSERT INTO subjects (subject_id, code, name)
-                            VALUES ($1, $2, $3)
+                            INSERT INTO subjects (subject_id, code, name, school)
+                            VALUES ($1, $2, $3, $4)
                             ON CONFLICT (code) DO NOTHING
-                        `, [subjectCode, subjectCode, name]);
+                        `, [subjectCode, subjectCode, name, effectiveSchool]);
                         subjectMap.set(subjectCode, subjectCode);
                         subjectId = subjectCode;
                     } catch (e) {
@@ -239,7 +310,7 @@ export async function processScheduleUpload(file, ignoredScope = {}) {
                         sessionId, subjectId, date,
                         row.start_time, row.end_time, row.location,
                         status, normalizedType, counts, conductedCount,
-                        school, program, semester, null, section
+                        effectiveSchool, program, semester, null, section
                     ]);
                     results.inserted_sessions++;
                 }

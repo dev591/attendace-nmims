@@ -241,6 +241,20 @@ const AdminSchedule = () => {
                 </Card>
             </div>
 
+            {/* 3. Manage Exceptions (Extra Class) */}
+            <div className="mt-8">
+                <Card className="p-6 border-l-4 border-amber-500">
+                    <div className="flex items-center gap-2 mb-4">
+                        <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
+                            <Clock size={24} />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-900">3. Schedule Extra Class</h2>
+                    </div>
+
+                    <ExtraClassForm />
+                </Card>
+            </div>
+
             {/* 3. Feedback Section */}
             {status === 'success' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -312,3 +326,80 @@ const AdminSchedule = () => {
 };
 
 export default AdminSchedule;
+
+const ExtraClassForm = () => {
+    const [formData, setFormData] = useState({
+        subject_code: '',
+        date: '',
+        start_time: '',
+        end_time: '',
+        venue: '',
+        faculty: ''
+    });
+    const [status, setStatus] = useState('idle');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('loading');
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${config.API_URL}/admin/schedule/extra-class`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setStatus('success');
+                setFormData({ subject_code: '', date: '', start_time: '', end_time: '', venue: '', faculty: '' });
+                alert("Extra class scheduled!");
+            } else {
+                alert(data.error);
+                setStatus('error');
+            }
+        } catch (e) {
+            console.error(e);
+            setStatus('error');
+        } finally {
+            if (status !== 'success') setStatus('idle');
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Subject Code</label>
+                <input required type="text" placeholder="e.g. CS101" className="w-full p-2 border rounded"
+                    value={formData.subject_code} onChange={e => setFormData({ ...formData, subject_code: e.target.value })} />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Date</label>
+                <input required type="date" className="w-full p-2 border rounded"
+                    value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Venue</label>
+                <input required type="text" placeholder="Room 404" className="w-full p-2 border rounded"
+                    value={formData.venue} onChange={e => setFormData({ ...formData, venue: e.target.value })} />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Start Time</label>
+                <input required type="time" className="w-full p-2 border rounded"
+                    value={formData.start_time} onChange={e => setFormData({ ...formData, start_time: e.target.value })} />
+            </div>
+            <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">End Time</label>
+                <input required type="time" className="w-full p-2 border rounded"
+                    value={formData.end_time} onChange={e => setFormData({ ...formData, end_time: e.target.value })} />
+            </div>
+            <div className="flex items-end">
+                <Button type="submit" disabled={status === 'loading'} className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2">
+                    {status === 'loading' ? 'Scheduling...' : 'Add Class'}
+                </Button>
+            </div>
+        </form>
+    );
+};

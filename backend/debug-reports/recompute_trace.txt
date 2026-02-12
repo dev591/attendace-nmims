@@ -22903,3 +22903,1220 @@
 [2026-02-06T05:13:18.528Z] Profile found: false
 [2026-02-06T05:13:18.552Z] START Recompute for ADMIN
 [2026-02-06T05:13:18.568Z] Profile found: false
+[2026-02-06T05:16:34.079Z] START Recompute for ADMIN
+[2026-02-06T05:16:34.247Z] Profile found: false
+[2026-02-06T05:17:47.030Z] START Recompute for 590000005
+[2026-02-06T05:17:47.035Z] Profile found: true
+[2026-02-06T05:17:47.035Z] studentId resolved: S590000005
+[2026-02-06T05:17:47.042Z] currRows length: 20
+[2026-02-06T05:17:47.042Z] Session Status Updated
+[2026-02-06T05:17:47.068Z] Metrics fetched: 20
+[2026-02-06T05:17:47.081Z] Trend fetched: 0
+[2026-02-06T05:17:54.182Z] START Recompute for 590000005
+[2026-02-06T05:17:54.270Z] Profile found: true
+[2026-02-06T05:17:54.270Z] studentId resolved: S590000005
+[2026-02-06T05:17:54.292Z] currRows length: 20
+[2026-02-06T05:17:54.292Z] Session Status Updated
+[2026-02-06T05:17:54.305Z] Metrics fetched: 20
+[2026-02-06T05:17:54.308Z] Trend fetched: 0
+[2026-02-06T05:20:43.447Z] START Recompute for 590000005
+[2026-02-06T05:20:44.225Z] Profile found: true
+[2026-02-06T05:20:44.226Z] studentId resolved: S590000005
+[2026-02-06T05:20:44.606Z] currRows length: 20
+[2026-02-06T05:20:44.607Z] Session Status Updated
+[2026-02-06T05:20:44.830Z] Metrics fetched: 20
+[2026-02-06T05:20:44.911Z] Trend fetched: 0
+[2026-02-06T05:21:08.822Z] START Recompute for 590000005
+[2026-02-06T05:21:08.858Z] START Recompute for 590000005
+[2026-02-06T05:21:08.916Z] Profile found: true
+[2026-02-06T05:21:08.916Z] studentId resolved: S590000005
+[2026-02-06T05:21:08.917Z] Profile found: true
+[2026-02-06T05:21:08.917Z] studentId resolved: S590000005
+[2026-02-06T05:21:08.930Z] currRows length: 20
+[2026-02-06T05:21:08.930Z] Session Status Updated
+[2026-02-06T05:21:08.930Z] currRows length: 20
+[2026-02-06T05:21:08.930Z] Session Status Updated
+[2026-02-06T05:21:08.942Z] Metrics fetched: 20
+[2026-02-06T05:21:08.944Z] Metrics fetched: 20
+[2026-02-06T05:21:08.946Z] Trend fetched: 0
+[2026-02-06T05:21:08.947Z] Trend fetched: 0
+[2026-02-06T05:21:08.997Z] START Recompute for 590000005
+[2026-02-06T05:21:09.010Z] Profile found: true
+[2026-02-06T05:21:09.010Z] studentId resolved: S590000005
+[2026-02-06T05:21:09.013Z] currRows length: 20
+[2026-02-06T05:21:09.013Z] Session Status Updated
+[2026-02-06T05:21:09.017Z] Metrics fetched: 20
+[2026-02-06T05:21:09.019Z] Trend fetched: 0
+[2026-02-06T05:21:48.039Z] START Recompute for ADMIN
+[2026-02-06T05:21:48.497Z] Profile found: false
+[2026-02-06T05:21:48.632Z] START Recompute for ADMIN
+[2026-02-06T05:21:48.656Z] Profile found: false
+[2026-02-06T05:21:48.688Z] START Recompute for ADMIN
+[2026-02-06T05:21:48.704Z] Profile found: false
+[2026-02-06T05:21:48.729Z] START Recompute for ADMIN
+[2026-02-06T05:21:48.743Z] Profile found: false
+[2026-02-06T05:22:05.700Z] START Recompute for ADMIN
+[2026-02-06T05:22:05.741Z] Profile found: false
+[2026-02-06T05:22:37.412Z] START Recompute for 590000005
+[2026-02-06T05:22:37.423Z] Profile found: true
+[2026-02-06T05:22:37.423Z] studentId resolved: S590000005
+[2026-02-06T05:22:37.441Z] currRows length: 20
+[2026-02-06T05:22:37.441Z] Session Status Updated
+[2026-02-06T05:22:37.456Z] Metrics fetched: 20
+[2026-02-06T05:22:37.461Z] Trend fetched: 0
+[2026-02-06T05:22:40.822Z] START Recompute for 590000005
+[2026-02-06T05:22:40.846Z] Profile found: true
+[2026-02-06T05:22:40.846Z] studentId resolved: S590000005
+[2026-02-06T05:22:40.858Z] currRows length: 20
+[2026-02-06T05:22:40.858Z] Session Status Updated
+[2026-02-06T05:22:40.874Z] Metrics fetched: 20
+[2026-02-06T05:22:40.877Z] Trend fetched: 0
+[2026-02-06T05:22:40.927Z] START Recompute for 590000005
+[2026-02-06T05:22:40.929Z] Profile found: true
+[2026-02-06T05:22:40.929Z] studentId resolved: S590000005
+[2026-02-06T05:22:40.932Z] currRows length: 20
+[2026-02-06T05:22:40.932Z] Session Status Updated
+[2026-02-06T05:22:40.934Z] Metrics fetched: 20
+[2026-02-06T05:22:40.936Z] Trend fetched: 0
+[2026-02-06T05:26:20.665Z] START Recompute for 590000005
+[2026-02-06T05:26:20.878Z] Profile found: true
+[2026-02-06T05:26:20.878Z] studentId resolved: S590000005
+[2026-02-06T05:26:20.906Z] currRows length: 20
+[2026-02-06T05:26:20.906Z] Session Status Updated
+[2026-02-06T05:26:20.912Z] Metrics fetched: 20
+[2026-02-06T05:26:20.920Z] Trend fetched: 0
+[2026-02-06T05:26:20.958Z] START Recompute for 590000005
+[2026-02-06T05:26:20.973Z] Profile found: true
+[2026-02-06T05:26:20.973Z] studentId resolved: S590000005
+[2026-02-06T05:26:20.977Z] currRows length: 20
+[2026-02-06T05:26:20.977Z] Session Status Updated
+[2026-02-06T05:26:20.982Z] Metrics fetched: 20
+[2026-02-06T05:26:20.984Z] Trend fetched: 0
+[2026-02-06T05:26:21.016Z] START Recompute for 590000005
+[2026-02-06T05:26:21.030Z] Profile found: true
+[2026-02-06T05:26:21.030Z] studentId resolved: S590000005
+[2026-02-06T05:26:21.035Z] currRows length: 20
+[2026-02-06T05:26:21.035Z] Session Status Updated
+[2026-02-06T05:26:21.040Z] Metrics fetched: 20
+[2026-02-06T05:26:21.044Z] Trend fetched: 0
+[2026-02-06T05:26:21.065Z] START Recompute for 590000005
+[2026-02-06T05:26:21.076Z] Profile found: true
+[2026-02-06T05:26:21.076Z] studentId resolved: S590000005
+[2026-02-06T05:26:21.079Z] currRows length: 20
+[2026-02-06T05:26:21.079Z] Session Status Updated
+[2026-02-06T05:26:21.085Z] Metrics fetched: 20
+[2026-02-06T05:26:21.086Z] Trend fetched: 0
+[2026-02-06T05:26:24.604Z] START Recompute for 590000005
+[2026-02-06T05:26:24.632Z] Profile found: true
+[2026-02-06T05:26:24.633Z] studentId resolved: S590000005
+[2026-02-06T05:26:24.644Z] currRows length: 20
+[2026-02-06T05:26:24.644Z] Session Status Updated
+[2026-02-06T05:26:24.687Z] Metrics fetched: 20
+[2026-02-06T05:26:24.693Z] Trend fetched: 0
+[2026-02-06T05:26:24.742Z] START Recompute for 590000005
+[2026-02-06T05:26:24.743Z] Profile found: true
+[2026-02-06T05:26:24.744Z] studentId resolved: S590000005
+[2026-02-06T05:26:24.746Z] currRows length: 20
+[2026-02-06T05:26:24.746Z] Session Status Updated
+[2026-02-06T05:26:24.748Z] Metrics fetched: 20
+[2026-02-06T05:26:24.751Z] Trend fetched: 0
+[2026-02-06T05:31:36.751Z] START Recompute for 590000005
+[2026-02-06T05:31:36.756Z] START Recompute for 590000005
+[2026-02-06T05:31:37.171Z] Profile found: true
+[2026-02-06T05:31:37.172Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.173Z] Profile found: true
+[2026-02-06T05:31:37.173Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.194Z] currRows length: 20
+[2026-02-06T05:31:37.194Z] Session Status Updated
+[2026-02-06T05:31:37.195Z] currRows length: 20
+[2026-02-06T05:31:37.195Z] Session Status Updated
+[2026-02-06T05:31:37.207Z] Metrics fetched: 20
+[2026-02-06T05:31:37.208Z] Metrics fetched: 20
+[2026-02-06T05:31:37.210Z] Trend fetched: 0
+[2026-02-06T05:31:37.210Z] Trend fetched: 0
+[2026-02-06T05:31:37.246Z] START Recompute for 590000005
+[2026-02-06T05:31:37.248Z] Profile found: true
+[2026-02-06T05:31:37.248Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.250Z] currRows length: 20
+[2026-02-06T05:31:37.250Z] Session Status Updated
+[2026-02-06T05:31:37.251Z] Metrics fetched: 20
+[2026-02-06T05:31:37.254Z] Trend fetched: 0
+[2026-02-06T05:31:37.259Z] START Recompute for 590000005
+[2026-02-06T05:31:37.270Z] Profile found: true
+[2026-02-06T05:31:37.270Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.274Z] currRows length: 20
+[2026-02-06T05:31:37.274Z] Session Status Updated
+[2026-02-06T05:31:37.278Z] Metrics fetched: 20
+[2026-02-06T05:31:37.279Z] Trend fetched: 0
+[2026-02-06T05:31:37.295Z] START Recompute for 590000005
+[2026-02-06T05:31:37.307Z] Profile found: true
+[2026-02-06T05:31:37.307Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.310Z] currRows length: 20
+[2026-02-06T05:31:37.310Z] Session Status Updated
+[2026-02-06T05:31:37.314Z] Metrics fetched: 20
+[2026-02-06T05:31:37.315Z] Trend fetched: 0
+[2026-02-06T05:31:37.335Z] START Recompute for 590000005
+[2026-02-06T05:31:37.345Z] Profile found: true
+[2026-02-06T05:31:37.345Z] studentId resolved: S590000005
+[2026-02-06T05:31:37.348Z] currRows length: 20
+[2026-02-06T05:31:37.348Z] Session Status Updated
+[2026-02-06T05:31:37.351Z] Metrics fetched: 20
+[2026-02-06T05:31:37.353Z] Trend fetched: 0
+[2026-02-06T05:32:10.927Z] START Recompute for 590000005
+[2026-02-06T05:32:10.929Z] START Recompute for 590000005
+[2026-02-06T05:32:11.116Z] Profile found: true
+[2026-02-06T05:32:11.116Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.117Z] Profile found: true
+[2026-02-06T05:32:11.117Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.136Z] currRows length: 20
+[2026-02-06T05:32:11.136Z] Session Status Updated
+[2026-02-06T05:32:11.136Z] currRows length: 20
+[2026-02-06T05:32:11.136Z] Session Status Updated
+[2026-02-06T05:32:11.145Z] Metrics fetched: 20
+[2026-02-06T05:32:11.146Z] Metrics fetched: 20
+[2026-02-06T05:32:11.149Z] Trend fetched: 0
+[2026-02-06T05:32:11.149Z] Trend fetched: 0
+[2026-02-06T05:32:11.181Z] START Recompute for 590000005
+[2026-02-06T05:32:11.182Z] Profile found: true
+[2026-02-06T05:32:11.182Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.183Z] currRows length: 20
+[2026-02-06T05:32:11.183Z] Session Status Updated
+[2026-02-06T05:32:11.184Z] Metrics fetched: 20
+[2026-02-06T05:32:11.184Z] Trend fetched: 0
+[2026-02-06T05:32:11.192Z] START Recompute for 590000005
+[2026-02-06T05:32:11.205Z] Profile found: true
+[2026-02-06T05:32:11.205Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.209Z] currRows length: 20
+[2026-02-06T05:32:11.209Z] Session Status Updated
+[2026-02-06T05:32:11.213Z] Metrics fetched: 20
+[2026-02-06T05:32:11.214Z] Trend fetched: 0
+[2026-02-06T05:32:11.229Z] START Recompute for 590000005
+[2026-02-06T05:32:11.239Z] Profile found: true
+[2026-02-06T05:32:11.240Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.243Z] currRows length: 20
+[2026-02-06T05:32:11.243Z] Session Status Updated
+[2026-02-06T05:32:11.247Z] Metrics fetched: 20
+[2026-02-06T05:32:11.248Z] Trend fetched: 0
+[2026-02-06T05:32:11.269Z] START Recompute for 590000005
+[2026-02-06T05:32:11.280Z] Profile found: true
+[2026-02-06T05:32:11.281Z] studentId resolved: S590000005
+[2026-02-06T05:32:11.284Z] currRows length: 20
+[2026-02-06T05:32:11.284Z] Session Status Updated
+[2026-02-06T05:32:11.288Z] Metrics fetched: 20
+[2026-02-06T05:32:11.289Z] Trend fetched: 0
+[2026-02-06T05:32:18.466Z] START Recompute for 590000005
+[2026-02-06T05:32:18.493Z] Profile found: true
+[2026-02-06T05:32:18.494Z] studentId resolved: S590000005
+[2026-02-06T05:32:18.506Z] currRows length: 20
+[2026-02-06T05:32:18.506Z] Session Status Updated
+[2026-02-06T05:32:18.516Z] Metrics fetched: 20
+[2026-02-06T05:32:18.519Z] Trend fetched: 0
+[2026-02-06T05:32:18.594Z] START Recompute for 590000005
+[2026-02-06T05:32:18.618Z] Profile found: true
+[2026-02-06T05:32:18.618Z] studentId resolved: S590000005
+[2026-02-06T05:32:18.628Z] currRows length: 20
+[2026-02-06T05:32:18.628Z] Session Status Updated
+[2026-02-06T05:32:18.638Z] Metrics fetched: 20
+[2026-02-06T05:32:18.640Z] Trend fetched: 0
+[2026-02-06T05:32:18.677Z] START Recompute for 590000005
+[2026-02-06T05:32:18.688Z] Profile found: true
+[2026-02-06T05:32:18.689Z] studentId resolved: S590000005
+[2026-02-06T05:32:18.692Z] currRows length: 20
+[2026-02-06T05:32:18.693Z] Session Status Updated
+[2026-02-06T05:32:18.698Z] Metrics fetched: 20
+[2026-02-06T05:32:18.700Z] Trend fetched: 0
+[2026-02-06T05:32:18.726Z] START Recompute for 590000005
+[2026-02-06T05:32:18.736Z] Profile found: true
+[2026-02-06T05:32:18.737Z] studentId resolved: S590000005
+[2026-02-06T05:32:18.742Z] currRows length: 20
+[2026-02-06T05:32:18.742Z] Session Status Updated
+[2026-02-06T05:32:18.747Z] Metrics fetched: 20
+[2026-02-06T05:32:18.748Z] Trend fetched: 0
+[2026-02-06T05:44:31.110Z] START Recompute for 590000005
+[2026-02-06T05:55:45.995Z] START Recompute for 590000005
+[2026-02-06T05:55:46.514Z] Profile found: true
+[2026-02-06T05:55:46.514Z] studentId resolved: S590000005
+[2026-02-06T05:55:46.616Z] currRows length: 20
+[2026-02-06T05:55:46.617Z] Session Status Updated
+[2026-02-06T05:55:46.673Z] Metrics fetched: 20
+[2026-02-06T05:55:46.684Z] Trend fetched: 0
+[2026-02-06T05:55:46.796Z] START Recompute for 590000005
+[2026-02-06T05:55:46.814Z] Profile found: true
+[2026-02-06T05:55:46.814Z] studentId resolved: S590000005
+[2026-02-06T05:55:46.820Z] currRows length: 20
+[2026-02-06T05:55:46.820Z] Session Status Updated
+[2026-02-06T05:55:46.826Z] Metrics fetched: 20
+[2026-02-06T05:55:46.827Z] Trend fetched: 0
+[2026-02-06T05:55:46.858Z] START Recompute for 590000005
+[2026-02-06T05:55:46.870Z] Profile found: true
+[2026-02-06T05:55:46.870Z] studentId resolved: S590000005
+[2026-02-06T05:55:46.875Z] currRows length: 20
+[2026-02-06T05:55:46.875Z] Session Status Updated
+[2026-02-06T05:55:46.880Z] Metrics fetched: 20
+[2026-02-06T05:55:46.882Z] Trend fetched: 0
+[2026-02-06T05:55:46.910Z] START Recompute for 590000005
+[2026-02-06T05:55:46.923Z] Profile found: true
+[2026-02-06T05:55:46.924Z] studentId resolved: S590000005
+[2026-02-06T05:55:46.930Z] currRows length: 20
+[2026-02-06T05:55:46.930Z] Session Status Updated
+[2026-02-06T05:55:46.937Z] Metrics fetched: 20
+[2026-02-06T05:55:46.939Z] Trend fetched: 0
+[2026-02-06T05:56:05.355Z] START Recompute for ADMIN
+[2026-02-06T05:56:05.401Z] Profile found: false
+[2026-02-06T05:58:29.266Z] START Recompute for ADMIN
+[2026-02-06T05:58:29.613Z] Profile found: false
+[2026-02-06T06:01:17.656Z] START Recompute for ADMIN
+[2026-02-06T06:01:18.263Z] Profile found: false
+[2026-02-06T06:01:18.369Z] START Recompute for ADMIN
+[2026-02-06T06:01:18.387Z] Profile found: false
+[2026-02-06T06:01:18.412Z] START Recompute for ADMIN
+[2026-02-06T06:01:18.424Z] Profile found: false
+[2026-02-06T06:01:18.445Z] START Recompute for ADMIN
+[2026-02-06T06:01:18.460Z] Profile found: false
+[2026-02-06T06:08:14.085Z] START Recompute for ADMIN
+[2026-02-06T06:08:21.713Z] Profile found: false
+[2026-02-06T06:08:23.231Z] START Recompute for ADMIN
+[2026-02-06T06:08:23.269Z] Profile found: false
+[2026-02-06T06:08:23.408Z] START Recompute for ADMIN
+[2026-02-06T06:08:23.436Z] Profile found: false
+[2026-02-06T06:08:23.494Z] START Recompute for ADMIN
+[2026-02-06T06:08:23.517Z] Profile found: false
+[2026-02-06T06:12:14.915Z] START Recompute for ADMIN
+[2026-02-06T06:12:16.849Z] Profile found: false
+[2026-02-06T06:12:17.792Z] START Recompute for ADMIN
+[2026-02-06T06:12:18.089Z] Profile found: false
+[2026-02-06T06:12:18.114Z] START Recompute for ADMIN
+[2026-02-06T06:12:18.209Z] Profile found: false
+[2026-02-06T06:12:18.229Z] START Recompute for ADMIN
+[2026-02-06T06:12:18.281Z] Profile found: false
+[2026-02-06T06:13:29.550Z] START Recompute for ADMIN
+[2026-02-06T06:13:29.590Z] Profile found: false
+[2026-02-06T06:13:29.687Z] START Recompute for ADMIN
+[2026-02-06T06:13:29.736Z] Profile found: false
+[2026-02-06T06:13:29.758Z] START Recompute for ADMIN
+[2026-02-06T06:13:29.776Z] Profile found: false
+[2026-02-06T06:13:29.786Z] START Recompute for ADMIN
+[2026-02-06T06:13:29.799Z] Profile found: false
+[2026-02-06T06:25:58.791Z] START Recompute for ADMIN
+[2026-02-06T06:25:59.419Z] Profile found: false
+[2026-02-06T06:25:59.460Z] START Recompute for ADMIN
+[2026-02-06T06:25:59.483Z] Profile found: false
+[2026-02-06T06:25:59.497Z] START Recompute for ADMIN
+[2026-02-06T06:25:59.508Z] Profile found: false
+[2026-02-06T06:25:59.519Z] START Recompute for ADMIN
+[2026-02-06T06:25:59.530Z] Profile found: false
+[2026-02-06T06:29:33.834Z] START Recompute for ADMIN
+[2026-02-06T06:29:34.771Z] Profile found: false
+[2026-02-06T06:29:35.669Z] START Recompute for ADMIN
+[2026-02-06T06:29:35.904Z] Profile found: false
+[2026-02-06T06:29:35.933Z] START Recompute for ADMIN
+[2026-02-06T06:29:35.975Z] Profile found: false
+[2026-02-06T06:29:35.992Z] START Recompute for ADMIN
+[2026-02-06T06:29:36.013Z] Profile found: false
+[2026-02-06T06:35:18.493Z] START Recompute for ADMIN
+[2026-02-06T06:35:20.183Z] Profile found: false
+[2026-02-06T06:35:20.242Z] START Recompute for ADMIN
+[2026-02-06T06:35:20.268Z] Profile found: false
+[2026-02-06T06:35:20.286Z] START Recompute for ADMIN
+[2026-02-06T06:35:20.315Z] Profile found: false
+[2026-02-06T06:35:20.326Z] START Recompute for ADMIN
+[2026-02-06T06:35:20.339Z] Profile found: false
+[2026-02-06T06:39:17.347Z] START Recompute for ADMIN
+[2026-02-06T06:39:19.276Z] START Recompute for ADMIN
+[2026-02-06T06:39:19.315Z] START Recompute for ADMIN
+[2026-02-06T06:39:20.093Z] START Recompute for ADMIN
+[2026-02-06T06:39:22.412Z] Profile found: false
+[2026-02-06T06:39:22.413Z] Profile found: false
+[2026-02-06T06:39:22.413Z] Profile found: false
+[2026-02-06T06:39:22.413Z] Profile found: false
+[2026-02-06T06:39:22.536Z] START Recompute for ADMIN
+[2026-02-06T06:39:22.590Z] Profile found: false
+[2026-02-06T06:39:22.614Z] START Recompute for ADMIN
+[2026-02-06T06:39:22.637Z] Profile found: false
+[2026-02-06T06:39:22.677Z] START Recompute for ADMIN
+[2026-02-06T06:39:22.696Z] Profile found: false
+[2026-02-06T06:47:12.522Z] START Recompute for ADMIN
+[2026-02-06T06:47:13.981Z] Profile found: false
+[2026-02-06T06:47:14.237Z] START Recompute for ADMIN
+[2026-02-06T06:47:14.266Z] Profile found: false
+[2026-02-06T06:47:14.359Z] START Recompute for ADMIN
+[2026-02-06T06:47:14.379Z] Profile found: false
+[2026-02-06T06:47:14.413Z] START Recompute for ADMIN
+[2026-02-06T06:47:14.427Z] Profile found: false
+[2026-02-06T06:47:52.805Z] START Recompute for 590000005
+[2026-02-06T06:47:52.817Z] Profile found: true
+[2026-02-06T06:47:52.817Z] studentId resolved: S590000005
+[2026-02-06T06:47:52.837Z] currRows length: 20
+[2026-02-06T06:47:52.837Z] Session Status Updated
+[2026-02-06T06:47:52.855Z] Metrics fetched: 20
+[2026-02-06T06:47:52.862Z] Trend fetched: 0
+[2026-02-06T06:48:03.690Z] START Recompute for 590000005
+[2026-02-06T06:48:03.733Z] Profile found: true
+[2026-02-06T06:48:03.733Z] studentId resolved: S590000005
+[2026-02-06T06:48:03.854Z] currRows length: 20
+[2026-02-06T06:48:03.855Z] Session Status Updated
+[2026-02-06T06:48:03.892Z] Metrics fetched: 20
+[2026-02-06T06:48:03.899Z] Trend fetched: 0
+[2026-02-06T06:48:04.055Z] START Recompute for 590000005
+[2026-02-06T06:48:04.056Z] Profile found: true
+[2026-02-06T06:48:04.056Z] studentId resolved: S590000005
+[2026-02-06T06:48:04.057Z] currRows length: 20
+[2026-02-06T06:48:04.057Z] Session Status Updated
+[2026-02-06T06:48:04.058Z] Metrics fetched: 20
+[2026-02-06T06:48:04.059Z] Trend fetched: 0
+[2026-02-06T06:57:37.901Z] START Recompute for 590000005
+[2026-02-06T06:57:38.893Z] Profile found: true
+[2026-02-06T06:57:38.893Z] studentId resolved: S590000005
+[2026-02-06T06:57:38.916Z] currRows length: 20
+[2026-02-06T06:57:38.916Z] Session Status Updated
+[2026-02-06T06:57:38.936Z] Metrics fetched: 20
+[2026-02-06T06:57:38.943Z] Trend fetched: 0
+[2026-02-06T06:57:38.981Z] START Recompute for 590000005
+[2026-02-06T06:57:39.002Z] Profile found: true
+[2026-02-06T06:57:39.002Z] studentId resolved: S590000005
+[2026-02-06T06:57:39.006Z] currRows length: 20
+[2026-02-06T06:57:39.006Z] Session Status Updated
+[2026-02-06T06:57:39.010Z] Metrics fetched: 20
+[2026-02-06T06:57:39.012Z] Trend fetched: 0
+[2026-02-06T06:57:39.030Z] START Recompute for 590000005
+[2026-02-06T06:57:39.045Z] Profile found: true
+[2026-02-06T06:57:39.045Z] studentId resolved: S590000005
+[2026-02-06T06:57:39.049Z] currRows length: 20
+[2026-02-06T06:57:39.050Z] Session Status Updated
+[2026-02-06T06:57:39.054Z] Metrics fetched: 20
+[2026-02-06T06:57:39.056Z] Trend fetched: 0
+[2026-02-06T06:57:39.075Z] START Recompute for 590000005
+[2026-02-06T06:57:39.086Z] Profile found: true
+[2026-02-06T06:57:39.086Z] studentId resolved: S590000005
+[2026-02-06T06:57:39.106Z] currRows length: 20
+[2026-02-06T06:57:39.106Z] Session Status Updated
+[2026-02-06T06:57:39.125Z] Metrics fetched: 20
+[2026-02-06T06:57:39.129Z] Trend fetched: 0
+[2026-02-06T06:58:16.506Z] START Recompute for 590000005
+[2026-02-06T06:58:17.438Z] START Recompute for 590000005
+[2026-02-06T06:58:17.443Z] START Recompute for 590000005
+[2026-02-06T06:58:17.588Z] START Recompute for 590000005
+[2026-02-06T06:58:17.930Z] Profile found: true
+[2026-02-06T06:58:17.930Z] studentId resolved: S590000005
+[2026-02-06T06:58:17.931Z] Profile found: true
+[2026-02-06T06:58:17.931Z] studentId resolved: S590000005
+[2026-02-06T06:58:17.932Z] Profile found: true
+[2026-02-06T06:58:17.932Z] studentId resolved: S590000005
+[2026-02-06T06:58:17.933Z] Profile found: true
+[2026-02-06T06:58:17.933Z] studentId resolved: S590000005
+[2026-02-06T06:58:18.022Z] currRows length: 20
+[2026-02-06T06:58:18.022Z] Session Status Updated
+[2026-02-06T06:58:18.023Z] currRows length: 20
+[2026-02-06T06:58:18.023Z] Session Status Updated
+[2026-02-06T06:58:18.023Z] currRows length: 20
+[2026-02-06T06:58:18.023Z] Session Status Updated
+[2026-02-06T06:58:18.023Z] currRows length: 20
+[2026-02-06T06:58:18.023Z] Session Status Updated
+[2026-02-06T06:58:18.041Z] Metrics fetched: 20
+[2026-02-06T06:58:18.041Z] Metrics fetched: 20
+[2026-02-06T06:58:18.041Z] Metrics fetched: 20
+[2026-02-06T06:58:18.041Z] Metrics fetched: 20
+[2026-02-06T06:58:18.045Z] Trend fetched: 0
+[2026-02-06T06:58:18.046Z] Trend fetched: 0
+[2026-02-06T06:58:18.046Z] Trend fetched: 0
+[2026-02-06T06:58:18.046Z] Trend fetched: 0
+[2026-02-06T06:58:18.135Z] START Recompute for 590000005
+[2026-02-06T06:58:18.147Z] Profile found: true
+[2026-02-06T06:58:18.147Z] studentId resolved: S590000005
+[2026-02-06T06:58:18.152Z] currRows length: 20
+[2026-02-06T06:58:18.152Z] Session Status Updated
+[2026-02-06T06:58:18.158Z] Metrics fetched: 20
+[2026-02-06T06:58:18.159Z] Trend fetched: 0
+[2026-02-06T06:58:18.206Z] START Recompute for 590000005
+[2026-02-06T06:58:18.217Z] Profile found: true
+[2026-02-06T06:58:18.217Z] studentId resolved: S590000005
+[2026-02-06T06:58:18.221Z] currRows length: 20
+[2026-02-06T06:58:18.221Z] Session Status Updated
+[2026-02-06T06:58:18.226Z] Metrics fetched: 20
+[2026-02-06T06:58:18.228Z] Trend fetched: 0
+[2026-02-06T06:58:18.247Z] START Recompute for 590000005
+[2026-02-06T06:58:18.257Z] Profile found: true
+[2026-02-06T06:58:18.258Z] studentId resolved: S590000005
+[2026-02-06T06:58:18.262Z] currRows length: 20
+[2026-02-06T06:58:18.262Z] Session Status Updated
+[2026-02-06T06:58:18.267Z] Metrics fetched: 20
+[2026-02-06T06:58:18.268Z] Trend fetched: 0
+[2026-02-06T06:58:22.091Z] START Recompute for 590000005
+[2026-02-06T06:58:22.138Z] Profile found: true
+[2026-02-06T06:58:22.138Z] studentId resolved: S590000005
+[2026-02-06T06:58:22.148Z] currRows length: 20
+[2026-02-06T06:58:22.148Z] Session Status Updated
+[2026-02-06T06:58:22.163Z] Metrics fetched: 20
+[2026-02-06T06:58:22.168Z] Trend fetched: 0
+[2026-02-06T06:58:22.208Z] START Recompute for 590000005
+[2026-02-06T06:58:22.209Z] Profile found: true
+[2026-02-06T06:58:22.209Z] studentId resolved: S590000005
+[2026-02-06T06:58:22.210Z] currRows length: 20
+[2026-02-06T06:58:22.210Z] Session Status Updated
+[2026-02-06T06:58:22.212Z] Metrics fetched: 20
+[2026-02-06T06:58:22.212Z] Trend fetched: 0
+[2026-02-06T07:01:09.208Z] START Recompute for 590000005
+[2026-02-06T07:01:09.798Z] Profile found: true
+[2026-02-06T07:01:09.799Z] studentId resolved: S590000005
+[2026-02-06T07:01:09.872Z] currRows length: 20
+[2026-02-06T07:01:09.872Z] Session Status Updated
+[2026-02-06T07:01:09.903Z] Metrics fetched: 20
+[2026-02-06T07:01:09.928Z] Trend fetched: 0
+[2026-02-06T07:01:10.102Z] START Recompute for 590000005
+[2026-02-06T07:01:10.129Z] Profile found: true
+[2026-02-06T07:01:10.129Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.134Z] currRows length: 20
+[2026-02-06T07:01:10.134Z] Session Status Updated
+[2026-02-06T07:01:10.140Z] Metrics fetched: 20
+[2026-02-06T07:01:10.142Z] Trend fetched: 0
+[2026-02-06T07:01:10.193Z] START Recompute for 590000005
+[2026-02-06T07:01:10.204Z] Profile found: true
+[2026-02-06T07:01:10.204Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.208Z] currRows length: 20
+[2026-02-06T07:01:10.208Z] Session Status Updated
+[2026-02-06T07:01:10.217Z] Metrics fetched: 20
+[2026-02-06T07:01:10.219Z] Trend fetched: 0
+[2026-02-06T07:01:10.240Z] START Recompute for 590000005
+[2026-02-06T07:01:10.251Z] Profile found: true
+[2026-02-06T07:01:10.251Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.255Z] currRows length: 20
+[2026-02-06T07:01:10.255Z] Session Status Updated
+[2026-02-06T07:01:10.260Z] Metrics fetched: 20
+[2026-02-06T07:01:10.261Z] Trend fetched: 0
+[2026-02-06T07:01:10.786Z] START Recompute for 590000005
+[2026-02-06T07:01:10.815Z] Profile found: true
+[2026-02-06T07:01:10.815Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.822Z] currRows length: 20
+[2026-02-06T07:01:10.822Z] Session Status Updated
+[2026-02-06T07:01:10.827Z] Metrics fetched: 20
+[2026-02-06T07:01:10.830Z] Trend fetched: 0
+[2026-02-06T07:01:10.878Z] START Recompute for 590000005
+[2026-02-06T07:01:10.890Z] Profile found: true
+[2026-02-06T07:01:10.890Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.894Z] currRows length: 20
+[2026-02-06T07:01:10.894Z] Session Status Updated
+[2026-02-06T07:01:10.900Z] Metrics fetched: 20
+[2026-02-06T07:01:10.916Z] Trend fetched: 0
+[2026-02-06T07:01:10.948Z] START Recompute for 590000005
+[2026-02-06T07:01:10.966Z] Profile found: true
+[2026-02-06T07:01:10.966Z] studentId resolved: S590000005
+[2026-02-06T07:01:10.970Z] currRows length: 20
+[2026-02-06T07:01:10.970Z] Session Status Updated
+[2026-02-06T07:01:10.974Z] Metrics fetched: 20
+[2026-02-06T07:01:10.976Z] Trend fetched: 0
+[2026-02-06T07:01:10.994Z] START Recompute for 590000005
+[2026-02-06T07:01:11.005Z] Profile found: true
+[2026-02-06T07:01:11.005Z] studentId resolved: S590000005
+[2026-02-06T07:01:11.009Z] currRows length: 20
+[2026-02-06T07:01:11.009Z] Session Status Updated
+[2026-02-06T07:01:11.014Z] Metrics fetched: 20
+[2026-02-06T07:01:11.016Z] Trend fetched: 0
+[2026-02-06T07:06:09.431Z] START Recompute for 590000005
+[2026-02-06T07:06:10.806Z] Profile found: true
+[2026-02-06T07:06:10.807Z] studentId resolved: S590000005
+[2026-02-06T07:06:11.143Z] currRows length: 20
+[2026-02-06T07:06:11.143Z] Session Status Updated
+[2026-02-06T07:06:11.162Z] Metrics fetched: 20
+[2026-02-06T07:06:11.168Z] Trend fetched: 0
+[2026-02-06T07:06:11.289Z] START Recompute for 590000005
+[2026-02-06T07:06:11.309Z] Profile found: true
+[2026-02-06T07:06:11.310Z] studentId resolved: S590000005
+[2026-02-06T07:06:11.316Z] currRows length: 20
+[2026-02-06T07:06:11.317Z] Session Status Updated
+[2026-02-06T07:06:11.322Z] Metrics fetched: 20
+[2026-02-06T07:06:11.323Z] Trend fetched: 0
+[2026-02-06T07:06:11.373Z] START Recompute for 590000005
+[2026-02-06T07:06:11.385Z] Profile found: true
+[2026-02-06T07:06:11.385Z] studentId resolved: S590000005
+[2026-02-06T07:06:11.389Z] currRows length: 20
+[2026-02-06T07:06:11.389Z] Session Status Updated
+[2026-02-06T07:06:11.393Z] Metrics fetched: 20
+[2026-02-06T07:06:11.395Z] Trend fetched: 0
+[2026-02-06T07:06:11.425Z] START Recompute for 590000005
+[2026-02-06T07:06:11.474Z] Profile found: true
+[2026-02-06T07:06:11.475Z] studentId resolved: S590000005
+[2026-02-06T07:06:11.486Z] currRows length: 20
+[2026-02-06T07:06:11.486Z] Session Status Updated
+[2026-02-06T07:06:11.492Z] Metrics fetched: 20
+[2026-02-06T07:06:11.496Z] Trend fetched: 0
+[2026-02-06T07:06:11.576Z] START Recompute for 590000005
+[2026-02-06T07:06:11.754Z] Profile found: true
+[2026-02-06T07:06:11.754Z] studentId resolved: S590000005
+[2026-02-06T07:06:11.774Z] currRows length: 20
+[2026-02-06T07:06:11.774Z] Session Status Updated
+[2026-02-06T07:06:11.793Z] Metrics fetched: 20
+[2026-02-06T07:06:11.806Z] Trend fetched: 0
+[2026-02-06T07:06:12.097Z] START Recompute for 590000005
+[2026-02-06T07:06:12.117Z] Profile found: true
+[2026-02-06T07:06:12.117Z] studentId resolved: S590000005
+[2026-02-06T07:06:12.121Z] currRows length: 20
+[2026-02-06T07:06:12.121Z] Session Status Updated
+[2026-02-06T07:06:12.126Z] Metrics fetched: 20
+[2026-02-06T07:06:12.128Z] Trend fetched: 0
+[2026-02-06T07:06:12.145Z] START Recompute for 590000005
+[2026-02-06T07:06:12.156Z] Profile found: true
+[2026-02-06T07:06:12.156Z] studentId resolved: S590000005
+[2026-02-06T07:06:12.161Z] currRows length: 20
+[2026-02-06T07:06:12.161Z] Session Status Updated
+[2026-02-06T07:06:12.165Z] Metrics fetched: 20
+[2026-02-06T07:06:12.169Z] Trend fetched: 0
+[2026-02-06T07:06:12.189Z] START Recompute for 590000005
+[2026-02-06T07:06:12.201Z] Profile found: true
+[2026-02-06T07:06:12.201Z] studentId resolved: S590000005
+[2026-02-06T07:06:12.205Z] currRows length: 20
+[2026-02-06T07:06:12.205Z] Session Status Updated
+[2026-02-06T07:06:12.210Z] Metrics fetched: 20
+[2026-02-06T07:06:12.212Z] Trend fetched: 0
+[2026-02-06T07:06:14.229Z] START Recompute for 590000005
+[2026-02-06T07:06:14.379Z] Profile found: true
+[2026-02-06T07:06:14.379Z] studentId resolved: S590000005
+[2026-02-06T07:06:14.390Z] currRows length: 20
+[2026-02-06T07:06:14.390Z] Session Status Updated
+[2026-02-06T07:06:14.403Z] Metrics fetched: 20
+[2026-02-06T07:06:14.409Z] Trend fetched: 0
+[2026-02-06T07:06:14.494Z] START Recompute for 590000005
+[2026-02-06T07:06:14.495Z] Profile found: true
+[2026-02-06T07:06:14.496Z] studentId resolved: S590000005
+[2026-02-06T07:06:14.498Z] currRows length: 20
+[2026-02-06T07:06:14.498Z] Session Status Updated
+[2026-02-06T07:06:14.502Z] Metrics fetched: 20
+[2026-02-06T07:06:14.504Z] Trend fetched: 0
+[2026-02-06T07:06:46.173Z] START Recompute for 590000011
+[2026-02-06T07:06:46.175Z] Profile found: true
+[2026-02-06T07:06:46.175Z] studentId resolved: S590000011
+[2026-02-06T07:06:46.181Z] currRows length: 20
+[2026-02-06T07:06:46.181Z] Session Status Updated
+[2026-02-06T07:06:46.215Z] Metrics fetched: 20
+[2026-02-06T07:06:46.226Z] Trend fetched: 4
+[2026-02-06T07:06:50.111Z] START Recompute for 590000011
+[2026-02-06T07:06:50.172Z] Profile found: true
+[2026-02-06T07:06:50.174Z] studentId resolved: S590000011
+[2026-02-06T07:06:50.214Z] currRows length: 20
+[2026-02-06T07:06:50.214Z] Session Status Updated
+[2026-02-06T07:06:50.236Z] Metrics fetched: 20
+[2026-02-06T07:06:50.241Z] Trend fetched: 4
+[2026-02-06T07:06:50.293Z] START Recompute for 590000011
+[2026-02-06T07:06:50.295Z] Profile found: true
+[2026-02-06T07:06:50.295Z] studentId resolved: S590000011
+[2026-02-06T07:06:50.300Z] currRows length: 20
+[2026-02-06T07:06:50.300Z] Session Status Updated
+[2026-02-06T07:06:50.303Z] Metrics fetched: 20
+[2026-02-06T07:06:50.305Z] Trend fetched: 4
+[2026-02-06T07:12:42.813Z] START Recompute for 590000011
+[2026-02-06T07:12:43.611Z] Profile found: true
+[2026-02-06T07:12:43.611Z] studentId resolved: S590000011
+[2026-02-06T07:12:43.678Z] currRows length: 20
+[2026-02-06T07:12:43.678Z] Session Status Updated
+[2026-02-06T07:12:43.698Z] Metrics fetched: 20
+[2026-02-06T07:12:43.704Z] Trend fetched: 4
+[2026-02-06T07:12:43.805Z] START Recompute for 590000011
+[2026-02-06T07:12:43.827Z] Profile found: true
+[2026-02-06T07:12:43.827Z] studentId resolved: S590000011
+[2026-02-06T07:12:43.842Z] currRows length: 20
+[2026-02-06T07:12:43.842Z] Session Status Updated
+[2026-02-06T07:12:43.847Z] Metrics fetched: 20
+[2026-02-06T07:12:43.849Z] Trend fetched: 4
+[2026-02-06T07:12:43.878Z] START Recompute for 590000011
+[2026-02-06T07:12:43.892Z] Profile found: true
+[2026-02-06T07:12:43.893Z] studentId resolved: S590000011
+[2026-02-06T07:12:43.897Z] currRows length: 20
+[2026-02-06T07:12:43.897Z] Session Status Updated
+[2026-02-06T07:12:43.903Z] Metrics fetched: 20
+[2026-02-06T07:12:43.905Z] Trend fetched: 4
+[2026-02-06T07:12:43.934Z] START Recompute for 590000011
+[2026-02-06T07:12:43.953Z] Profile found: true
+[2026-02-06T07:12:43.953Z] studentId resolved: S590000011
+[2026-02-06T07:12:43.957Z] currRows length: 20
+[2026-02-06T07:12:43.957Z] Session Status Updated
+[2026-02-06T07:12:43.963Z] Metrics fetched: 20
+[2026-02-06T07:12:43.965Z] Trend fetched: 4
+[2026-02-06T07:16:39.449Z] START Recompute for 590000011
+[2026-02-06T07:16:40.911Z] Profile found: true
+[2026-02-06T07:16:40.911Z] studentId resolved: S590000011
+[2026-02-06T07:16:40.952Z] currRows length: 20
+[2026-02-06T07:16:40.952Z] Session Status Updated
+[2026-02-06T07:16:40.961Z] Metrics fetched: 20
+[2026-02-06T07:16:40.965Z] Trend fetched: 4
+[2026-02-06T07:16:41.034Z] START Recompute for 590000011
+[2026-02-06T07:16:41.047Z] Profile found: true
+[2026-02-06T07:16:41.047Z] studentId resolved: S590000011
+[2026-02-06T07:16:41.052Z] currRows length: 20
+[2026-02-06T07:16:41.052Z] Session Status Updated
+[2026-02-06T07:16:41.056Z] Metrics fetched: 20
+[2026-02-06T07:16:41.058Z] Trend fetched: 4
+[2026-02-06T07:16:41.080Z] START Recompute for 590000011
+[2026-02-06T07:16:41.093Z] Profile found: true
+[2026-02-06T07:16:41.093Z] studentId resolved: S590000011
+[2026-02-06T07:16:41.099Z] currRows length: 20
+[2026-02-06T07:16:41.099Z] Session Status Updated
+[2026-02-06T07:16:41.103Z] Metrics fetched: 20
+[2026-02-06T07:16:41.105Z] Trend fetched: 4
+[2026-02-06T07:16:41.135Z] START Recompute for 590000011
+[2026-02-06T07:16:41.146Z] Profile found: true
+[2026-02-06T07:16:41.146Z] studentId resolved: S590000011
+[2026-02-06T07:16:41.152Z] currRows length: 20
+[2026-02-06T07:16:41.152Z] Session Status Updated
+[2026-02-06T07:16:41.156Z] Metrics fetched: 20
+[2026-02-06T07:16:41.158Z] Trend fetched: 4
+[2026-02-06T07:17:03.127Z] START Recompute for 590000011
+[2026-02-06T07:17:03.421Z] Profile found: true
+[2026-02-06T07:17:03.421Z] studentId resolved: S590000011
+[2026-02-06T07:17:03.479Z] currRows length: 20
+[2026-02-06T07:17:03.479Z] Session Status Updated
+[2026-02-06T07:17:03.509Z] Metrics fetched: 20
+[2026-02-06T07:17:03.520Z] Trend fetched: 4
+[2026-02-06T07:17:03.626Z] START Recompute for 590000011
+[2026-02-06T07:17:03.627Z] Profile found: true
+[2026-02-06T07:17:03.627Z] studentId resolved: S590000011
+[2026-02-06T07:17:03.633Z] currRows length: 20
+[2026-02-06T07:17:03.633Z] Session Status Updated
+[2026-02-06T07:17:03.641Z] Metrics fetched: 20
+[2026-02-06T07:17:03.644Z] Trend fetched: 4
+[2026-02-06T07:23:55.780Z] START Recompute for 590000011
+[2026-02-06T07:23:55.785Z] START Recompute for 590000011
+[2026-02-06T07:23:57.166Z] Profile found: true
+[2026-02-06T07:23:57.166Z] studentId resolved: S590000011
+[2026-02-06T07:23:57.167Z] Profile found: true
+[2026-02-06T07:23:57.167Z] studentId resolved: S590000011
+[2026-02-06T07:23:57.552Z] currRows length: 20
+[2026-02-06T07:23:57.553Z] Session Status Updated
+[2026-02-06T07:23:57.556Z] currRows length: 20
+[2026-02-06T07:23:57.556Z] Session Status Updated
+[2026-02-06T07:23:57.638Z] Metrics fetched: 20
+[2026-02-06T07:23:57.638Z] Metrics fetched: 20
+[2026-02-06T07:23:57.658Z] Trend fetched: 4
+[2026-02-06T07:23:57.659Z] Trend fetched: 4
+[2026-02-06T07:23:58.003Z] START Recompute for 590000011
+[2026-02-06T07:23:58.007Z] Profile found: true
+[2026-02-06T07:23:58.008Z] studentId resolved: S590000011
+[2026-02-06T07:23:58.016Z] currRows length: 20
+[2026-02-06T07:23:58.017Z] Session Status Updated
+[2026-02-06T07:23:58.031Z] Metrics fetched: 20
+[2026-02-06T07:23:58.040Z] Trend fetched: 4
+[2026-02-06T07:23:58.254Z] START Recompute for 590000011
+[2026-02-06T07:23:58.310Z] Profile found: true
+[2026-02-06T07:23:58.311Z] studentId resolved: S590000011
+[2026-02-06T07:23:58.362Z] currRows length: 20
+[2026-02-06T07:23:58.362Z] Session Status Updated
+[2026-02-06T07:23:58.414Z] Metrics fetched: 20
+[2026-02-06T07:23:58.444Z] Trend fetched: 4
+[2026-02-06T07:23:58.469Z] START Recompute for 590000011
+[2026-02-06T07:23:58.470Z] Profile found: true
+[2026-02-06T07:23:58.470Z] studentId resolved: S590000011
+[2026-02-06T07:23:58.493Z] currRows length: 20
+[2026-02-06T07:23:58.493Z] Session Status Updated
+[2026-02-06T07:23:58.508Z] Metrics fetched: 20
+[2026-02-06T07:23:58.513Z] Trend fetched: 4
+[2026-02-06T07:23:58.647Z] START Recompute for 590000011
+[2026-02-06T07:23:58.652Z] Profile found: true
+[2026-02-06T07:23:58.652Z] studentId resolved: S590000011
+[2026-02-06T07:23:58.683Z] currRows length: 20
+[2026-02-06T07:23:58.683Z] Session Status Updated
+[2026-02-06T07:23:58.692Z] Metrics fetched: 20
+[2026-02-06T07:23:58.695Z] Trend fetched: 4
+[2026-02-06T07:24:13.327Z] START Recompute for 590000011
+[2026-02-06T07:24:13.336Z] START Recompute for 590000011
+[2026-02-06T07:24:17.103Z] Profile found: true
+[2026-02-06T07:24:17.103Z] studentId resolved: S590000011
+[2026-02-06T07:24:17.107Z] Profile found: true
+[2026-02-06T07:24:17.107Z] studentId resolved: S590000011
+[2026-02-06T07:24:17.447Z] currRows length: 20
+[2026-02-06T07:24:17.447Z] Session Status Updated
+[2026-02-06T07:24:17.447Z] currRows length: 20
+[2026-02-06T07:24:17.447Z] Session Status Updated
+[2026-02-06T07:24:17.984Z] Metrics fetched: 20
+[2026-02-06T07:24:17.988Z] Metrics fetched: 20
+[2026-02-06T07:24:18.016Z] Trend fetched: 4
+[2026-02-06T07:24:18.017Z] Trend fetched: 4
+[2026-02-06T07:24:18.733Z] START Recompute for 590000011
+[2026-02-06T07:24:18.734Z] START Recompute for 590000011
+[2026-02-06T07:24:18.735Z] Profile found: true
+[2026-02-06T07:24:18.735Z] studentId resolved: S590000011
+[2026-02-06T07:24:18.735Z] Profile found: true
+[2026-02-06T07:24:18.735Z] studentId resolved: S590000011
+[2026-02-06T07:24:18.737Z] currRows length: 20
+[2026-02-06T07:24:18.737Z] Session Status Updated
+[2026-02-06T07:24:18.737Z] currRows length: 20
+[2026-02-06T07:24:18.737Z] Session Status Updated
+[2026-02-06T07:24:18.741Z] Metrics fetched: 20
+[2026-02-06T07:24:18.742Z] Metrics fetched: 20
+[2026-02-06T07:24:18.746Z] Trend fetched: 4
+[2026-02-06T07:24:18.747Z] Trend fetched: 4
+[2026-02-06T07:24:18.850Z] START Recompute for 590000011
+[2026-02-06T07:24:18.852Z] Profile found: true
+[2026-02-06T07:24:18.852Z] studentId resolved: S590000011
+[2026-02-06T07:24:18.865Z] currRows length: 20
+[2026-02-06T07:24:18.865Z] Session Status Updated
+[2026-02-06T07:24:18.870Z] Metrics fetched: 20
+[2026-02-06T07:24:18.873Z] Trend fetched: 4
+[2026-02-06T07:24:18.934Z] START Recompute for 590000011
+[2026-02-06T07:24:18.935Z] Profile found: true
+[2026-02-06T07:24:18.935Z] studentId resolved: S590000011
+[2026-02-06T07:24:18.939Z] currRows length: 20
+[2026-02-06T07:24:18.939Z] Session Status Updated
+[2026-02-06T07:24:18.943Z] Metrics fetched: 20
+[2026-02-06T07:24:18.947Z] Trend fetched: 4
+[2026-02-06T07:26:58.544Z] START Recompute for 590000011
+[2026-02-06T07:26:58.549Z] START Recompute for 590000011
+[2026-02-06T07:26:59.494Z] Profile found: true
+[2026-02-06T07:26:59.494Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.495Z] Profile found: true
+[2026-02-06T07:26:59.495Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.543Z] currRows length: 20
+[2026-02-06T07:26:59.543Z] Session Status Updated
+[2026-02-06T07:26:59.543Z] currRows length: 20
+[2026-02-06T07:26:59.543Z] Session Status Updated
+[2026-02-06T07:26:59.550Z] Metrics fetched: 20
+[2026-02-06T07:26:59.551Z] Metrics fetched: 20
+[2026-02-06T07:26:59.554Z] Trend fetched: 4
+[2026-02-06T07:26:59.555Z] Trend fetched: 4
+[2026-02-06T07:26:59.602Z] START Recompute for 590000011
+[2026-02-06T07:26:59.604Z] Profile found: true
+[2026-02-06T07:26:59.604Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.605Z] START Recompute for 590000011
+[2026-02-06T07:26:59.605Z] Profile found: true
+[2026-02-06T07:26:59.605Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.617Z] currRows length: 20
+[2026-02-06T07:26:59.617Z] Session Status Updated
+[2026-02-06T07:26:59.626Z] Metrics fetched: 20
+[2026-02-06T07:26:59.628Z] currRows length: 20
+[2026-02-06T07:26:59.629Z] Session Status Updated
+[2026-02-06T07:26:59.630Z] Trend fetched: 4
+[2026-02-06T07:26:59.631Z] Metrics fetched: 20
+[2026-02-06T07:26:59.632Z] Trend fetched: 4
+[2026-02-06T07:26:59.653Z] START Recompute for 590000011
+[2026-02-06T07:26:59.654Z] Profile found: true
+[2026-02-06T07:26:59.654Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.656Z] currRows length: 20
+[2026-02-06T07:26:59.656Z] Session Status Updated
+[2026-02-06T07:26:59.658Z] Metrics fetched: 20
+[2026-02-06T07:26:59.659Z] Trend fetched: 4
+[2026-02-06T07:26:59.674Z] START Recompute for 590000011
+[2026-02-06T07:26:59.674Z] Profile found: true
+[2026-02-06T07:26:59.674Z] studentId resolved: S590000011
+[2026-02-06T07:26:59.676Z] currRows length: 20
+[2026-02-06T07:26:59.676Z] Session Status Updated
+[2026-02-06T07:26:59.677Z] Metrics fetched: 20
+[2026-02-06T07:26:59.678Z] Trend fetched: 4
+[2026-02-06T07:32:02.988Z] START Recompute for 590000011
+[2026-02-06T07:32:03.551Z] Profile found: true
+[2026-02-06T07:32:03.551Z] studentId resolved: S590000011
+[2026-02-06T07:32:03.630Z] currRows length: 20
+[2026-02-06T07:32:03.631Z] Session Status Updated
+[2026-02-06T07:32:03.682Z] Metrics fetched: 20
+[2026-02-06T07:32:03.706Z] Trend fetched: 4
+[2026-02-06T07:32:03.822Z] START Recompute for 590000011
+[2026-02-06T07:32:03.823Z] Profile found: true
+[2026-02-06T07:32:03.823Z] studentId resolved: S590000011
+[2026-02-06T07:32:03.828Z] currRows length: 20
+[2026-02-06T07:32:03.828Z] Session Status Updated
+[2026-02-06T07:32:03.831Z] Metrics fetched: 20
+[2026-02-06T07:32:03.835Z] Trend fetched: 4
+[2026-02-06T07:32:03.875Z] START Recompute for 590000011
+[2026-02-06T07:32:03.876Z] Profile found: true
+[2026-02-06T07:32:03.876Z] studentId resolved: S590000011
+[2026-02-06T07:32:03.881Z] currRows length: 20
+[2026-02-06T07:32:03.881Z] Session Status Updated
+[2026-02-06T07:32:03.887Z] Metrics fetched: 20
+[2026-02-06T07:32:03.890Z] Trend fetched: 4
+[2026-02-06T07:32:03.928Z] START Recompute for 590000011
+[2026-02-06T07:32:03.929Z] Profile found: true
+[2026-02-06T07:32:03.929Z] studentId resolved: S590000011
+[2026-02-06T07:32:03.933Z] currRows length: 20
+[2026-02-06T07:32:03.933Z] Session Status Updated
+[2026-02-06T07:32:03.937Z] Metrics fetched: 20
+[2026-02-06T07:32:03.940Z] Trend fetched: 4
+[2026-02-06T07:32:04.138Z] START Recompute for 590000011
+[2026-02-06T07:32:04.140Z] Profile found: true
+[2026-02-06T07:32:04.140Z] studentId resolved: S590000011
+[2026-02-06T07:32:04.159Z] currRows length: 20
+[2026-02-06T07:32:04.160Z] Session Status Updated
+[2026-02-06T07:32:04.176Z] Metrics fetched: 20
+[2026-02-06T07:32:04.179Z] Trend fetched: 4
+[2026-02-06T07:32:04.242Z] START Recompute for 590000011
+[2026-02-06T07:32:04.262Z] Profile found: true
+[2026-02-06T07:32:04.263Z] studentId resolved: S590000011
+[2026-02-06T07:32:04.284Z] currRows length: 20
+[2026-02-06T07:32:04.284Z] Session Status Updated
+[2026-02-06T07:32:04.292Z] Metrics fetched: 20
+[2026-02-06T07:32:04.295Z] Trend fetched: 4
+[2026-02-06T07:32:04.343Z] START Recompute for 590000011
+[2026-02-06T07:32:04.347Z] Profile found: true
+[2026-02-06T07:32:04.347Z] studentId resolved: S590000011
+[2026-02-06T07:32:04.352Z] currRows length: 20
+[2026-02-06T07:32:04.352Z] Session Status Updated
+[2026-02-06T07:32:04.360Z] Metrics fetched: 20
+[2026-02-06T07:32:04.363Z] Trend fetched: 4
+[2026-02-06T07:32:04.409Z] START Recompute for 590000011
+[2026-02-06T07:32:04.410Z] Profile found: true
+[2026-02-06T07:32:04.410Z] studentId resolved: S590000011
+[2026-02-06T07:32:04.413Z] currRows length: 20
+[2026-02-06T07:32:04.413Z] Session Status Updated
+[2026-02-06T07:32:04.416Z] Metrics fetched: 20
+[2026-02-06T07:32:04.418Z] Trend fetched: 4
+[2026-02-06T10:28:09.028Z] START Recompute for 590000011
+[2026-02-06T10:28:13.252Z] Profile found: true
+[2026-02-06T10:28:13.253Z] studentId resolved: S590000011
+[2026-02-06T10:28:13.862Z] currRows length: 20
+[2026-02-06T10:28:13.867Z] Session Status Updated
+[2026-02-06T10:28:14.069Z] Metrics fetched: 20
+[2026-02-06T10:28:14.139Z] Trend fetched: 4
+[2026-02-06T10:28:14.640Z] START Recompute for 590000011
+[2026-02-06T10:28:14.641Z] Profile found: true
+[2026-02-06T10:28:14.641Z] studentId resolved: S590000011
+[2026-02-06T10:28:14.664Z] currRows length: 20
+[2026-02-06T10:28:14.664Z] Session Status Updated
+[2026-02-06T10:28:14.675Z] Metrics fetched: 20
+[2026-02-06T10:28:14.681Z] Trend fetched: 4
+[2026-02-06T10:28:14.766Z] START Recompute for 590000011
+[2026-02-06T10:28:14.768Z] Profile found: true
+[2026-02-06T10:28:14.768Z] studentId resolved: S590000011
+[2026-02-06T10:28:14.773Z] currRows length: 20
+[2026-02-06T10:28:14.774Z] Session Status Updated
+[2026-02-06T10:28:14.777Z] Metrics fetched: 20
+[2026-02-06T10:28:14.780Z] Trend fetched: 4
+[2026-02-06T10:28:14.844Z] START Recompute for 590000011
+[2026-02-06T10:28:14.845Z] Profile found: true
+[2026-02-06T10:28:14.845Z] studentId resolved: S590000011
+[2026-02-06T10:28:14.857Z] currRows length: 20
+[2026-02-06T10:28:14.857Z] Session Status Updated
+[2026-02-06T10:28:14.864Z] Metrics fetched: 20
+[2026-02-06T10:28:14.867Z] Trend fetched: 4
+[2026-02-06T10:28:40.294Z] START Recompute for 590000011
+[2026-02-06T10:28:41.131Z] Profile found: true
+[2026-02-06T10:28:41.131Z] studentId resolved: S590000011
+[2026-02-06T10:28:41.312Z] currRows length: 20
+[2026-02-06T10:28:41.312Z] Session Status Updated
+[2026-02-06T10:28:41.377Z] Metrics fetched: 20
+[2026-02-06T10:28:41.382Z] Trend fetched: 4
+[2026-02-06T10:28:41.458Z] START Recompute for 590000011
+[2026-02-06T10:28:41.458Z] Profile found: true
+[2026-02-06T10:28:41.458Z] studentId resolved: S590000011
+[2026-02-06T10:28:41.461Z] currRows length: 20
+[2026-02-06T10:28:41.461Z] Session Status Updated
+[2026-02-06T10:28:41.466Z] Metrics fetched: 20
+[2026-02-06T10:28:41.480Z] Trend fetched: 4
+[2026-02-06T10:28:41.545Z] START Recompute for 590000011
+[2026-02-06T10:28:41.546Z] Profile found: true
+[2026-02-06T10:28:41.546Z] studentId resolved: S590000011
+[2026-02-06T10:28:41.550Z] currRows length: 20
+[2026-02-06T10:28:41.550Z] Session Status Updated
+[2026-02-06T10:28:41.552Z] Metrics fetched: 20
+[2026-02-06T10:28:41.554Z] Trend fetched: 4
+[2026-02-06T10:28:41.719Z] START Recompute for 590000011
+[2026-02-06T10:28:41.723Z] Profile found: true
+[2026-02-06T10:28:41.725Z] studentId resolved: S590000011
+[2026-02-06T10:28:41.730Z] currRows length: 20
+[2026-02-06T10:28:41.733Z] Session Status Updated
+[2026-02-06T10:28:41.738Z] Metrics fetched: 20
+[2026-02-06T10:28:41.740Z] Trend fetched: 4
+[2026-02-06T11:33:20.276Z] START Recompute for 590000011
+[2026-02-06T11:33:23.057Z] Profile found: true
+[2026-02-06T11:33:23.057Z] studentId resolved: S590000011
+[2026-02-06T11:33:23.521Z] currRows length: 20
+[2026-02-06T11:33:23.524Z] Session Status Updated
+[2026-02-06T11:33:23.685Z] Metrics fetched: 20
+[2026-02-06T11:33:23.823Z] Trend fetched: 4
+[2026-02-06T11:33:24.241Z] START Recompute for 590000011
+[2026-02-06T11:33:24.349Z] Profile found: true
+[2026-02-06T11:33:24.350Z] studentId resolved: S590000011
+[2026-02-06T11:33:24.434Z] currRows length: 20
+[2026-02-06T11:33:24.434Z] Session Status Updated
+[2026-02-06T11:33:24.438Z] Metrics fetched: 20
+[2026-02-06T11:33:24.495Z] Trend fetched: 4
+[2026-02-06T11:33:24.658Z] START Recompute for 590000011
+[2026-02-06T11:33:24.659Z] Profile found: true
+[2026-02-06T11:33:24.659Z] studentId resolved: S590000011
+[2026-02-06T11:33:24.700Z] currRows length: 20
+[2026-02-06T11:33:24.700Z] Session Status Updated
+[2026-02-06T11:33:24.703Z] Metrics fetched: 20
+[2026-02-06T11:33:24.708Z] Trend fetched: 4
+[2026-02-06T11:33:24.737Z] START Recompute for 590000011
+[2026-02-06T11:33:24.738Z] Profile found: true
+[2026-02-06T11:33:24.739Z] studentId resolved: S590000011
+[2026-02-06T11:33:24.742Z] currRows length: 20
+[2026-02-06T11:33:24.742Z] Session Status Updated
+[2026-02-06T11:33:24.745Z] Metrics fetched: 20
+[2026-02-06T11:33:24.746Z] Trend fetched: 4
+[2026-02-06T14:01:30.923Z] START Recompute for 590000011
+[2026-02-06T14:01:31.222Z] Profile found: true
+[2026-02-06T14:01:31.223Z] studentId resolved: S590000011
+[2026-02-06T14:01:31.274Z] currRows length: 20
+[2026-02-06T14:01:31.274Z] Session Status Updated
+[2026-02-06T14:01:31.294Z] Metrics fetched: 20
+[2026-02-06T14:01:31.303Z] Trend fetched: 4
+[2026-02-06T14:01:31.396Z] START Recompute for 590000011
+[2026-02-06T14:01:31.397Z] Profile found: true
+[2026-02-06T14:01:31.397Z] studentId resolved: S590000011
+[2026-02-06T14:01:31.400Z] currRows length: 20
+[2026-02-06T14:01:31.400Z] Session Status Updated
+[2026-02-06T14:01:31.402Z] Metrics fetched: 20
+[2026-02-06T14:01:31.404Z] Trend fetched: 4
+[2026-02-06T14:01:31.425Z] START Recompute for 590000011
+[2026-02-06T14:01:31.426Z] Profile found: true
+[2026-02-06T14:01:31.426Z] studentId resolved: S590000011
+[2026-02-06T14:01:31.428Z] currRows length: 20
+[2026-02-06T14:01:31.428Z] Session Status Updated
+[2026-02-06T14:01:31.430Z] Metrics fetched: 20
+[2026-02-06T14:01:31.431Z] Trend fetched: 4
+[2026-02-06T14:01:31.454Z] START Recompute for 590000011
+[2026-02-06T14:01:31.455Z] Profile found: true
+[2026-02-06T14:01:31.455Z] studentId resolved: S590000011
+[2026-02-06T14:01:31.457Z] currRows length: 20
+[2026-02-06T14:01:31.457Z] Session Status Updated
+[2026-02-06T14:01:31.458Z] Metrics fetched: 20
+[2026-02-06T14:01:31.459Z] Trend fetched: 4
+[2026-02-10T09:17:58.823Z] START Recompute for 9999999990
+[2026-02-10T09:17:58.849Z] Profile found: true
+[2026-02-10T09:17:58.849Z] studentId resolved: 9999999990
+[2026-02-10T09:17:58.899Z] currRows length: 0
+[2026-02-10T09:21:10.126Z] START Recompute for 9999999990
+[2026-02-10T09:21:10.151Z] Profile found: true
+[2026-02-10T09:21:10.151Z] studentId resolved: 9999999990
+[2026-02-10T09:21:10.170Z] currRows length: 0
+[2026-02-10T09:22:42.437Z] START Recompute for 9999999990
+[2026-02-10T09:22:42.465Z] Profile found: true
+[2026-02-10T09:22:42.465Z] studentId resolved: 9999999990
+[2026-02-10T09:22:42.480Z] currRows length: 0
+[2026-02-10T09:24:40.682Z] START Recompute for 9999999990
+[2026-02-10T09:24:40.708Z] Profile found: true
+[2026-02-10T09:24:40.708Z] studentId resolved: 9999999990
+[2026-02-10T09:24:40.722Z] currRows length: 0
+[2026-02-10T09:24:40.788Z] START Recompute for 9999999990
+[2026-02-10T09:24:40.788Z] Profile found: true
+[2026-02-10T09:24:40.788Z] studentId resolved: 9999999990
+[2026-02-10T09:24:40.793Z] currRows length: 0
+[2026-02-10T09:24:58.220Z] START Recompute for 9999999990
+[2026-02-10T09:24:58.242Z] Profile found: true
+[2026-02-10T09:24:58.242Z] studentId resolved: 9999999990
+[2026-02-10T09:24:58.252Z] currRows length: 0
+[2026-02-10T09:24:58.309Z] START Recompute for 9999999990
+[2026-02-10T09:24:58.310Z] Profile found: true
+[2026-02-10T09:24:58.310Z] studentId resolved: 9999999990
+[2026-02-10T09:24:58.315Z] currRows length: 0
+[2026-02-10T09:25:35.837Z] START Recompute for 9999999990
+[2026-02-10T09:25:35.856Z] Profile found: true
+[2026-02-10T09:25:35.856Z] studentId resolved: 9999999990
+[2026-02-10T09:25:35.874Z] currRows length: 0
+[2026-02-10T09:25:35.932Z] START Recompute for 9999999990
+[2026-02-10T09:25:35.933Z] Profile found: true
+[2026-02-10T09:25:35.933Z] studentId resolved: 9999999990
+[2026-02-10T09:25:35.934Z] currRows length: 0
+[2026-02-10T09:27:08.141Z] START Recompute for 9999999990
+[2026-02-10T09:27:08.166Z] Profile found: true
+[2026-02-10T09:27:08.166Z] studentId resolved: 9999999990
+[2026-02-10T09:27:08.183Z] currRows length: 0
+[2026-02-10T09:27:08.249Z] START Recompute for 9999999990
+[2026-02-10T09:27:08.249Z] Profile found: true
+[2026-02-10T09:27:08.249Z] studentId resolved: 9999999990
+[2026-02-10T09:27:08.250Z] currRows length: 0
+[2026-02-10T09:39:11.060Z] START Recompute for 590000011
+[2026-02-10T09:39:11.064Z] Profile found: true
+[2026-02-10T09:39:11.064Z] studentId resolved: S590000011
+[2026-02-10T09:39:11.076Z] currRows length: 20
+[2026-02-10T09:39:11.076Z] Session Status Updated
+[2026-02-10T09:39:11.094Z] Metrics fetched: 20
+[2026-02-10T09:39:11.101Z] Trend fetched: 4
+[2026-02-10T09:42:05.587Z] START Recompute for 590000011
+[2026-02-10T09:42:05.827Z] Profile found: true
+[2026-02-10T09:42:05.827Z] studentId resolved: S590000011
+[2026-02-10T09:42:05.870Z] currRows length: 20
+[2026-02-10T09:42:05.871Z] Session Status Updated
+[2026-02-10T09:42:05.877Z] Metrics fetched: 20
+[2026-02-10T09:42:05.881Z] Trend fetched: 4
+[2026-02-10T09:42:05.943Z] START Recompute for 590000011
+[2026-02-10T09:42:05.944Z] Profile found: true
+[2026-02-10T09:42:05.944Z] studentId resolved: S590000011
+[2026-02-10T09:42:05.951Z] currRows length: 20
+[2026-02-10T09:42:05.951Z] Session Status Updated
+[2026-02-10T09:42:05.953Z] Metrics fetched: 20
+[2026-02-10T09:42:05.954Z] Trend fetched: 4
+[2026-02-10T09:42:05.972Z] START Recompute for 590000011
+[2026-02-10T09:42:05.973Z] Profile found: true
+[2026-02-10T09:42:05.973Z] studentId resolved: S590000011
+[2026-02-10T09:42:05.975Z] currRows length: 20
+[2026-02-10T09:42:05.975Z] Session Status Updated
+[2026-02-10T09:42:05.980Z] Metrics fetched: 20
+[2026-02-10T09:42:05.984Z] Trend fetched: 4
+[2026-02-10T09:42:06.033Z] START Recompute for 590000011
+[2026-02-10T09:42:06.034Z] Profile found: true
+[2026-02-10T09:42:06.034Z] studentId resolved: S590000011
+[2026-02-10T09:42:06.036Z] currRows length: 20
+[2026-02-10T09:42:06.036Z] Session Status Updated
+[2026-02-10T09:42:06.037Z] Metrics fetched: 20
+[2026-02-10T09:42:06.038Z] Trend fetched: 4
+[2026-02-10T09:46:26.391Z] START Recompute for 590000011
+[2026-02-10T09:46:26.472Z] Profile found: true
+[2026-02-10T09:46:26.472Z] studentId resolved: S590000011
+[2026-02-10T09:46:26.519Z] currRows length: 20
+[2026-02-10T09:46:26.519Z] Session Status Updated
+[2026-02-10T09:46:26.532Z] Metrics fetched: 20
+[2026-02-10T09:46:26.540Z] Trend fetched: 4
+[2026-02-10T09:46:26.612Z] START Recompute for 590000011
+[2026-02-10T09:46:26.613Z] Profile found: true
+[2026-02-10T09:46:26.613Z] studentId resolved: S590000011
+[2026-02-10T09:46:26.616Z] currRows length: 20
+[2026-02-10T09:46:26.616Z] Session Status Updated
+[2026-02-10T09:46:26.622Z] Metrics fetched: 20
+[2026-02-10T09:46:26.627Z] Trend fetched: 4
+[2026-02-10T09:46:26.662Z] START Recompute for 590000011
+[2026-02-10T09:46:26.663Z] Profile found: true
+[2026-02-10T09:46:26.663Z] studentId resolved: S590000011
+[2026-02-10T09:46:26.666Z] currRows length: 20
+[2026-02-10T09:46:26.667Z] Session Status Updated
+[2026-02-10T09:46:26.669Z] Metrics fetched: 20
+[2026-02-10T09:46:26.673Z] Trend fetched: 4
+[2026-02-10T09:46:26.713Z] START Recompute for 590000011
+[2026-02-10T09:46:26.714Z] Profile found: true
+[2026-02-10T09:46:26.714Z] studentId resolved: S590000011
+[2026-02-10T09:46:26.718Z] currRows length: 20
+[2026-02-10T09:46:26.718Z] Session Status Updated
+[2026-02-10T09:46:26.722Z] Metrics fetched: 20
+[2026-02-10T09:46:26.725Z] Trend fetched: 4
+[2026-02-10T09:46:38.003Z] START Recompute for 590000011
+[2026-02-10T09:46:38.007Z] Profile found: true
+[2026-02-10T09:46:38.008Z] studentId resolved: S590000011
+[2026-02-10T09:46:38.021Z] currRows length: 20
+[2026-02-10T09:46:38.021Z] Session Status Updated
+[2026-02-10T09:46:38.035Z] Metrics fetched: 20
+[2026-02-10T09:46:38.040Z] Trend fetched: 4
+[2026-02-10T09:46:38.152Z] START Recompute for 590000011
+[2026-02-10T09:46:38.153Z] Profile found: true
+[2026-02-10T09:46:38.153Z] studentId resolved: S590000011
+[2026-02-10T09:46:38.156Z] currRows length: 20
+[2026-02-10T09:46:38.156Z] Session Status Updated
+[2026-02-10T09:46:38.159Z] Metrics fetched: 20
+[2026-02-10T09:46:38.162Z] Trend fetched: 4
+[2026-02-10T09:46:38.193Z] START Recompute for 590000011
+[2026-02-10T09:46:38.194Z] Profile found: true
+[2026-02-10T09:46:38.194Z] studentId resolved: S590000011
+[2026-02-10T09:46:38.196Z] currRows length: 20
+[2026-02-10T09:46:38.196Z] Session Status Updated
+[2026-02-10T09:46:38.199Z] Metrics fetched: 20
+[2026-02-10T09:46:38.202Z] Trend fetched: 4
+[2026-02-10T09:46:38.244Z] START Recompute for 590000011
+[2026-02-10T09:46:38.245Z] Profile found: true
+[2026-02-10T09:46:38.245Z] studentId resolved: S590000011
+[2026-02-10T09:46:38.248Z] currRows length: 20
+[2026-02-10T09:46:38.248Z] Session Status Updated
+[2026-02-10T09:46:38.251Z] Metrics fetched: 20
+[2026-02-10T09:46:38.254Z] Trend fetched: 4
+[2026-02-10T09:47:22.337Z] START Recompute for 590000011
+[2026-02-10T09:47:22.343Z] Profile found: true
+[2026-02-10T09:47:22.344Z] studentId resolved: S590000011
+[2026-02-10T09:47:22.360Z] currRows length: 20
+[2026-02-10T09:47:22.360Z] Session Status Updated
+[2026-02-10T09:47:22.371Z] Metrics fetched: 20
+[2026-02-10T09:47:22.376Z] Trend fetched: 4
+[2026-02-10T09:51:16.349Z] START Recompute for 590000011
+[2026-02-10T09:51:16.563Z] Profile found: true
+[2026-02-10T09:51:16.563Z] studentId resolved: S590000011
+[2026-02-10T09:51:16.584Z] currRows length: 20
+[2026-02-10T09:51:16.584Z] Session Status Updated
+[2026-02-10T09:51:16.605Z] Metrics fetched: 20
+[2026-02-10T09:51:16.706Z] Trend fetched: 4
+[2026-02-10T09:51:16.809Z] START Recompute for 590000011
+[2026-02-10T09:51:16.810Z] Profile found: true
+[2026-02-10T09:51:16.811Z] studentId resolved: S590000011
+[2026-02-10T09:51:16.817Z] currRows length: 20
+[2026-02-10T09:51:16.817Z] Session Status Updated
+[2026-02-10T09:51:16.823Z] Metrics fetched: 20
+[2026-02-10T09:51:16.826Z] Trend fetched: 4
+[2026-02-10T09:51:16.878Z] START Recompute for 590000011
+[2026-02-10T09:51:16.879Z] Profile found: true
+[2026-02-10T09:51:16.879Z] studentId resolved: S590000011
+[2026-02-10T09:51:16.886Z] currRows length: 20
+[2026-02-10T09:51:16.886Z] Session Status Updated
+[2026-02-10T09:51:16.893Z] Metrics fetched: 20
+[2026-02-10T09:51:16.897Z] Trend fetched: 4
+[2026-02-10T09:51:16.939Z] START Recompute for 590000011
+[2026-02-10T09:51:16.940Z] Profile found: true
+[2026-02-10T09:51:16.940Z] studentId resolved: S590000011
+[2026-02-10T09:51:16.943Z] currRows length: 20
+[2026-02-10T09:51:16.943Z] Session Status Updated
+[2026-02-10T09:51:16.947Z] Metrics fetched: 20
+[2026-02-10T09:51:16.949Z] Trend fetched: 4
+[2026-02-10T11:02:54.067Z] START Recompute for 590000011
+[2026-02-10T11:02:54.142Z] Profile found: true
+[2026-02-10T11:02:54.142Z] studentId resolved: S590000011
+[2026-02-10T11:02:54.161Z] currRows length: 20
+[2026-02-10T11:02:54.161Z] Session Status Updated
+[2026-02-10T11:02:54.175Z] Metrics fetched: 20
+[2026-02-10T11:02:54.180Z] Trend fetched: 4
+[2026-02-10T11:02:54.244Z] START Recompute for 590000011
+[2026-02-10T11:02:54.245Z] Profile found: true
+[2026-02-10T11:02:54.245Z] studentId resolved: S590000011
+[2026-02-10T11:02:54.247Z] currRows length: 20
+[2026-02-10T11:02:54.247Z] Session Status Updated
+[2026-02-10T11:02:54.250Z] Metrics fetched: 20
+[2026-02-10T11:02:54.252Z] Trend fetched: 4
+[2026-02-10T11:02:54.274Z] START Recompute for 590000011
+[2026-02-10T11:02:54.275Z] Profile found: true
+[2026-02-10T11:02:54.275Z] studentId resolved: S590000011
+[2026-02-10T11:02:54.277Z] currRows length: 20
+[2026-02-10T11:02:54.277Z] Session Status Updated
+[2026-02-10T11:02:54.279Z] Metrics fetched: 20
+[2026-02-10T11:02:54.281Z] Trend fetched: 4
+[2026-02-10T11:02:54.304Z] START Recompute for 590000011
+[2026-02-10T11:02:54.304Z] Profile found: true
+[2026-02-10T11:02:54.304Z] studentId resolved: S590000011
+[2026-02-10T11:02:54.306Z] currRows length: 20
+[2026-02-10T11:02:54.306Z] Session Status Updated
+[2026-02-10T11:02:54.308Z] Metrics fetched: 20
+[2026-02-10T11:02:54.309Z] Trend fetched: 4
+[2026-02-10T17:01:37.147Z] START Recompute for 590000011
+[2026-02-10T17:01:37.346Z] Profile found: true
+[2026-02-10T17:01:37.346Z] studentId resolved: S590000011
+[2026-02-10T17:01:37.364Z] currRows length: 20
+[2026-02-10T17:01:37.365Z] Session Status Updated
+[2026-02-10T17:01:37.377Z] Metrics fetched: 20
+[2026-02-10T17:01:37.384Z] Trend fetched: 4
+[2026-02-10T17:01:37.476Z] START Recompute for 590000011
+[2026-02-10T17:01:37.478Z] Profile found: true
+[2026-02-10T17:01:37.478Z] studentId resolved: S590000011
+[2026-02-10T17:01:37.481Z] currRows length: 20
+[2026-02-10T17:01:37.481Z] Session Status Updated
+[2026-02-10T17:01:37.483Z] Metrics fetched: 20
+[2026-02-10T17:01:37.485Z] Trend fetched: 4
+[2026-02-10T17:01:37.505Z] START Recompute for 590000011
+[2026-02-10T17:01:37.505Z] Profile found: true
+[2026-02-10T17:01:37.505Z] studentId resolved: S590000011
+[2026-02-10T17:01:37.508Z] currRows length: 20
+[2026-02-10T17:01:37.508Z] Session Status Updated
+[2026-02-10T17:01:37.510Z] Metrics fetched: 20
+[2026-02-10T17:01:37.512Z] Trend fetched: 4
+[2026-02-10T17:01:37.544Z] START Recompute for 590000011
+[2026-02-10T17:01:37.544Z] Profile found: true
+[2026-02-10T17:01:37.544Z] studentId resolved: S590000011
+[2026-02-10T17:01:37.546Z] currRows length: 20
+[2026-02-10T17:01:37.546Z] Session Status Updated
+[2026-02-10T17:01:37.548Z] Metrics fetched: 20
+[2026-02-10T17:01:37.549Z] Trend fetched: 4
+[2026-02-10T17:38:04.731Z] START Recompute for 590000011
+[2026-02-10T17:38:04.848Z] Profile found: true
+[2026-02-10T17:38:04.848Z] studentId resolved: S590000011
+[2026-02-10T17:38:04.872Z] currRows length: 20
+[2026-02-10T17:38:04.872Z] Session Status Updated
+[2026-02-10T17:38:04.883Z] Metrics fetched: 20
+[2026-02-10T17:38:04.889Z] Trend fetched: 4
+[2026-02-10T17:38:04.954Z] START Recompute for 590000011
+[2026-02-10T17:38:04.955Z] Profile found: true
+[2026-02-10T17:38:04.955Z] studentId resolved: S590000011
+[2026-02-10T17:38:04.958Z] currRows length: 20
+[2026-02-10T17:38:04.958Z] Session Status Updated
+[2026-02-10T17:38:04.961Z] Metrics fetched: 20
+[2026-02-10T17:38:04.963Z] Trend fetched: 4
+[2026-02-10T17:38:04.996Z] START Recompute for 590000011
+[2026-02-10T17:38:04.997Z] Profile found: true
+[2026-02-10T17:38:04.997Z] studentId resolved: S590000011
+[2026-02-10T17:38:05.005Z] currRows length: 20
+[2026-02-10T17:38:05.005Z] Session Status Updated
+[2026-02-10T17:38:05.008Z] Metrics fetched: 20
+[2026-02-10T17:38:05.010Z] Trend fetched: 4
+[2026-02-10T17:38:05.055Z] START Recompute for 590000011
+[2026-02-10T17:38:05.056Z] Profile found: true
+[2026-02-10T17:38:05.056Z] studentId resolved: S590000011
+[2026-02-10T17:38:05.060Z] currRows length: 20
+[2026-02-10T17:38:05.060Z] Session Status Updated
+[2026-02-10T17:38:05.063Z] Metrics fetched: 20
+[2026-02-10T17:38:05.065Z] Trend fetched: 4
